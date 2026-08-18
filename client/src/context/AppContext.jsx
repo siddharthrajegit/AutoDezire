@@ -93,6 +93,7 @@ export function AppProvider({ children }) {
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Sync theme with DOM classList
   useEffect(() => {
@@ -191,6 +192,8 @@ export function AppProvider({ children }) {
         setIsAuthModalOpen,
         isAiModalOpen,
         setIsAiModalOpen,
+        isMobileMenuOpen,
+        setIsMobileMenuOpen,
       }}
     >
       {children}

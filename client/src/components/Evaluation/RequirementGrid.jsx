@@ -160,7 +160,7 @@ export default function RequirementGrid({ requirementList = [] }) {
       </div>
 
       {/* Legend Footer matching reference screenshot */}
-      <div className="flex items-center space-x-6 mt-5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800/60">
+      <div className="flex flex-wrap items-center gap-3 sm:space-x-6 mt-5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800/60">
         <div className="flex items-center space-x-1.5">
           <span className="text-rose-500 font-bold">0-3</span>
           <span>Poor</span>

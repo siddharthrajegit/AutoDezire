@@ -37,16 +37,16 @@ export default function EvaluationView() {
   return (
     <div className="space-y-6 pb-12 animate-fadeIn max-w-[1400px] mx-auto">
       {/* Quick Action Toolbar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <button
           onClick={() => setActiveTab('search')}
-          className="flex items-center space-x-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 transition-colors"
+          className="flex items-center space-x-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 transition-colors self-start"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Search & Inventory</span>
         </button>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2 sm:space-x-3">
           {/* Compare toggle */}
           <button
             onClick={() => toggleCompare(selectedVehicle)}
