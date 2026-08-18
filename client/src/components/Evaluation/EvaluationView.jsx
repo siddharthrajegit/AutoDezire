@@ -35,7 +35,7 @@ export default function EvaluationView() {
   const isCompared = compareList.some(v => (v.id || v._id) === (selectedVehicle.id || selectedVehicle._id));
 
   return (
-    <div className="space-y-6 pb-12 animate-fadeIn max-w-[1400px] mx-auto">
+    <div className="space-y-6 pb-12 animate-fadeIn max-w-[1450px] mx-auto">
       {/* Quick Action Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <button
@@ -84,30 +84,29 @@ export default function EvaluationView() {
         </div>
       </div>
 
-      {/* TOP SECTION: Vehicle Info Card (Left) + Overall Suitability Score Gauge (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        <div className="lg:col-span-8 flex flex-col">
+      {/* Main 2-Column Evaluation Grid matching Screenshot */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* LEFT COLUMN: Vehicle Info Card (Top) + Requirement-wise Scores (Bottom) */}
+        <div className="lg:col-span-7 space-y-6 flex flex-col">
           <VehicleInfoCard vehicle={selectedVehicle} />
+          <RequirementGrid requirementList={evaluation.requirementList} />
         </div>
-        <div className="lg:col-span-4 flex flex-col">
+
+        {/* RIGHT COLUMN: Overall Suitability Score (Top) + Top Strengths & Considerations (Bottom) */}
+        <div className="lg:col-span-5 space-y-6 flex flex-col">
           <SemiCircleGauge
             score={evaluation.overallScore}
             status={evaluation.overallStatus}
           />
+          <StrengthsConsiderations
+            strengths={evaluation.topStrengths}
+            considerations={evaluation.considerations}
+            safetyRating={selectedVehicle.safetyRating}
+            safetyAgency={selectedVehicle.safetyAgency}
+            criticalCompromises={evaluation.criticalCompromises}
+          />
         </div>
       </div>
-
-      {/* MIDDLE SECTION: Requirement-wise Scores (Exact 5x2 Grid with 10 Cards) */}
-      <RequirementGrid requirementList={evaluation.requirementList} />
-
-      {/* BOTTOM SECTION: Top Strengths & Considerations */}
-      <StrengthsConsiderations
-        strengths={evaluation.topStrengths}
-        considerations={evaluation.considerations}
-        safetyRating={selectedVehicle.safetyRating}
-        safetyAgency={selectedVehicle.safetyAgency}
-        criticalCompromises={evaluation.criticalCompromises}
-      />
     </div>
   );
 }
