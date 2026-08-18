@@ -1,0 +1,36 @@
+{
+  "name": "autodezire",
+  "version": "1.0.0",
+  "description": "AutoDezire - AI-Powered Automobile Recommendation and Suitability Evaluation Platform",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "nodemon server/server.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm run build --prefix client",
+    "install-all": "npm install && npm install --prefix client && npm install --prefix server"
+  },
+  "keywords": [
+    "autodezire",
+    "automotive",
+    "recommendation-engine",
+    "ai-advisor",
+    "cars",
+    "motorcycles",
+    "scooters"
+  ],
+  "author": "AutoDezire Team",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siddharthrajegit/AutoDezire.git"
+  },
+  "bugs": {
+    "url": "https://github.com/siddharthrajegit/AutoDezire/issues"
+  },
+  "homepage": "https://github.com/siddharthrajegit/AutoDezire#readme"
+}
