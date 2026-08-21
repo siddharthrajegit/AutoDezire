@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -13,36 +14,10 @@ import SavedVehiclesView from './components/Saved/SavedVehiclesView';
 import SettingsView from './components/Settings/SettingsView';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import AuthModal from './components/Auth/AuthModal';
+import ScrollScrubbingLanding from './components/Entry/ScrollScrubbingLanding';
 
 function MainLayout() {
-  const { activeTab } = useApp();
-
-  const renderActiveView = () => {
-    switch (activeTab) {
-      case 'home':
-        return <HomeView />;
-      case 'profile':
-        return <QuestionnaireView />;
-      case 'recommendations':
-        return <RecommendationsView />;
-      case 'search':
-        return <SearchVehicleView />;
-      case 'evaluation':
-        return <EvaluationView />;
-      case 'compare':
-        return <CompareView />;
-      case 'ai-advisor':
-        return <AIAdvisorView />;
-      case 'saved':
-        return <SavedVehiclesView />;
-      case 'settings':
-        return <SettingsView />;
-      case 'admin':
-        return <AdminDashboard />;
-      default:
-        return <EvaluationView />;
-    }
-  };
+  const { showScrollScrubbing, setShowScrollScrubbing } = useApp();
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-[#0b0f19] text-gray-900 dark:text-gray-100 transition-colors duration-200">
@@ -54,12 +29,31 @@ function MainLayout() {
         <Header />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-          {renderActiveView()}
+          <Routes>
+            <Route path="/" element={<HomeView />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/profile" element={<QuestionnaireView />} />
+            <Route path="/recommendations" element={<RecommendationsView />} />
+            <Route path="/search" element={<SearchVehicleView />} />
+            <Route path="/evaluation" element={<EvaluationView />} />
+            <Route path="/evaluation/:id" element={<EvaluationView />} />
+            <Route path="/compare" element={<CompareView />} />
+            <Route path="/ai-advisor" element={<AIAdvisorView />} />
+            <Route path="/saved" element={<SavedVehiclesView />} />
+            <Route path="/settings" element={<SettingsView />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </main>
       </div>
 
       {/* Global Auth Modal */}
       <AuthModal />
+
+      {/* Interactive Scroll-Scrubbed Video Overlay */}
+      {showScrollScrubbing && (
+        <ScrollScrubbingLanding onClose={() => setShowScrollScrubbing(false)} />
+      )}
     </div>
   );
 }

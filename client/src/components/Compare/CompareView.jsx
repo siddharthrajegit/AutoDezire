@@ -8,7 +8,10 @@ import {
   CheckCircle2,
   AlertCircle,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  PersonStanding,
+  Gauge,
+  Zap
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability, REQUIREMENT_CONFIG } from '../../services/clientSuitabilityEngine';
@@ -33,7 +36,7 @@ export default function CompareView() {
             Suitability Comparison
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Compare how different automobiles fit YOUR profile ({userProfile.name}, ₹{userProfile.budget}L Budget).
+            Compare how different automobiles fit YOUR profile ({userProfile.name}, Height: {userProfile.height}cm, {userProfile.yearsExperience} yrs exp, ₹{userProfile.budget}L Budget).
           </p>
         </div>
 
@@ -87,9 +90,18 @@ export default function CompareView() {
 
                   <div>
                     {/* Header */}
-                    <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-600 text-white uppercase">
-                      {vehicle.bodyType || vehicle.category}
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-600 text-white uppercase">
+                        {vehicle.bodyType || vehicle.category}
+                      </span>
+                      {vehicle.chargingRequired && (
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500 text-white flex items-center space-x-1">
+                          <Zap className="w-2.5 h-2.5" />
+                          <span>EV Plug-in</span>
+                        </span>
+                      )}
+                    </div>
+
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-2">
                       {vehicle.brand} {vehicle.model}
                     </h3>
@@ -136,16 +148,22 @@ export default function CompareView() {
                     {/* Key Specs */}
                     <div className="space-y-1.5 py-3 text-xs border-b border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-300">
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Engine / Power:</span>
-                        <span className="font-semibold">{vehicle.engine} ({vehicle.power})</span>
+                        <span className="text-gray-500">Engine / Drive:</span>
+                        <span className="font-semibold">{vehicle.engine} • {vehicle.driveType}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Headroom / Seat:</span>
+                        <span className="font-semibold">
+                          {vehicle.cabinHeadroom ? `${vehicle.cabinHeadroom} mm headroom` : `${vehicle.seatHeight || 780} mm seat`}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Turning / Parking:</span>
+                        <span className="font-semibold">{vehicle.turningRadius || 5.0}m • {vehicle.parkingDifficulty}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Mileage / Range:</span>
                         <span className="font-semibold">{vehicle.mileage}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Ground Clearance:</span>
-                        <span className="font-semibold">{vehicle.groundClearance} mm</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Safety Rating:</span>

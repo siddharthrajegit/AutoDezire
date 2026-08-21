@@ -12,7 +12,8 @@ import {
   LogOut,
   SlidersHorizontal,
   Menu,
-  X
+  X,
+  Film
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -24,9 +25,13 @@ export default function Header() {
     toggleTheme,
     currentUser,
     userProfile,
+    selectedVehicleType,
+    setSelectedVehicleType,
+    setEntryVehicleType,
     setIsAuthModalOpen,
     isMobileMenuOpen,
     setIsMobileMenuOpen,
+    setShowScrollScrubbing,
   } = useApp();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -111,6 +116,45 @@ export default function Header() {
 
       {/* Right: Actions */}
       <div className="flex items-center space-x-2 sm:space-x-3">
+        {/* Vehicle Mode Switcher Pill */}
+        <div className="flex items-center bg-gray-100 dark:bg-gray-800/90 p-0.5 rounded-full border border-gray-200 dark:border-gray-700/80">
+          <button
+            onClick={() => setSelectedVehicleType('4-wheeler')}
+            className={`flex items-center space-x-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+              selectedVehicleType === '4-wheeler'
+                ? 'bg-orange-500 text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+            }`}
+            title="Switch to 4-Wheeler (Cars & SUVs)"
+          >
+            <span>Cars</span>
+          </button>
+          <button
+            onClick={() => setSelectedVehicleType('2-wheeler')}
+            className={`flex items-center space-x-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+              selectedVehicleType === '2-wheeler'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+            }`}
+            title="Switch to 2-Wheeler (Bikes & Scooters)"
+          >
+            <span>Bikes</span>
+          </button>
+        </div>
+
+        {/* Scroll Video Journey Button */}
+        <button
+          onClick={() => {
+            setEntryVehicleType(selectedVehicleType);
+            setShowScrollScrubbing(true);
+          }}
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-gray-800/90 hover:bg-orange-500 hover:text-white dark:hover:bg-orange-500 text-gray-700 dark:text-gray-200 transition-all border border-gray-200 dark:border-gray-700/80"
+          title="Experience Scroll-Driven Video (Scrollytelling)"
+        >
+          <Film className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
+          <span className="hidden md:inline">Scroll Video</span>
+        </button>
+
         {/* Chat with AI Advisor Button */}
         <button
           onClick={() => setActiveTab('ai-advisor')}
