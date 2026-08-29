@@ -266,7 +266,15 @@ export default function AdminDashboard() {
                 <tr key={v.id || v._id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                   <td className="px-6 py-4 flex items-center space-x-3">
                     <div className="w-12 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-1 flex-shrink-0">
-                      <img src={v.image} alt={v.model} className="max-h-full max-w-full object-contain" />
+                      <img
+                        src={v.image}
+                        alt={v.model}
+                        className="max-h-full max-w-full object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80';
+                        }}
+                      />
                     </div>
                     <div>
                       <div className="font-bold text-gray-900 dark:text-white">

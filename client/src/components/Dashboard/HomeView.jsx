@@ -187,6 +187,10 @@ export default function HomeView() {
                       src={vehicle.image}
                       alt={vehicle.model}
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80';
+                      }}
                     />
                   </div>
 
