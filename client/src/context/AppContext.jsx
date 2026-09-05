@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { INITIAL_VEHICLES } from '../data/initialVehicles';
+import { BIKES_DATA } from '../data/bikesData';
 import { evaluateSuitability } from '../services/clientSuitabilityEngine';
+import { evaluateBikeSuitability } from '../services/bikeSuitabilityEngine';
 import { fetchVehicles } from '../services/api';
 
 const AppContext = createContext();
@@ -14,6 +17,7 @@ const DEFAULT_PROFILE = {
   // Experience
   yearsExperience: 5,
   totalKm: 35000,
+  confidenceLevel: 'Confident', // 'Nervous' | 'Getting Comfortable' | 'Confident' | 'Very Confident'
   previousVehicles: 'Hatchback',
   cityExperience: 8,
   highwayExperience: 7,
@@ -30,6 +34,8 @@ const DEFAULT_PROFILE = {
   journeyDurationMinutes: 45,
   longDistanceFrequency: 'Monthly',
   roadConditions: 'Mixed with Potholes',
+  parkingType: 'Open Driveway', // 'Open Driveway' | 'Narrow Street' | 'Apartment Basement' | 'Shared Parking'
+  primaryTerrain: 'Flat Plains', // 'Flat Plains' | 'Moderate Hills' | 'Steep Ghats / Mountains'
   
   // Passenger / Practicality
   regularPassengers: 2,
@@ -40,28 +46,75 @@ const DEFAULT_PROFILE = {
   pillionFrequency: 'Occasional',
   storageRequirement: 'Medium',
   
-  // Financial
+  // Financial & Infrastructure
   budget: 14, // Lakhs
   expectedOwnershipYears: 5,
   runningCostImportance: 'High',
+  hasHomeCharging: false,
+  nearbyFastCharging: false,
   
   // Top 3 Priorities (Max 3)
   topPriorities: ['Safety', 'Ground Clearance', 'Comfort'],
 };
 
+const DEFAULT_BIKE_PROFILE = {
+  name: 'Aryan',
+  riderHeight: 172, // in cm
+  riderInseam: 77, // in cm (flat-foot threshold)
+  riderWeight: 68, // in kg (key factor)
+  age: 27,
+  categoryPreference: 'All', // 'All' | 'Motorcycle' | 'Scooter' | 'Electric Scooter'
+  
+  // Experience
+  yearsExperience: 4,
+  totalKm: 20000,
+  confidenceLevel: 'Confident', // 'Nervous' | 'Getting Comfortable' | 'Confident' | 'Very Confident'
+  riderTriangle: 'Upright Commuter', // 'Upright Commuter' | 'Relaxed Cruiser' | 'Sporty Forward'
+  
+  // Usage & Passengers
+  pillionFrequency: 'Occasional', // 'Solo' | 'Occasional' | 'Daily'
+  storageRequirement: 'Medium', // 'Light' | 'Medium' | 'Heavy'
+  dailyKm: 30,
+  highwayPercent: 20,
+  
+  // Budget & Charging
+  budget: 1.8, // in Lakhs INR (e.g. ₹1.80 Lakh)
+  hasHomeCharging: false,
+  nearbyFastCharging: false,
+  
+  // Top 3 Priorities
+  topPriorities: ['Mileage / Running Cost', 'Ergonomic Flat-Foot Reach', 'City Traffic Agility'],
+};
+
 export function AppProvider({ children }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('autodezire_theme') || 'dark';
   });
 
-  const [activeTab, setActiveTab] = useState('evaluation'); // default to evaluation to showcase reference UI immediately
   const [vehicles, setVehicles] = useState(INITIAL_VEHICLES);
+  const [bikes, setBikes] = useState(BIKES_DATA);
+
+  // Active Vehicle Mode ('4-wheeler' for Cars, '2-wheeler' for Bikes/Scooters)
+  const [selectedVehicleType, setSelectedVehicleType] = useState(() => {
+    return localStorage.getItem('autodezire_vehicle_type') || '4-wheeler';
+  });
+
+  // Car User Profile
   const [userProfile, setUserProfile] = useState(() => {
     const saved = localStorage.getItem('autodezire_profile');
     return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
   });
 
-  // Selected vehicle for Evaluation / AI context (Default: Tata Nexon matching screenshot)
+  // 2-Wheeler / Bike User Profile
+  const [bikeProfile, setBikeProfile] = useState(() => {
+    const saved = localStorage.getItem('autodezire_bike_profile');
+    return saved ? JSON.parse(saved) : DEFAULT_BIKE_PROFILE;
+  });
+
+  // Selected vehicle for Evaluation / AI context
   const [selectedVehicle, setSelectedVehicle] = useState(() => {
     return INITIAL_VEHICLES.find(v => v.model === 'Nexon') || INITIAL_VEHICLES[0];
   });
@@ -75,14 +128,14 @@ export function AppProvider({ children }) {
   // Saved vehicles (Garage / Wishlist)
   const [savedVehicles, setSavedVehicles] = useState(() => {
     const saved = localStorage.getItem('autodezire_saved');
-    return saved ? JSON.parse(saved) : ['nexon', 'creta'];
+    return saved ? JSON.parse(saved) : ['nexon', 'classic_350'];
   });
 
   // Compare list (Array of vehicle objects, max 3)
   const [compareList, setCompareList] = useState(() => {
     const nexon = INITIAL_VEHICLES.find(v => v.model === 'Nexon');
-    const thar = INITIAL_VEHICLES.find(v => v.model === 'Thar');
-    return [nexon, thar].filter(Boolean);
+    const wagonr = INITIAL_VEHICLES.find(v => v.model === 'WagonR');
+    return [nexon, wagonr].filter(Boolean);
   });
 
   // Auth User
@@ -94,6 +147,44 @@ export function AppProvider({ children }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Scroll-Scrubbed Video Entry state
+  const [entryVehicleType, setEntryVehicleType] = useState('4-wheeler'); // '4-wheeler' or '2-wheeler'
+  const [showScrollScrubbing, setShowScrollScrubbing] = useState(false);
+
+  // Synchronize activeTab reactively from current URL pathname
+  const getTabFromPath = pathname => {
+    const clean = pathname.replace(/^\//, '') || 'home';
+    if (clean.startsWith('evaluation')) return 'evaluation';
+    if (clean.startsWith('ai-advisor')) return 'ai-advisor';
+    return clean;
+  };
+
+  const activeTab = getTabFromPath(location.pathname);
+
+  const setActiveTab = tab => {
+    if (tab === 'home' || tab === '') {
+      navigate('/');
+    } else {
+      navigate(`/${tab}`);
+    }
+  };
+
+  const evaluateVehicle = vehicle => {
+    setSelectedVehicle(vehicle);
+    const isBike = vehicle.category === 'Motorcycle' || vehicle.category === 'Scooter' || vehicle.category === 'Electric Scooter';
+    if (isBike && selectedVehicleType !== '2-wheeler') {
+      setSelectedVehicleType('2-wheeler');
+    } else if (!isBike && selectedVehicleType !== '4-wheeler') {
+      setSelectedVehicleType('4-wheeler');
+    }
+    const vId = vehicle.id || vehicle._id;
+    if (vId) {
+      navigate(`/evaluation/${vId}`);
+    } else {
+      navigate('/evaluation');
+    }
+  };
 
   // Sync theme with DOM classList
   useEffect(() => {
@@ -117,19 +208,39 @@ export function AppProvider({ children }) {
     load();
   }, []);
 
-  // Recalculate evaluation whenever selectedVehicle or userProfile changes
+  // Recalculate evaluation whenever selectedVehicle, userProfile, or bikeProfile changes
   useEffect(() => {
     if (selectedVehicle) {
-      const evalResult = evaluateSuitability(selectedVehicle, userProfile);
-      setEvaluation(evalResult);
+      const isBike = selectedVehicle.category === 'Motorcycle' || selectedVehicle.category === 'Scooter' || selectedVehicle.category === 'Electric Scooter';
+      if (isBike) {
+        const evalResult = evaluateBikeSuitability(selectedVehicle, bikeProfile);
+        setEvaluation(evalResult);
+      } else {
+        const evalResult = evaluateSuitability(selectedVehicle, userProfile);
+        setEvaluation(evalResult);
+      }
     }
-  }, [selectedVehicle, userProfile]);
+  }, [selectedVehicle, userProfile, bikeProfile]);
 
-  // Save profile changes
+  // Save profile changes for Cars
   const updateProfile = newProfile => {
     const updated = { ...userProfile, ...newProfile };
     setUserProfile(updated);
     localStorage.setItem('autodezire_profile', JSON.stringify(updated));
+  };
+
+  // Save profile changes for Bikes
+  const updateBikeProfile = newProfile => {
+    const updated = { ...bikeProfile, ...newProfile };
+    setBikeProfile(updated);
+    localStorage.setItem('autodezire_bike_profile', JSON.stringify(updated));
+  };
+
+  // Set vehicle mode and persist
+  const setVehicleMode = type => {
+    setSelectedVehicleType(type);
+    setEntryVehicleType(type);
+    localStorage.setItem('autodezire_vehicle_type', type);
   };
 
   // Toggle Saved Vehicle
@@ -146,7 +257,7 @@ export function AppProvider({ children }) {
   // Toggle Compare Vehicle
   const toggleCompare = vehicle => {
     setCompareList(prev => {
-      const exists = prev.some(v => v.id === vehicle.id || v._id === vehicle._id);
+      const exists = prev.some(v => (v.id || v._id) === (vehicle.id || vehicle._id));
       if (exists) {
         return prev.filter(v => (v.id || v._id) !== (vehicle.id || vehicle._id));
       }
@@ -161,11 +272,6 @@ export function AppProvider({ children }) {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  const evaluateVehicle = vehicle => {
-    setSelectedVehicle(vehicle);
-    setActiveTab('evaluation');
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -175,8 +281,14 @@ export function AppProvider({ children }) {
         setActiveTab,
         vehicles,
         setVehicles,
+        bikes,
+        setBikes,
+        selectedVehicleType,
+        setSelectedVehicleType: setVehicleMode,
         userProfile,
         updateProfile,
+        bikeProfile,
+        updateBikeProfile,
         selectedVehicle,
         setSelectedVehicle,
         evaluation,
@@ -194,6 +306,10 @@ export function AppProvider({ children }) {
         setIsAiModalOpen,
         isMobileMenuOpen,
         setIsMobileMenuOpen,
+        entryVehicleType,
+        setEntryVehicleType,
+        showScrollScrubbing,
+        setShowScrollScrubbing,
       }}
     >
       {children}

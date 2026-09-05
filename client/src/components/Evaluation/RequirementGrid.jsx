@@ -10,6 +10,8 @@ import {
   Coins,
   Milestone,
   Building2,
+  PersonStanding,
+  Gauge,
   Info,
   Sparkles
 } from 'lucide-react';
@@ -25,9 +27,10 @@ const ICON_MAP = {
   Coins: Coins,
   Road: Milestone,
   Building2: Building2,
+  PersonStanding: PersonStanding,
+  Gauge: Gauge,
 };
 
-// Background colors and icon colors for the circular icons matching screenshot
 const COLOR_CONFIG = {
   emerald: {
     iconBg: 'bg-emerald-500/20 text-emerald-400 dark:text-emerald-400',
@@ -79,6 +82,16 @@ const COLOR_CONFIG = {
     barBg: 'bg-sky-500',
     border: 'border-sky-500/30'
   },
+  teal: {
+    iconBg: 'bg-teal-500/20 text-teal-400 dark:text-teal-400',
+    barBg: 'bg-teal-500',
+    border: 'border-teal-500/30'
+  },
+  rose: {
+    iconBg: 'bg-rose-500/20 text-rose-400 dark:text-rose-400',
+    barBg: 'bg-rose-500',
+    border: 'border-rose-500/30'
+  },
 };
 
 export default function RequirementGrid({ requirementList = [] }) {
@@ -87,24 +100,23 @@ export default function RequirementGrid({ requirementList = [] }) {
       {/* Header with Tooltip */}
       <div className="flex items-center space-x-1.5 mb-5">
         <h3 className="text-base font-bold text-gray-900 dark:text-white">
-          Requirement-wise Scores
+          Requirement-wise Scores (12 Dimensions)
         </h3>
         <div className="group relative cursor-pointer">
           <Info className="w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
           <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex flex-col w-64 p-2 bg-gray-900 text-white text-[11px] rounded-lg shadow-xl border border-gray-700 z-50 pointer-events-none">
-            Each score represents how well this automobile satisfies YOUR personal requirements on a 1-10 scale.
+            Each score represents how well this automobile satisfies YOUR physical ergonomics, handling skill, and lifestyle requirements on a 1-10 scale.
           </div>
         </div>
       </div>
 
-      {/* Exactly 5x2 Grid on Laptop / Desktop screens */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
+      {/* Symmetrical 6x2 Grid on Laptop / Desktop screens */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
         {requirementList.map((req) => {
           const Icon = ICON_MAP[req.icon] || Shield;
           const colorStyles = COLOR_CONFIG[req.color] || COLOR_CONFIG.emerald;
           const scorePercent = (req.score / 10) * 100;
 
-          // Bar color based on score
           const getBarColor = (s) => {
             if (s >= 9) return 'bg-emerald-500';
             if (s >= 7) return 'bg-blue-500';
@@ -121,7 +133,6 @@ export default function RequirementGrid({ requirementList = [] }) {
                   : 'bg-gray-50/50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-800'
               }`}
             >
-              {/* Priority badge if top 3 */}
               {req.isTopPriority && (
                 <div className="absolute top-2 right-2 flex items-center space-x-0.5 text-[9px] font-bold text-orange-500 uppercase tracking-tighter" title="Your High Priority">
                   <Sparkles className="w-2.5 h-2.5 fill-current" />
@@ -141,14 +152,12 @@ export default function RequirementGrid({ requirementList = [] }) {
               {/* Progress Bar and Score */}
               <div className="space-y-1.5 mt-auto">
                 <div className="flex items-center justify-between">
-                  {/* Progress track */}
                   <div className="w-full bg-gray-200 dark:bg-gray-700/60 rounded-full h-1.5 overflow-hidden mr-3">
                     <div
                       className={`h-full rounded-full transition-all duration-700 ${getBarColor(req.score)}`}
                       style={{ width: `${scorePercent}%` }}
                     />
                   </div>
-                  {/* Score */}
                   <span className="text-xs font-bold text-gray-900 dark:text-white whitespace-nowrap">
                     {req.score}<span className="text-[10px] text-gray-400 dark:text-gray-500 font-normal">/10</span>
                   </span>
@@ -159,7 +168,7 @@ export default function RequirementGrid({ requirementList = [] }) {
         })}
       </div>
 
-      {/* Legend Footer matching reference screenshot */}
+      {/* Legend Footer */}
       <div className="flex flex-wrap items-center gap-3 sm:space-x-6 mt-5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800/60">
         <div className="flex items-center space-x-1.5">
           <span className="text-rose-500 font-bold">0-3</span>

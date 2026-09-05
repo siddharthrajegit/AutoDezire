@@ -10,24 +10,33 @@ import {
   ArrowLeft,
   CheckCircle2,
   Sparkles,
-  Info,
-  Shield
+  Zap,
+  Car,
+  Bike
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { PRIORITY_OPTIONS } from '../../services/clientSuitabilityEngine';
+import BikeQuestionnaireView from './BikeQuestionnaireView';
 import confetti from 'canvas-confetti';
 
 const STEPS = [
-  { id: 1, title: 'Personal', icon: User, desc: 'Height & Profile' },
-  { id: 2, title: 'Experience', icon: Gauge, desc: 'Driving Background' },
-  { id: 3, title: 'Usage & Roads', icon: MapPin, desc: 'Commute & Conditions' },
+  { id: 1, title: 'Personal', icon: User, desc: 'Height & Category' },
+  { id: 2, title: 'Experience', icon: Gauge, desc: 'Driving Confidence' },
+  { id: 3, title: 'Usage & Roads', icon: MapPin, desc: 'Commute, Parking & Terrain' },
   { id: 4, title: 'Passengers', icon: Users, desc: 'Family & Luggage' },
-  { id: 5, title: 'Financial', icon: Wallet, desc: 'Budget & Running' },
+  { id: 5, title: 'Budget & EV', icon: Wallet, desc: 'Budget & Charging' },
   { id: 6, title: 'Top 3 Priorities', icon: Star, desc: 'What Matters Most' },
 ];
 
 export default function QuestionnaireView() {
-  const { userProfile, updateProfile, setActiveTab } = useApp();
+  const {
+    selectedVehicleType,
+    setSelectedVehicleType,
+    userProfile,
+    updateProfile,
+    setActiveTab
+  } = useApp();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [form, setForm] = useState({ ...userProfile });
 
@@ -50,7 +59,6 @@ export default function QuestionnaireView() {
     if (currentStep < STEPS.length) {
       setCurrentStep(prev => prev + 1);
     } else {
-      // Completed all steps!
       updateProfile(form);
       try {
         confetti({
@@ -69,15 +77,65 @@ export default function QuestionnaireView() {
     }
   };
 
+  // If 2-Wheeler mode is active, render the specialized Bike Questionnaire Form!
+  if (selectedVehicleType === '2-wheeler') {
+    return (
+      <div className="space-y-6">
+        {/* Top Vehicle Type Switcher */}
+        <div className="flex items-center justify-center">
+          <div className="flex items-center bg-gray-200/80 dark:bg-gray-800/80 p-1.5 rounded-2xl border border-gray-300 dark:border-gray-700 shadow-sm">
+            <button
+              onClick={() => setSelectedVehicleType('4-wheeler')}
+              className="flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold transition-all text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              <Car className="w-4 h-4" />
+              <span>4-Wheeler (Cars & SUVs)</span>
+            </button>
+            <button
+              onClick={() => setSelectedVehicleType('2-wheeler')}
+              className="flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold transition-all bg-purple-600 text-white shadow-md"
+            >
+              <Bike className="w-4 h-4" />
+              <span>2-Wheeler (Bikes & Scooters)</span>
+            </button>
+          </div>
+        </div>
+
+        <BikeQuestionnaireView />
+      </div>
+    );
+  }
+
+  // 4-Wheeler Car Questionnaire Form (preserved unchanged)
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-16 animate-fadeIn">
+      {/* Top Vehicle Type Switcher */}
+      <div className="flex items-center justify-center">
+        <div className="flex items-center bg-gray-200/80 dark:bg-gray-800/80 p-1.5 rounded-2xl border border-gray-300 dark:border-gray-700 shadow-sm">
+          <button
+            onClick={() => setSelectedVehicleType('4-wheeler')}
+            className="flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold transition-all bg-orange-500 text-white shadow-md"
+          >
+            <Car className="w-4 h-4" />
+            <span>4-Wheeler (Cars & SUVs)</span>
+          </button>
+          <button
+            onClick={() => setSelectedVehicleType('2-wheeler')}
+            className="flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-bold transition-all text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          >
+            <Bike className="w-4 h-4" />
+            <span>2-Wheeler (Bikes & Scooters)</span>
+          </button>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
-          Personal Suitability Profile
+          Personal Car Suitability Profile
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-          AutoDezire understands your lifestyle and habits to recommend vehicles tailored to YOU.
+          AutoDezire analyzes your height, driving experience, charging access, and habits to calculate your true car fit.
         </p>
       </div>
 
@@ -121,15 +179,15 @@ export default function QuestionnaireView() {
 
       {/* Step Content Card */}
       <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm transition-all duration-300">
-        {/* STEP 1: PERSONAL */}
+        {/* STEP 1: PERSONAL & HEIGHT */}
         {currentStep === 1 && (
           <div className="space-y-6">
             <div className="border-b border-gray-100 dark:border-gray-800 pb-4">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Personal & Automobile Preference
+                Personal & Ergonomic Physical Profile
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                Helps calculate ergonomic seating, headroom, and category focus.
+                Your height directly determines cabin headroom, seat adjustability, and vehicle roofline comfort.
               </p>
             </div>
 
@@ -148,9 +206,16 @@ export default function QuestionnaireView() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  Height: {form.height} cm (Approx {Math.floor(form.height / 30.48)}' {Math.round((form.height % 30.48) / 2.54)}")
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                    Height: <span className="text-orange-500 font-extrabold">{form.height} cm</span> ({Math.floor(form.height / 30.48)}' {Math.round((form.height % 30.48) / 2.54)}")
+                  </label>
+                  {form.height >= 183 && (
+                    <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded">
+                      Tall (6ft+) Headroom Checks Active
+                    </span>
+                  )}
+                </div>
                 <input
                   type="range"
                   min="145"
@@ -180,43 +245,45 @@ export default function QuestionnaireView() {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  Automobile Focus
+                  Car Body Preference
                 </label>
                 <select
                   value={form.categoryPreference || 'All'}
                   onChange={(e) => handleChange('categoryPreference', e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  <option value="All">All (Cars, Motorcycles & Scooters)</option>
-                  <option value="Car">Cars Only</option>
-                  <option value="Motorcycle">Motorcycles Only</option>
-                  <option value="Scooter">Scooters Only</option>
+                  <option value="All">All Car Types (SUVs, Sedans, Hatchbacks)</option>
+                  <option value="SUV">SUVs Only</option>
+                  <option value="Sedan">Sedans Only</option>
+                  <option value="Hatchback">Hatchbacks Only</option>
                 </select>
               </div>
             </div>
           </div>
         )}
 
-        {/* STEP 2: EXPERIENCE */}
+        {/* STEP 2: EXPERIENCE & CONFIDENCE */}
         {currentStep === 2 && (
           <div className="space-y-6">
             <div className="border-b border-gray-100 dark:border-gray-800 pb-4">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Driving & Riding Experience
+                Driving Experience & Confidence
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                Helps determine stability tolerance, power demands, and transmission ease.
+                Protects beginner drivers from oversized, heavy, or overpowering vehicles (&gt;1500cc / 4WD / heavy kerb weight).
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  Years of Experience
+                  Years of Driving Experience
                 </label>
                 <input
                   type="number"
-                  value={form.yearsExperience || 5}
+                  min="0"
+                  max="50"
+                  value={form.yearsExperience ?? 5}
                   onChange={(e) => handleChange('yearsExperience', Number(e.target.value))}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
@@ -224,49 +291,49 @@ export default function QuestionnaireView() {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  Approx. Total Kilometres Driven/Ridden
+                  Approx. Total Kilometres Driven
                 </label>
                 <select
                   value={form.totalKm || 35000}
                   onChange={(e) => handleChange('totalKm', Number(e.target.value))}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  <option value={5000}>Beginner (&lt; 10,000 km)</option>
-                  <option value={35000}>Intermediate (10,000 - 50,000 km)</option>
+                  <option value={3000}>Absolute Beginner (&lt; 5,000 km)</option>
+                  <option value={8000}>Beginner (5,000 - 15,000 km)</option>
+                  <option value={35000}>Intermediate (15,000 - 50,000 km)</option>
                   <option value={100000}>Experienced (50,000 - 150,000 km)</option>
                   <option value={250000}>Veteran (&gt; 150,000 km)</option>
                 </select>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  Road Types You Frequently Drive On
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                  Handling & Parking Confidence Level
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                  {['City Traffic', 'Highways & Expressways', 'Hilly / Ghats', 'Rough / Unpaved'].map((road) => (
-                    <div
-                      key={road}
-                      className="flex items-center space-x-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700"
-                    >
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      <span className="font-semibold text-gray-800 dark:text-gray-200">{road}</span>
-                    </div>
-                  ))}
-                </div>
+                <select
+                  value={form.confidenceLevel || 'Confident'}
+                  onChange={(e) => handleChange('confidenceLevel', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="Nervous">Nervous (Prefer very easy, light, compact controls with tight turning radius)</option>
+                  <option value="Getting Comfortable">Getting Comfortable (Need beginner-friendly handling, avoid bulky SUVs)</option>
+                  <option value="Confident">Confident (Can easily handle standard city and highway vehicles)</option>
+                  <option value="Very Confident">Very Confident (Comfortable with large 7-seaters, heavy cruisers & 4x4 offroaders)</option>
+                </select>
               </div>
             </div>
           </div>
         )}
 
-        {/* STEP 3: USAGE & ROAD CONDITIONS */}
+        {/* STEP 3: USAGE, PARKING & TERRAIN */}
         {currentStep === 3 && (
           <div className="space-y-6">
             <div className="border-b border-gray-100 dark:border-gray-800 pb-4">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Daily Usage & Road Conditions
+                Daily Commute, Parking & Terrain
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                Drives fuel efficiency calculations and ground clearance requirements.
+                Ensures the vehicle fits in your parking space and handles your daily inclines and potholes.
               </p>
             </div>
 
@@ -322,6 +389,37 @@ export default function QuestionnaireView() {
                     <option value="Mixed with Potholes">Mixed (City traffic, occasional potholes)</option>
                     <option value="Broken Roads & High Speedbreakers">Broken Roads & High Speedbreakers</option>
                     <option value="Off-road / Rural Unpaved">Off-road / Rural Unpaved</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Home Parking Environment
+                  </label>
+                  <select
+                    value={form.parkingType || 'Open Driveway'}
+                    onChange={(e) => handleChange('parkingType', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  >
+                    <option value="Open Driveway">Open Driveway / Spacious Stilt (Any vehicle size)</option>
+                    <option value="Narrow Street">Narrow Street (Requires tight turning radius & easy parking)</option>
+                    <option value="Apartment Basement">Apartment Basement (Tight pillars, ramps & length limits)</option>
+                    <option value="Shared Parking">Shared Street / Open Society Parking</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Primary Geographic Terrain
+                  </label>
+                  <select
+                    value={form.primaryTerrain || 'Flat Plains'}
+                    onChange={(e) => handleChange('primaryTerrain', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  >
+                    <option value="Flat Plains">Flat Plains & Coastal Regions</option>
+                    <option value="Moderate Hills">Moderate Hills & Undulations</option>
+                    <option value="Steep Ghats / Mountains">Steep Ghats & Mountain Passes (Needs strong torque/AWD)</option>
                   </select>
                 </div>
               </div>
@@ -403,15 +501,15 @@ export default function QuestionnaireView() {
           </div>
         )}
 
-        {/* STEP 5: FINANCIAL */}
+        {/* STEP 5: BUDGET & EV CHARGING INFRASTRUCTURE */}
         {currentStep === 5 && (
           <div className="space-y-6">
             <div className="border-b border-gray-100 dark:border-gray-800 pb-4">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Budget & Ownership Financials
+                Budget & EV Charging Infrastructure
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                AutoDezire evaluates vehicles with a 10-15% tolerance margin so you don't miss great options just slightly above budget.
+                We verify charging feasibility before suggesting Electric Vehicles (EVs).
               </p>
             </div>
 
@@ -436,10 +534,47 @@ export default function QuestionnaireView() {
                   className="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                 />
 
-                {/* 10-15% Consideration Range Callout */}
                 <div className="mt-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 flex items-center justify-between">
                   <span>Standard Budget: <strong>≤ ₹{form.budget}L</strong></span>
                   <span>15% Consideration Range: <strong>₹{form.budget}L → ₹{(form.budget * 1.15).toFixed(2)}L</strong></span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 space-y-3">
+                <div className="flex items-center space-x-2 text-xs font-bold text-gray-900 dark:text-white">
+                  <Zap className="w-4 h-4 text-amber-500" />
+                  <span>Electric Car Charging Access</span>
+                </div>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                  Select your charging access. If neither is available, plug-in EVs will not be recommended.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="flex items-center space-x-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <input
+                      type="checkbox"
+                      id="hasHomeCharging"
+                      checked={form.hasHomeCharging || false}
+                      onChange={(e) => handleChange('hasHomeCharging', e.target.checked)}
+                      className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500"
+                    />
+                    <label htmlFor="hasHomeCharging" className="text-xs font-semibold text-gray-800 dark:text-gray-200 cursor-pointer">
+                      I have 15A socket / home charging
+                    </label>
+                  </div>
+
+                  <div className="flex items-center space-x-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <input
+                      type="checkbox"
+                      id="nearbyFastCharging"
+                      checked={form.nearbyFastCharging || false}
+                      onChange={(e) => handleChange('nearbyFastCharging', e.target.checked)}
+                      className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500"
+                    />
+                    <label htmlFor="nearbyFastCharging" className="text-xs font-semibold text-gray-800 dark:text-gray-200 cursor-pointer">
+                      DC fast charger within 5 km
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -487,7 +622,7 @@ export default function QuestionnaireView() {
                   What matters most to you?
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Select <strong className="text-orange-500">up to 3</strong> high priorities. All other parameters receive standard weight.
+                  Select <strong className="text-orange-500">up to 3</strong> high priorities. When requirements contradict, your top priorities decide the winner!
                 </p>
               </div>
 
@@ -496,8 +631,7 @@ export default function QuestionnaireView() {
               </div>
             </div>
 
-            {/* Priority Selection Pills Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {PRIORITY_OPTIONS.map((opt) => {
                 const isSelected = form.topPriorities?.includes(opt);
                 return (
@@ -543,7 +677,7 @@ export default function QuestionnaireView() {
             onClick={handleNext}
             className="flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-md hover:shadow-orange-500/30 hover:scale-[1.02] transition-all"
           >
-            <span>{currentStep === STEPS.length ? 'Calculate Recommendations' : 'Next Step'}</span>
+            <span>{currentStep === STEPS.length ? 'Calculate Car Recommendations' : 'Next Step'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
