@@ -241,6 +241,47 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
 
   let rawOverallScore = Math.round(totalWeightedScore / totalWeight);
 
+  // ==========================================
+  // DIRECT OPPOSING FEATURE DEDUCTIONS (CARS)
+  // ==========================================
+  let opposingDeductions = 0;
+  const opposingReasons = [];
+
+  // Severe Mismatch: Strictly City Commute + Beginner Driver + Large Ladder-Frame/Heavy SUV (e.g. Scorpio, Thar, Fortuner)
+  if (cityPct >= 70 && isBeginner) {
+    if ((vehicle.length || 4000) > 4500 || (vehicle.turningRadius || 5.0) >= 5.5) {
+      opposingDeductions += 32;
+      opposingReasons.push('Heavy exterior dimensions and large turning circle are severely hazardous and stressful for a beginner in crowded city traffic');
+    }
+    if (vehicle.bodyType === 'SUV' && (vehicle.groundClearance > 215 || (vehicle.kerbWeight && vehicle.kerbWeight >= 1650))) {
+      opposingDeductions += 20;
+      opposingReasons.push('Elevated Center of Mass, heavy curb weight, and poor blind-spot visibility create serious urban handleability risks');
+    }
+    if (vehicle.mileageValue && vehicle.mileageValue <= 13) {
+      opposingDeductions += 15;
+      opposingReasons.push('Sub-12 kmpl fuel economy results in exorbitant running costs for daily stop-and-go city crawling');
+    }
+  } else if (cityPct >= 75) {
+    // Strictly city driving even for confident drivers
+    if ((vehicle.length || 4000) > 4600 || (vehicle.turningRadius || 5.0) >= 5.7) {
+      opposingDeductions += 25;
+      opposingReasons.push('Oversized vehicle dimensions create constant parallel parking and lane-filtering bottlenecks in city traffic');
+    }
+    if (vehicle.bodyType === 'SUV' && vehicle.groundClearance > 220) {
+      opposingDeductions += 15;
+    }
+  }
+
+  // Severe Mismatch: Plain Smooth Roads + Unnecessary 4WD/Heavy Off-Roader
+  const isPlainRoads = (profile.roadConditions || '').includes('Smooth') || profile.primaryTerrain === 'Flat Plains';
+  if (isPlainRoads && (vehicle.driveType === '4WD' || (vehicle.groundClearance >= 225 && vehicle.kerbWeight > 1650))) {
+    opposingDeductions += 15;
+    opposingReasons.push('Heavy 4x4 drivetrain and high ground clearance add dead weight and body roll on plain paved roads without providing any off-road benefit');
+  }
+
+  // Deduct direct opposing penalties
+  rawOverallScore = Math.max(10, rawOverallScore - opposingDeductions);
+
   const criticalCompromises = [];
   userPriorities.forEach(priorityName => {
     const key = PRIORITY_MAP[priorityName];
@@ -253,8 +294,13 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
     }
   });
 
-  if (criticalCompromises.length > 0) {
-    rawOverallScore = Math.min(rawOverallScore, 68);
+  // HARD CAPS: Do not hesitate to give 15/100 or 20/100 for cars with opposing features!
+  if (opposingDeductions >= 45 || criticalCompromises.length >= 2) {
+    rawOverallScore = Math.min(rawOverallScore, 18); // Big SUVs for beginner city users drop to 15-18/100!
+  } else if (opposingDeductions >= 25 || criticalCompromises.length === 1) {
+    rawOverallScore = Math.min(rawOverallScore, 30);
+  } else if (criticalCompromises.length > 0) {
+    rawOverallScore = Math.min(rawOverallScore, 45);
   }
 
   const userBudget = profile.budget || 14;
@@ -265,14 +311,14 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
   if (basePrice > userBudget * 1.15) {
     budgetStatus = 'Beyond Consideration Range';
     budgetMessage = `Exceeds your budget range (Base ₹${basePrice}L vs Budget ₹${userBudget}L)`;
-    rawOverallScore = Math.max(25, rawOverallScore - 12);
+    rawOverallScore = Math.max(10, rawOverallScore - 15);
   } else if (basePrice > userBudget) {
     budgetStatus = 'Slightly Above Budget';
     budgetMessage = `Slightly above ₹${userBudget}L budget (within 10-15% tolerance range)`;
   }
 
   if (!isEligible) {
-    rawOverallScore = Math.min(rawOverallScore, 35);
+    rawOverallScore = Math.min(rawOverallScore, 15);
   }
 
   let overallStatus = 'Very Suitable';
@@ -301,9 +347,15 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
   if (criticalCompromises.length > 0) {
     criticalCompromises.forEach(c => considerations.unshift(c.reason));
   }
+  if (opposingReasons.length > 0) {
+    opposingReasons.forEach(r => considerations.unshift(r));
+  }
   if (filteredOutReasons.length > 0) {
     filteredOutReasons.forEach(r => considerations.unshift(r));
   }
+
+  // Calculate Optimal Fuel Powertrain Recommendation
+  const fuelRecommendation = calculateRecommendedFuelVariant(vehicle, profile);
 
   return {
     vehicleId: vehicle._id || vehicle.id,
@@ -315,6 +367,7 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
     overallStatus,
     isEligible,
     filteredOutReasons,
+    fuelRecommendation,
     requirementScores: scores,
     requirementList: REQUIREMENT_KEYS.map(req => ({
       key: req.key,
@@ -333,6 +386,74 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
   };
 }
 
+function calculateRecommendedFuelVariant(vehicle, profile = {}) {
+  const fuels = vehicle.availableFuelTypes || (vehicle.fuelType ? vehicle.fuelType.split(' / ') : ['Petrol']);
+  const variants = vehicle.fuelVariants || {};
+
+  const dailyKm = profile.dailyKm || 35;
+  const highwayPct = profile.highwayPercent || 30;
+  const cityPct = profile.cityPercent || (100 - highwayPct);
+  const topPriorities = profile.topPriorities || [];
+  const hasCharging = profile.hasHomeCharging === true || profile.nearbyFastCharging === true;
+  const powerPriority = topPriorities.includes('Performance') || topPriorities.includes('Performance / Acceleration');
+  const runningCostPriority = topPriorities.includes('Mileage / Running Cost') || topPriorities.includes('Mileage');
+  const highwayPriority = topPriorities.includes('Highway Stability') || highwayPct >= 40;
+  const terrain = profile.primaryTerrain || 'Flat Plains';
+
+  const preferredFuel = profile.fuelPreference;
+  if (preferredFuel && preferredFuel !== 'All' && fuels.includes(preferredFuel)) {
+    const details = variants[preferredFuel] || null;
+    return {
+      recommendedFuelType: preferredFuel,
+      variantDetails: details,
+      reason: `Selected according to your explicit ${preferredFuel} preference (${details ? details.name : preferredFuel}).`,
+      estimatedMonthlyCost: details ? Math.round(dailyKm * 30 * details.runningCostPerKm) : Math.round(dailyKm * 30 * 5.0),
+      allVariants: variants,
+      availableFuelTypes: fuels,
+    };
+  }
+
+  let chosen = fuels[0] || 'Petrol';
+  let reason = '';
+
+  if (fuels.includes('Electric') && hasCharging && !highwayPriority) {
+    chosen = 'Electric';
+    const variantName = variants.Electric ? variants.Electric.name : 'Electric EV';
+    reason = `With home charging socket access and your ${dailyKm} km daily commute, the ${variantName} delivers the lowest running cost (₹0.9–1.1/km) and zero tailpipe emissions.`;
+  } else if (fuels.includes('Diesel') && (highwayPriority || (dailyKm >= 45 && highwayPct >= 35) || terrain === 'Steep Ghats / Mountains') && !runningCostPriority) {
+    chosen = 'Diesel';
+    const variantName = variants.Diesel ? variants.Diesel.name : '1.5L / 2.2L Turbo Diesel';
+    reason = `For your high highway usage (${highwayPct}%) and long distance trips, the ${variantName} is recommended for exceptional sustained highway mileage (22+ kmpl) and strong pulling torque.`;
+  } else if (fuels.includes('CNG') && (runningCostPriority || dailyKm >= 35 || cityPct >= 65) && !powerPriority) {
+    chosen = 'CNG';
+    const variantName = variants.CNG ? variants.CNG.name : 'Factory-Fitted CNG';
+    const costPerKm = variants.CNG?.runningCostPerKm || 2.9;
+    const estMonth = Math.round(dailyKm * 30 * costPerKm);
+    reason = `For heavy daily city driving (${cityPct}% city) where running cost is a priority, the ${variantName} slashes your monthly fuel bill to approx ₹${estMonth.toLocaleString('en-IN')}/mo (₹${costPerKm}/km).`;
+  } else if (fuels.includes('Petrol')) {
+    chosen = 'Petrol';
+    const variantName = variants.Petrol ? variants.Petrol.name : 'Petrol';
+    if (powerPriority) {
+      reason = `Since Performance & spirited acceleration is your top priority, the ${variantName} delivers maximum peak horsepower and crisp throttle responsiveness.`;
+    } else {
+      reason = `For your balanced driving routine (${dailyKm} km/day), the ${variantName} offers smooth cabin refinement, full luggage boot capacity, and trouble-free ownership.`;
+    }
+  }
+
+  const activeDetails = variants[chosen] || null;
+  const runningCost = activeDetails ? activeDetails.runningCostPerKm : (chosen === 'Diesel' ? 4.5 : chosen === 'CNG' ? 2.5 : chosen === 'Electric' ? 1.0 : 6.0);
+  const monthlyCost = Math.round(dailyKm * 30 * runningCost);
+
+  return {
+    recommendedFuelType: chosen,
+    variantDetails: activeDetails,
+    reason,
+    estimatedMonthlyCost: monthlyCost,
+    allVariants: variants,
+    availableFuelTypes: fuels,
+  };
+}
+
 function getScoreLevel(score) {
   if (score >= 9) return { label: 'Excellent', color: 'text-emerald-500 bg-emerald-500/10' };
   if (score >= 7) return { label: 'Good', color: 'text-blue-500 bg-blue-500/10' };
@@ -342,6 +463,7 @@ function getScoreLevel(score) {
 
 module.exports = {
   evaluateVehicleSuitability,
+  calculateRecommendedFuelVariant,
   REQUIREMENT_KEYS,
   PRIORITY_MAP
 };

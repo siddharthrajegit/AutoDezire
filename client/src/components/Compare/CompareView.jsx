@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability, REQUIREMENT_CONFIG } from '../../services/clientSuitabilityEngine';
+import VehicleImage from '../Common/VehicleImage';
 
 export default function CompareView() {
   const { compareList, setCompareList, toggleCompare, vehicles, userProfile, evaluateVehicle, setActiveTab } = useApp();
@@ -111,10 +112,12 @@ export default function CompareView() {
 
                     {/* Image */}
                     <div className="w-full h-36 my-3 rounded-xl overflow-hidden flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-800/40">
-                      <img
+                      <VehicleImage
                         src={vehicle.image}
                         alt={vehicle.model}
-                        className="max-h-full max-w-full object-contain"
+                        category={vehicle.category}
+                        className="w-full h-full"
+                        imgClassName="max-h-full max-w-full object-contain"
                       />
                     </div>
 

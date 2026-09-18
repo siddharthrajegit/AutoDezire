@@ -19,6 +19,8 @@ const vehicleSchema = new mongoose.Schema(
     
     // Fuel & Transmission
     fuelType: { type: String, required: true }, // Petrol / Diesel / CNG / Electric / Hybrid
+    availableFuelTypes: [{ type: String }], // ['Petrol', 'Diesel', 'CNG', 'Electric']
+    fuelVariants: { type: mongoose.Schema.Types.Mixed, default: {} }, // Detailed specs per fuel type
     transmission: { type: String, required: true }, // Manual / Automatic / CVT / DCT / Automatic (EV)
     
     // Powertrain Specs

@@ -13,7 +13,8 @@ import {
   PersonStanding,
   Gauge,
   Info,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -29,6 +30,7 @@ const ICON_MAP = {
   Building2: Building2,
   PersonStanding: PersonStanding,
   Gauge: Gauge,
+  Users: Users,
 };
 
 const COLOR_CONFIG = {
@@ -94,13 +96,16 @@ const COLOR_CONFIG = {
   },
 };
 
-export default function RequirementGrid({ requirementList = [] }) {
+export default function RequirementGrid({ evaluation, requirementList }) {
+  const list = requirementList || evaluation?.requirementList || [];
+  const dimensionCount = list.length || 12;
+
   return (
     <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800/90 rounded-2xl p-6 shadow-sm transition-colors duration-200">
       {/* Header with Tooltip */}
       <div className="flex items-center space-x-1.5 mb-5">
         <h3 className="text-base font-bold text-gray-900 dark:text-white">
-          Requirement-wise Scores (12 Dimensions)
+          Requirement-wise Scores ({dimensionCount} Dimensions)
         </h3>
         <div className="group relative cursor-pointer">
           <Info className="w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
@@ -110,9 +115,9 @@ export default function RequirementGrid({ requirementList = [] }) {
         </div>
       </div>
 
-      {/* Symmetrical 6x2 Grid on Laptop / Desktop screens */}
+      {/* Symmetrical Grid on Laptop / Desktop screens */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-        {requirementList.map((req) => {
+        {list.map((req) => {
           const Icon = ICON_MAP[req.icon] || Shield;
           const colorStyles = COLOR_CONFIG[req.color] || COLOR_CONFIG.emerald;
           const scorePercent = (req.score / 10) * 100;

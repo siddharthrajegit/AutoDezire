@@ -578,6 +578,27 @@ export default function QuestionnaireView() {
                 </div>
               </div>
 
+              {/* Fuel Powertrain Preference */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                  Fuel Powertrain Preference (Optional)
+                </label>
+                <select
+                  value={form.fuelPreference || 'All'}
+                  onChange={(e) => handleChange('fuelPreference', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="All">✨ No Strict Preference (Let AI Recommend Optimal Fuel Type)</option>
+                  <option value="Petrol">⛽ Petrol (Refined, Turbo Power & Acceleration)</option>
+                  <option value="Diesel">⛽ Diesel (High Highway Mileage & 250+ Nm Pulling Torque)</option>
+                  <option value="CNG">⛽ CNG (Lowest City Running Cost ~₹2.8/km)</option>
+                  <option value="Electric">⚡ Electric (Zero Emissions, Instant Torque & ₹1/km Cost)</option>
+                </select>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                  By default, our engine automatically selects between Petrol, Diesel, CNG, and Electric based on your daily commute, highway %, and priorities.
+                </p>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">

@@ -17,11 +17,13 @@ import {
   Gauge,
   Zap,
   Car,
-  Bike
+  Bike,
+  Fuel
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
+import VehicleImage from '../Common/VehicleImage';
 
 export default function RecommendationsView() {
   const {
@@ -206,10 +208,12 @@ export default function RecommendationsView() {
                 {/* Left: Image & Category */}
                 <div className="lg:col-span-3 flex flex-col items-center">
                   <div className="w-full h-40 rounded-2xl overflow-hidden flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-800/40">
-                    <img
+                    <VehicleImage
                       src={vehicle.image}
                       alt={vehicle.model}
-                      className="max-h-full max-w-full object-contain"
+                      category={vehicle.category}
+                      className="w-full h-full"
+                      imgClassName="max-h-full max-w-full object-contain"
                     />
                   </div>
                   <div className="flex items-center justify-between w-full mt-2 px-1">
@@ -274,6 +278,17 @@ export default function RecommendationsView() {
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/15 text-teal-400 border border-teal-500/30 flex items-center space-x-1">
                         <PersonStanding className="w-3 h-3" />
                         <span>Ergonomic Match (Height {activeProfile.height}cm)</span>
+                      </span>
+                    )}
+
+                    {/* Recommended Fuel Powertrain Badge */}
+                    {!isTwoWheeler && evaluation.fuelRecommendation && (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center space-x-1">
+                        <Fuel className="w-3 h-3 text-amber-500" />
+                        <span>
+                          Rec. Powertrain: {evaluation.fuelRecommendation.recommendedFuelType === 'Electric' ? '⚡' : '⛽'} {evaluation.fuelRecommendation.variantDetails?.name || evaluation.fuelRecommendation.recommendedFuelType}
+                          {evaluation.fuelRecommendation.variantDetails?.runningCostPerKm && ` (₹${evaluation.fuelRecommendation.variantDetails.runningCostPerKm}/km)`}
+                        </span>
                       </span>
                     )}
                   </div>

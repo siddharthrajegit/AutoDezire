@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, ShieldCheck, Upload, AlertCircle } from 'lucide-react';
+import VehicleImage from '../Common/VehicleImage';
 
 export default function AdminVehicleModal({ isOpen, onClose, onSave, vehicle = null }) {
   const isEditing = Boolean(vehicle && (vehicle.id || vehicle._id));
@@ -287,13 +288,26 @@ export default function AdminVehicleModal({ isOpen, onClose, onSave, vehicle = n
               <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
                 Image URL (Direct link)
               </label>
-              <input
-                type="url"
-                value={form.image}
-                onChange={(e) => handleChange('image', e.target.value)}
-                placeholder="https://images.unsplash.com/..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500"
-              />
+              <div className="flex gap-3 items-center">
+                <input
+                  type="url"
+                  value={form.image}
+                  onChange={(e) => handleChange('image', e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500"
+                />
+                {form.image && (
+                  <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 p-1 flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-gray-700">
+                    <VehicleImage
+                      src={form.image}
+                      alt="Preview"
+                      category={form.category}
+                      className="w-full h-full"
+                      imgClassName="max-h-full max-w-full object-contain"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             <div>

@@ -22,6 +22,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
+import VehicleImage from '../Common/VehicleImage';
 
 export default function HomeView() {
   const {
@@ -333,10 +334,12 @@ export default function HomeView() {
                   </div>
 
                   <div className="w-full h-36 my-3 rounded-xl overflow-hidden flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-800/40">
-                    <img
+                    <VehicleImage
                       src={vehicle.image}
                       alt={vehicle.model}
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      category={vehicle.category}
+                      className="w-full h-full"
+                      imgClassName="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
 

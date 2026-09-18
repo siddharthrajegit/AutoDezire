@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import AdminVehicleModal from './AdminVehicleModal';
+import VehicleImage from '../Common/VehicleImage';
 
 export default function AdminDashboard() {
   const { vehicles, setVehicles, currentUser, setCurrentUser, evaluateVehicle } = useApp();
@@ -266,7 +267,13 @@ export default function AdminDashboard() {
                 <tr key={v.id || v._id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                   <td className="px-6 py-4 flex items-center space-x-3">
                     <div className="w-12 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-1 flex-shrink-0">
-                      <img src={v.image} alt={v.model} className="max-h-full max-w-full object-contain" />
+                      <VehicleImage
+                        src={v.image}
+                        alt={v.model}
+                        category={v.category}
+                        className="w-full h-full"
+                        imgClassName="max-h-full max-w-full object-contain"
+                      />
                     </div>
                     <div>
                       <div className="font-bold text-gray-900 dark:text-white">

@@ -173,10 +173,16 @@ export function AppProvider({ children }) {
   const evaluateVehicle = vehicle => {
     setSelectedVehicle(vehicle);
     const isBike = vehicle.category === 'Motorcycle' || vehicle.category === 'Scooter' || vehicle.category === 'Electric Scooter';
-    if (isBike && selectedVehicleType !== '2-wheeler') {
-      setSelectedVehicleType('2-wheeler');
-    } else if (!isBike && selectedVehicleType !== '4-wheeler') {
-      setSelectedVehicleType('4-wheeler');
+    if (isBike) {
+      if (selectedVehicleType !== '2-wheeler') {
+        setSelectedVehicleType('2-wheeler');
+      }
+      setEvaluation(evaluateBikeSuitability(vehicle, bikeProfile));
+    } else {
+      if (selectedVehicleType !== '4-wheeler') {
+        setSelectedVehicleType('4-wheeler');
+      }
+      setEvaluation(evaluateSuitability(vehicle, userProfile));
     }
     const vId = vehicle.id || vehicle._id;
     if (vId) {
@@ -202,7 +208,8 @@ export function AppProvider({ children }) {
     async function load() {
       const data = await fetchVehicles();
       if (data && data.length > 0) {
-        setVehicles(data);
+        const carsOnly = data.filter(v => v.category === 'Car' || (v.category !== 'Motorcycle' && v.category !== 'Scooter' && v.category !== 'Electric Scooter'));
+        setVehicles(carsOnly);
       }
     }
     load();
