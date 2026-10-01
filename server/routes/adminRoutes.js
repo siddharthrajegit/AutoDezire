@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, adminOnly } = require('../middleware/authMiddleware');
+const { sendError } = require('../middleware/errorHelper');
 const {
   getAllVehicles,
   getVehicleById,
@@ -29,7 +30,7 @@ router.get('/metrics', protect, adminOnly, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -40,7 +41,7 @@ router.get('/vehicles', protect, adminOnly, async (req, res) => {
     const vehicles = await getAllVehicles({ category, search });
     res.json({ success: true, count: vehicles.length, data: vehicles });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -109,20 +110,36 @@ router.post('/vehicles', protect, adminOnly, async (req, res) => {
 
     res.status(201).json({ success: true, data: newVehicle });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
 // PUT /api/admin/vehicles/:id - Update vehicle
 router.put('/vehicles/:id', protect, adminOnly, async (req, res) => {
   try {
-    const updated = await updateVehicle(req.params.id, req.body);
+    // Explicitly whitelist allowed fields — prevents arbitrary field injection
+    const allowedFields = [
+      'brand', 'model', 'category', 'bodyType', 'variantSummary',
+      'priceFrom', 'priceTo', 'priceDisplay', 'fuelType', 'transmission',
+      'engine', 'power', 'torque', 'mileage', 'mileageValue',
+      'groundClearance', 'seatingCapacity', 'bootSpace', 'seatHeight',
+      'batteryCapacity', 'safetyRating', 'safetyAgency', 'image',
+      'description', 'isActive', 'kerbWeight', 'underseatStorageLitres',
+    ];
+    const safeUpdate = {};
+    for (const field of allowedFields) {
+      if (Object.prototype.hasOwnProperty.call(req.body, field)) {
+        safeUpdate[field] = req.body[field];
+      }
+    }
+
+    const updated = await updateVehicle(req.params.id, safeUpdate);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Vehicle not found' });
     }
     res.json({ success: true, data: updated });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -135,7 +152,7 @@ router.delete('/vehicles/:id', protect, adminOnly, async (req, res) => {
     }
     res.json({ success: true, message: 'Vehicle deleted successfully', data: deleted });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 

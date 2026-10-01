@@ -6,13 +6,19 @@ const { JWT_SECRET, protect } = require('../middleware/authMiddleware');
 const { memoryUsers } = require('../services/store');
 const User = require('../models/User');
 const { getIsConnected } = require('../config/db');
+const { sendError } = require('../middleware/errorHelper');
+
+// Simple email format check
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 // Helper to generate JWT token
 function generateToken(user) {
   return jwt.sign(
     { id: user._id || user.id, email: user.email, name: user.name, role: user.role },
     JWT_SECRET,
-    { expiresIn: '30d' }
+    { expiresIn: '7d' }  // Reduced from 30d
   );
 }
 
@@ -20,8 +26,19 @@ function generateToken(user) {
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    // Input validation
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide all fields' });
+    }
+    if (typeof name !== 'string' || name.trim().length < 2) {
+      return res.status(400).json({ success: false, message: 'Name must be at least 2 characters' });
+    }
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid email address' });
+    }
+    if (typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
     }
 
     if (getIsConnected()) {
@@ -86,7 +103,7 @@ router.post('/register', async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -98,12 +115,20 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please enter email and password' });
     }
 
-    // Check for default admin login
-    if (email.toLowerCase() === 'admin@autodezire.com' && (password === 'admin123' || password === 'admin')) {
+    // ── Admin login via environment configuration ───────────────────────────────
+    // Credentials are read from ADMIN_EMAIL / ADMIN_PASSWORD in .env — NOT hardcoded.
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (
+      adminEmail &&
+      adminPassword &&
+      email.toLowerCase() === adminEmail.toLowerCase() &&
+      password === adminPassword
+    ) {
       const adminUser = {
         id: 'admin_root',
         name: 'AutoDezire Admin',
-        email: 'admin@autodezire.com',
+        email: adminEmail,
         role: 'admin',
       };
       return res.json({
@@ -136,9 +161,8 @@ router.post('/login', async (req, res) => {
     // Memory store login
     const user = memoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
     if (user) {
-      // Allow demo password or hashed match
-      const isMatch = password === 'password123' || password === 'aryan123' || (await bcrypt.compare(password, user.password).catch(() => false));
-      if (isMatch || password) {
+      const isMatch = await bcrypt.compare(password, user.password).catch(() => false);
+      if (isMatch) {
         return res.json({
           success: true,
           data: {
@@ -155,7 +179,7 @@ router.post('/login', async (req, res) => {
 
     return res.status(401).json({ success: false, message: 'Invalid email or password' });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -174,7 +198,7 @@ router.get('/me', protect, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 

@@ -12,7 +12,8 @@ import {
   XCircle,
   Eye,
   Lock,
-  LogOut
+  LogOut,
+  Database
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import AdminVehicleModal from './AdminVehicleModal';
@@ -165,6 +166,17 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex items-center space-x-3">
+          <a
+            href="/database-visualizer.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold border border-gray-200 dark:border-gray-700 transition-all"
+            title="Open Database Schema & Tables Visualizer"
+          >
+            <Database className="w-4 h-4 text-orange-500" />
+            <span>Schema Visualizer</span>
+          </a>
+
           <button
             onClick={() => {
               setEditingVehicle(null);

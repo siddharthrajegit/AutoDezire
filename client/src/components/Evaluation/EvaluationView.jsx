@@ -6,6 +6,7 @@ import PowertrainIntelligenceCard from './PowertrainIntelligenceCard';
 import RiderErgonomicsCard from './RiderErgonomicsCard';
 import RequirementGrid from './RequirementGrid';
 import StrengthsConsiderations from './StrengthsConsiderations';
+import VariantFeaturesPanel from './VariantFeaturesPanel';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
@@ -160,7 +161,7 @@ export default function EvaluationView() {
         </div>
       </div>
 
-      {/* Top Section: Vehicle Hero Card & Suitability Gauge */}
+      {/* 1st Row: Vehicle Hero Card & Suitability Gauge */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <div className="lg:col-span-8 flex flex-col">
           <VehicleInfoCard vehicle={selectedVehicle} evaluation={activeEvaluation} />
@@ -173,7 +174,10 @@ export default function EvaluationView() {
         </div>
       </div>
 
-      {/* 2-Wheeler Dedicated Rider Ergonomics & Fit Intelligence vs 4-Wheeler Powertrain Intelligence */}
+      {/* 2nd Row: Requirement-wise Scores (12 Dimensions) */}
+      <RequirementGrid evaluation={activeEvaluation} />
+
+      {/* 3rd Row: Powertrain & Fuel Variant Intelligence (or Rider Ergonomics for 2-Wheelers) */}
       {isTwoWheeler ? (
         <RiderErgonomicsCard
           vehicle={selectedVehicle}
@@ -187,10 +191,12 @@ export default function EvaluationView() {
         />
       )}
 
-      {/* Middle Section: Requirement Factor Cards */}
-      <RequirementGrid evaluation={activeEvaluation} />
+      {/* 4th Row: Variant-Wise Features (CarWale-style matrix for cars) */}
+      {!isTwoWheeler && (
+        <VariantFeaturesPanel vehicle={selectedVehicle} />
+      )}
 
-      {/* Bottom Section: Strengths & Considerations */}
+      {/* 5th Row: Top Strengths and Tradeoffs (Pros & Considerations) */}
       <StrengthsConsiderations
         evaluation={activeEvaluation}
         vehicle={selectedVehicle}

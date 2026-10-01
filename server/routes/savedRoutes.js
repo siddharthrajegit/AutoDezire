@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { memorySavedVehicles, getVehicleById } = require('../services/store');
+const { protect } = require('../middleware/authMiddleware');
+const { sendError } = require('../middleware/errorHelper');
 
-// GET /api/saved - Get saved vehicles
-router.get('/', async (req, res) => {
+// GET /api/saved - Get saved vehicles (auth required)
+router.get('/', protect, async (req, res) => {
   try {
     const vehiclesWithDetails = await Promise.all(
       memorySavedVehicles.map(async item => {
@@ -20,12 +22,12 @@ router.get('/', async (req, res) => {
       data: vehiclesWithDetails.filter(i => i.vehicle != null),
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
-// POST /api/saved - Save a vehicle
-router.post('/', async (req, res) => {
+// POST /api/saved - Save a vehicle (auth required)
+router.post('/', protect, async (req, res) => {
   try {
     const { vehicleId, suitabilityScore } = req.body;
     if (!vehicleId) {
@@ -52,12 +54,12 @@ router.post('/', async (req, res) => {
 
     res.status(201).json({ success: true, data: newItem });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
-// DELETE /api/saved/:vehicleId - Unsave vehicle
-router.delete('/:vehicleId', async (req, res) => {
+// DELETE /api/saved/:vehicleId - Unsave vehicle (auth required)
+router.delete('/:vehicleId', protect, async (req, res) => {
   try {
     const index = memorySavedVehicles.findIndex(
       s => s.vehicleId === req.params.vehicleId || s._id === req.params.vehicleId
@@ -68,7 +70,7 @@ router.delete('/:vehicleId', async (req, res) => {
     }
     res.status(404).json({ success: false, message: 'Saved entry not found' });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 

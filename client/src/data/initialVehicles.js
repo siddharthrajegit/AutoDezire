@@ -2,6 +2,8 @@
 // Comprehensive dataset for 8 Major Indian Automobile Brands (2024-2026)
 // Total Models: 71
 
+import { TRIM_VARIANTS_DATA } from './trimVariantsData';
+
 export const INITIAL_VEHICLES = [
   {
     "id": "swift",
@@ -7663,3 +7665,14 @@ export const INITIAL_VEHICLES = [
     ]
   }
 ];
+
+if (typeof TRIM_VARIANTS_DATA !== 'undefined' && TRIM_VARIANTS_DATA) {
+  INITIAL_VEHICLES.forEach(v => {
+    if (TRIM_VARIANTS_DATA[v.model]) {
+      v.trimVariants = TRIM_VARIANTS_DATA[v.model];
+    } else if (!v.trimVariants) {
+      v.trimVariants = [];
+    }
+  });
+}
+

@@ -1,13 +1,262 @@
 /**
  * AutoDezire AI Advisor Service
- * Context-aware personalized automobile advisor integrating LLM API (Gemini / OpenAI)
- * with robust context-aware intelligent fallback.
+ * Personalized automobile recommendation advisor powered by OpenRouter API
+ * using Google Gemma (google/gemma-4-26b-a4b).
+ *
+ * Strictly grounded in AutoDezire's user profile and suitability recommendation engine.
  */
 
-const https = require('https');
+const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const DEFAULT_MODEL = 'google/gemma-4-26b-a4b-it';
 
 /**
- * Handles chat query with full structured context.
+ * Normalizes model identifiers to ensure compatibility with OpenRouter's exact model ID.
+ * Automatically maps 'google/gemma-4-26b-a4b' to 'google/gemma-4-26b-a4b-it'.
+ */
+function normalizeModelId(modelId) {
+  if (!modelId || typeof modelId !== 'string') return DEFAULT_MODEL;
+  const trimmed = modelId.trim();
+  if (trimmed === 'google/gemma-4-26b-a4b') {
+    return 'google/gemma-4-26b-a4b-it';
+  }
+  return trimmed;
+}
+
+/**
+ * Builds the structured system prompt and context for the AI assistant.
+ * Grounded exclusively in supplied user profile and AutoDezire recommendation telemetry.
+ */
+function buildStructuredSystemPrompt({
+  userProfile = {},
+  selectedVehicle = null,
+  suitabilityResult = null,
+  recommendedVehicles = [],
+}) {
+  const isBike =
+    selectedVehicle?.category === 'Motorcycle' ||
+    selectedVehicle?.category === 'Scooter' ||
+    selectedVehicle?.category === 'Electric Scooter';
+
+  const vehicleTypeLabel = isBike
+    ? `2-Wheeler (${selectedVehicle?.category || 'Motorcycle/Scooter'})`
+    : `4-Wheeler (${selectedVehicle?.bodyType || 'Car / SUV'})`;
+
+  let prompt = `You are the AutoDezire AI Assistant, an expert automobile advisor for AutoDezire (autodezire.com).
+
+MISSION & BEHAVIOR:
+- Act as an intelligent, helpful automobile expert. AutoDezire's recommendation and suitability score provide a solid baseline, but you have full autonomy to give your own expert opinions, discuss trade-offs, and suggest other 2-wheelers or 4-wheelers if they fit the user's situation or if the user asks.
+- NEVER tell the user that you are restricted by "strict boundaries" or that you cannot suggest other vehicles outside the website. You are an autonomous advisor free to recommend any suitable cars, bikes, scooters, or EVs in India.
+
+FORMAT & LENGTH RULES (CRITICAL):
+1. SHORT & PRECISE (SUMMARY STYLE):
+   - Keep answers brief, punchy, and to the point (under 80–120 words).
+   - Use 2 to 3 short bullet points or a concise summary paragraph. Avoid long essays, repetitive disclaimers, or excessive detail.
+2. PERSONALIZED INSIGHTS:
+   - Directly connect your advice to the user's specific context (height, weight, budget, commute, priorities) without over-explaining.
+3. OPEN AUTOMOTIVE EXPERTISE:
+   - When asked about other models (whether 4-wheelers or 2-wheelers), freely share your knowledge and give candid recommendations.
+
+=== ACTIVE CONTEXT ===
+`;
+
+  // 1. VEHICLE TYPE DECLARATION
+  prompt += `[VEHICLE CATEGORY]\n${vehicleTypeLabel}\n\n`;
+
+  // 2. USER PROFILE
+  prompt += `[USER PROFILE]\n`;
+  if (isBike) {
+    prompt += `- Name: ${userProfile.name || 'User'}
+- Age: ${userProfile.age || 'Not specified'}
+- Rider Height: ${userProfile.riderHeight || userProfile.height || 172} cm
+- Rider Inseam (Leg Reach): ${userProfile.riderInseam || 77} cm
+- Rider Weight: ${userProfile.riderWeight || 68} kg
+- Budget Limit: ₹${userProfile.budget || 1.8} Lakh
+- Commute / Running: ${userProfile.dailyKm || 30} km/day (${userProfile.highwayPercent || 20}% Highway, ${100 - (userProfile.highwayPercent || 20)}% City)
+- Pillion Frequency: ${userProfile.pillionFrequency || 'Occasional'}
+- Riding Posture / Triangle: ${userProfile.riderTriangle || 'Upright Commuter'}
+- Home EV Charging Access: ${userProfile.hasHomeCharging ? 'Available' : 'Not Available'}
+- Top Priorities: ${(userProfile.topPriorities || ['Mileage / Running Cost', 'Ergonomic Flat-Foot Reach', 'City Traffic Agility']).join(', ')}
+`;
+  } else {
+    prompt += `- Name: ${userProfile.name || 'User'}
+- Age: ${userProfile.age || 'Not specified'}
+- Height: ${userProfile.height || 175} cm
+- Weight: ${userProfile.weight ? `${userProfile.weight} kg` : 'Not specified'}
+- Budget Limit: ₹${userProfile.budget || 14} Lakh
+- Daily Running: ${userProfile.dailyKm || 35} km/day (${userProfile.cityPercent || 60}% City, ${userProfile.highwayPercent || 30}% Highway, ${userProfile.ruralPercent || 10}% Rural)
+- Road Conditions: ${userProfile.roadConditions || 'Mixed with Potholes'}
+- Terrain: ${userProfile.primaryTerrain || 'Flat Plains'}
+- Parking Type: ${userProfile.parkingType || 'Open Driveway'}
+- Family & Passengers: ${userProfile.regularPassengers || 2} regular passengers (Children: ${userProfile.hasChildren ? 'Yes' : 'No'}, Elderly: ${userProfile.hasElderly ? 'Yes' : 'No'})
+- Fuel Preference: ${userProfile.fuelPreference || 'All'}
+- Transmission Preference: ${userProfile.transmissionPreference || 'Any'}
+- Home EV Charging Access: ${userProfile.hasHomeCharging ? 'Available' : 'Not Available'}
+- Top Priorities: ${(userProfile.topPriorities || ['Safety', 'Ground Clearance', 'Comfort']).join(', ')}
+`;
+  }
+  prompt += '\n';
+
+  // 3. AUTO DEZIRE RECOMMENDATION & EVALUATION
+  if (selectedVehicle) {
+    prompt += `[AUTO DEZIRE RECOMMENDATION & EVALUATION]\n`;
+    prompt += `- Recommended Vehicle: ${selectedVehicle.brand} ${selectedVehicle.model} (${selectedVehicle.category}${selectedVehicle.bodyType ? ` - ${selectedVehicle.bodyType}` : ''})\n`;
+    prompt += `- Price / Price Range: ${selectedVehicle.priceDisplay || 'Price on request'}\n`;
+    prompt += `- Engine / Powertrain: ${selectedVehicle.engine || 'Standard'} | Power: ${selectedVehicle.power || 'N/A'} | Torque: ${selectedVehicle.torque || 'N/A'}\n`;
+    prompt += `- Fuel Efficiency / Mileage: ${selectedVehicle.mileage || 'N/A'}\n`;
+    prompt += `- Ground Clearance: ${selectedVehicle.groundClearance ? `${selectedVehicle.groundClearance} mm` : 'N/A'}\n`;
+    prompt += `- Safety Rating: ${selectedVehicle.safetyRating ? `${selectedVehicle.safetyRating} Star (${selectedVehicle.safetyAgency || 'NCAP'})` : 'N/A'}\n`;
+
+    if (isBike) {
+      if (selectedVehicle.seatHeight) prompt += `- Seat Height: ${selectedVehicle.seatHeight} mm\n`;
+      if (selectedVehicle.kerbWeight) prompt += `- Kerb Weight: ${selectedVehicle.kerbWeight} kg\n`;
+      if (selectedVehicle.underseatStorageLitres) prompt += `- Underseat Boot Storage: ${selectedVehicle.underseatStorageLitres} L\n`;
+    } else {
+      if (selectedVehicle.seatingCapacity) prompt += `- Seating Capacity: ${selectedVehicle.seatingCapacity} Seater\n`;
+      if (selectedVehicle.bootSpace) prompt += `- Boot Space: ${selectedVehicle.bootSpace} L\n`;
+    }
+
+    if (suitabilityResult) {
+      prompt += `- AutoDezire Overall Suitability Score: ${suitabilityResult.overallScore || 'N/A'}/100 (${suitabilityResult.overallStatus || 'Evaluated'})\n`;
+      prompt += `- Budget Compatibility: ${suitabilityResult.budgetStatus || 'Evaluated'} (${suitabilityResult.budgetMessage || ''})\n`;
+
+      if (suitabilityResult.topStrengths && suitabilityResult.topStrengths.length > 0) {
+        prompt += `- Key Strengths for User:\n${suitabilityResult.topStrengths.map(s => `  * ${s}`).join('\n')}\n`;
+      }
+
+      if (suitabilityResult.considerations && suitabilityResult.considerations.length > 0) {
+        prompt += `- Considerations / Trade-offs flagged by AutoDezire:\n${suitabilityResult.considerations.map(c => `  * ${c}`).join('\n')}\n`;
+      }
+
+      if (suitabilityResult.fuelRecommendation) {
+        const fr = suitabilityResult.fuelRecommendation;
+        prompt += `- Recommended Fuel Powertrain: ${fr.recommendedFuelType || ''} (${fr.reason || ''})\n`;
+        if (fr.estimatedMonthlyCost) {
+          prompt += `  * Estimated Monthly Running Cost: ₹${fr.estimatedMonthlyCost.toLocaleString('en-IN')}/month\n`;
+        }
+      }
+
+      if (suitabilityResult.requirementScores && Object.keys(suitabilityResult.requirementScores).length > 0) {
+        prompt += `- Requirement Breakdown Scores:\n`;
+        for (const [key, val] of Object.entries(suitabilityResult.requirementScores)) {
+          prompt += `  * ${key}: ${val}/10\n`;
+        }
+      }
+    }
+    prompt += '\n';
+  }
+
+  // 4. ALTERNATIVES
+  if (recommendedVehicles && recommendedVehicles.length > 0) {
+    prompt += `[TOP ALTERNATIVES (Calculated by AutoDezire)]\n`;
+    recommendedVehicles.slice(0, 3).forEach((alt, idx) => {
+      const v = alt.vehicle || alt;
+      const score = alt.overallScore || alt.evaluation?.overallScore || 'N/A';
+      prompt += `${idx + 1}. ${v.brand} ${v.model} (Score: ${score}/100, Price: ${v.priceDisplay || 'N/A'})\n`;
+    });
+    prompt += '\n';
+  }
+
+  return prompt;
+}
+
+/**
+ * Calls OpenRouter API with the Gemma 4 26B model
+ */
+async function callOpenRouterAPI({
+  apiKey,
+  model = DEFAULT_MODEL,
+  systemPrompt,
+  userMessage,
+  conversationHistory = [],
+}) {
+  const messages = [
+    { role: 'system', content: systemPrompt }
+  ];
+
+  // Include recent conversation turns for multi-turn context (last 6 turns max)
+  const recentHistory = conversationHistory.slice(-6);
+  for (const h of recentHistory) {
+    if (h.sender === 'user' || h.role === 'user') {
+      messages.push({ role: 'user', content: h.text || h.content });
+    } else if (h.sender === 'ai' || h.role === 'assistant' || h.role === 'model') {
+      messages.push({ role: 'assistant', content: h.text || h.content });
+    }
+  }
+
+  // Add the current user query
+  messages.push({ role: 'user', content: userMessage });
+
+  const payload = {
+    model: model || DEFAULT_MODEL,
+    messages,
+    temperature: 0.4,
+    max_tokens: 350,
+  };
+
+  let response;
+  try {
+    response = await fetch(OPENROUTER_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://autodezire.com',
+        'X-Title': 'AutoDezire AI Assistant',
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(30000), // 30s timeout
+    });
+  } catch (networkErr) {
+    if (networkErr.name === 'TimeoutError') {
+      const err = new Error('OpenRouter request timed out after 30 seconds. Please try again.');
+      err.status = 504;
+      throw err;
+    }
+    const err = new Error(`Network error connecting to OpenRouter: ${networkErr.message}`);
+    err.status = 502;
+    throw err;
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (parseErr) {
+    const err = new Error('Failed to parse response from OpenRouter API.');
+    err.status = 502;
+    throw err;
+  }
+
+  if (!response.ok) {
+    const errorDetail = data?.error?.message || response.statusText || 'Unknown error';
+    const err = new Error(`OpenRouter error: ${errorDetail}`);
+    err.status = response.status;
+    err.code = data?.error?.code || 'OPENROUTER_ERROR';
+
+    if (response.status === 401 || response.status === 403) {
+      err.message = 'Invalid or unauthorized OpenRouter API key. Please check OPENROUTER_API_KEY in your backend .env file.';
+    } else if (response.status === 429) {
+      err.message = 'OpenRouter rate limit or quota exceeded. Please try again in a moment.';
+    } else if (response.status === 402) {
+      err.message = 'OpenRouter account has insufficient credits. Please check your OpenRouter balance.';
+    }
+    throw err;
+  }
+
+  const reply = data?.choices?.[0]?.message?.content;
+  if (!reply || typeof reply !== 'string' || reply.trim().length === 0) {
+    const err = new Error('The AI model returned an empty response. Please try again.');
+    err.status = 502;
+    throw err;
+  }
+
+  return {
+    reply: reply.trim(),
+    model: data.model || model,
+  };
+}
+
+/**
+ * Main entrance for generating personalized advisor response.
  */
 async function generateAdvisorResponse({
   message,
@@ -17,268 +266,46 @@ async function generateAdvisorResponse({
   suitabilityResult = null,
   recommendedVehicles = [],
 }) {
-  const geminiKey = process.env.GEMINI_API_KEY;
-  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!message || typeof message !== 'string' || !message.trim()) {
+    const err = new Error('A non-empty question or message is required.');
+    err.status = 400;
+    throw err;
+  }
 
-  // Build the structured context prompt
-  const systemContext = buildStructuredSystemPrompt({
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey || apiKey.trim() === '' || apiKey === 'your_openrouter_api_key_here') {
+    const err = new Error(
+      'OpenRouter API key is not configured. Please add your OPENROUTER_API_KEY to the backend .env file.'
+    );
+    err.status = 500;
+    err.code = 'MISSING_API_KEY';
+    throw err;
+  }
+
+  const rawModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
+  const model = normalizeModelId(rawModel);
+
+  const systemPrompt = buildStructuredSystemPrompt({
     userProfile,
     selectedVehicle,
     suitabilityResult,
     recommendedVehicles,
   });
 
-  if (geminiKey) {
-    try {
-      return await callGeminiAPI(geminiKey, systemContext, message, conversationHistory);
-    } catch (err) {
-      console.warn('[AI Advisor] Gemini API call error:', err.message);
-    }
-  }
-
-  if (openaiKey) {
-    try {
-      return await callOpenAIAPI(openaiKey, systemContext, message, conversationHistory);
-    } catch (err) {
-      console.warn('[AI Advisor] OpenAI API call error:', err.message);
-    }
-  }
-
-  // Fallback to our context-aware intelligent rule-based engine
-  return generateContextualFallbackAnswer(message, {
-    userProfile,
-    selectedVehicle,
-    suitabilityResult,
-    recommendedVehicles,
+  return await callOpenRouterAPI({
+    apiKey: apiKey.trim(),
+    model,
+    systemPrompt,
+    userMessage: message.trim(),
+    conversationHistory,
   });
-}
-
-function buildStructuredSystemPrompt({ userProfile, selectedVehicle, suitabilityResult, recommendedVehicles }) {
-  let prompt = `You are AutoDezire AI Advisor, an expert personalized automobile advisor for India.
-Your mission: Help this specific user understand vehicle suitability for THEIR exact lifestyle, budget, and driving patterns.
-
-USER PROFILE:
-- Height: ${userProfile.height || 172} cm, Age: ${userProfile.age || 28}
-- Budget: ₹${userProfile.budget || 14} Lakh
-- Daily Running: ${userProfile.dailyKm || 35} km (${userProfile.cityPercent || 60}% City, ${userProfile.highwayPercent || 30}% Highway, ${userProfile.ruralPercent || 10}% Rural)
-- Road Conditions: ${userProfile.roadConditions || 'Mixed with Potholes'}
-- Family / Passengers: ${userProfile.regularPassengers || 2} regular passengers (Children: ${userProfile.hasChildren ? 'Yes' : 'No'}, Elderly: ${userProfile.hasElderly ? 'Yes' : 'No'})
-- Top 3 Priorities: ${(userProfile.topPriorities || ['Safety', 'Ground Clearance', 'Comfort']).join(', ')}
-
-`;
-
-  if (selectedVehicle && suitabilityResult) {
-    prompt += `CURRENTLY EVALUATED VEHICLE:
-- Model: ${selectedVehicle.brand} ${selectedVehicle.model} (${selectedVehicle.category} - ${selectedVehicle.bodyType})
-- Price Range: ${selectedVehicle.priceDisplay}
-- Engine: ${selectedVehicle.engine}, Power: ${selectedVehicle.power}, Torque: ${selectedVehicle.torque}
-- Mileage: ${selectedVehicle.mileage}, Ground Clearance: ${selectedVehicle.groundClearance} mm, Safety: ${selectedVehicle.safetyRating} Star (${selectedVehicle.safetyAgency})
-- Boot Space: ${selectedVehicle.bootSpace} L, Seating: ${selectedVehicle.seatingCapacity}
-- Overall Suitability Score: ${suitabilityResult.overallScore}/100 (${suitabilityResult.overallStatus})
-- Budget Compatibility: ${suitabilityResult.budgetStatus} (${suitabilityResult.budgetMessage})
-- Requirement-wise Scores:
-${Object.entries(suitabilityResult.requirementScores || {})
-  .map(([k, v]) => `  * ${k}: ${v}/10`)
-  .join('\n')}
-- Top Strengths for User: ${(suitabilityResult.topStrengths || []).join(' | ')}
-- Considerations / Warnings for User: ${(suitabilityResult.considerations || []).join(' | ')}
-`;
-  }
-
-  if (recommendedVehicles && recommendedVehicles.length > 0) {
-    prompt += `\nTOP RECOMMENDED ALTERNATIVES:
-${recommendedVehicles.slice(0, 3).map((v, i) => `${i + 1}. ${v.brand} ${v.model} (Score: ${v.overallScore}/100, Price: ${v.priceDisplay})`).join('\n')}
-`;
-  }
-
-  prompt += `
-RULES:
-1. ALWAYS reference the user's specific profile (e.g. daily km, highway usage, budget, height, family requirements).
-2. DO NOT invent specifications. If a spec is not in the database, clearly state it is unavailable.
-3. Explain recommendations and scores directly from the structured suitability evaluation.
-4. Keep tone professional, encouraging, objective, and concise. Use bullet points where appropriate.
-`;
-
-  return prompt;
-}
-
-/**
- * Calls Google Gemini REST API
- */
-async function callGeminiAPI(apiKey, systemPrompt, userMessage, history) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-  const contents = [];
-  // Add system instruction as first user/model context or system prompt
-  contents.push({
-    role: 'user',
-    parts: [{ text: systemPrompt + '\n\nPlease acknowledge and wait for user questions.' }]
-  });
-  contents.push({
-    role: 'model',
-    parts: [{ text: 'Understood. I am ready to advise this user based on their specific profile and vehicle evaluation.' }]
-  });
-
-  // Add past conversation turns
-  history.slice(-4).forEach(h => {
-    contents.push({
-      role: h.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: h.text }]
-    });
-  });
-
-  contents.push({
-    role: 'user',
-    parts: [{ text: userMessage }]
-  });
-
-  const payload = JSON.stringify({ contents });
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      url,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      },
-      res => {
-        let data = '';
-        res.on('data', chunk => (data += chunk));
-        res.on('end', () => {
-          try {
-            const parsed = JSON.parse(data);
-            const answer = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (answer) resolve(answer);
-            else reject(new Error('No candidate returned by Gemini'));
-          } catch (e) {
-            reject(e);
-          }
-        });
-      }
-    );
-
-    req.on('error', reject);
-    req.write(payload);
-    req.end();
-  });
-}
-
-/**
- * Calls OpenAI Chat Completions API
- */
-async function callOpenAIAPI(apiKey, systemPrompt, userMessage, history) {
-  const url = 'https://api.openai.com/v1/chat/completions';
-  const messages = [{ role: 'system', content: systemPrompt }];
-
-  history.slice(-4).forEach(h => {
-    messages.push({
-      role: h.sender === 'user' ? 'user' : 'assistant',
-      content: h.text
-    });
-  });
-
-  messages.push({ role: 'user', content: userMessage });
-
-  const payload = JSON.stringify({
-    model: 'gpt-3.5-turbo',
-    messages,
-    max_tokens: 600,
-    temperature: 0.7
-  });
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      url,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`
-        }
-      },
-      res => {
-        let data = '';
-        res.on('data', chunk => (data += chunk));
-        res.on('end', () => {
-          try {
-            const parsed = JSON.parse(data);
-            const answer = parsed.choices?.[0]?.message?.content;
-            if (answer) resolve(answer);
-            else reject(new Error('No response choices from OpenAI'));
-          } catch (e) {
-            reject(e);
-          }
-        });
-      }
-    );
-
-    req.on('error', reject);
-    req.write(payload);
-    req.end();
-  });
-}
-
-/**
- * Intelligent context-aware fallback engine for instant, accurate answers
- */
-function generateContextualFallbackAnswer(message, { userProfile, selectedVehicle, suitabilityResult, recommendedVehicles }) {
-  const q = message.toLowerCase();
-  const vehicleName = selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : 'this vehicle';
-  const budget = userProfile.budget || 14;
-  const dailyKm = userProfile.dailyKm || 35;
-  const highwayPct = userProfile.highwayPercent || 30;
-  const priorities = userProfile.topPriorities || ['Safety', 'Ground Clearance', 'Comfort'];
-
-  // Question 1: "Why did you recommend this car / vehicle?"
-  if (q.includes('why') && (q.includes('recommend') || q.includes('suggest') || q.includes('fit'))) {
-    if (selectedVehicle && suitabilityResult) {
-      return `Based on your profile, **${vehicleName}** scores **${suitabilityResult.overallScore}/100 (${suitabilityResult.overallStatus})** for your needs.\n\nHere is why it fits you:\n- **Top Priorities Match**: You selected **${priorities.join(', ')}**. ${vehicleName} scores **${suitabilityResult.requirementScores?.safety || 8}/10 in Safety** and **${suitabilityResult.requirementScores?.groundClearance || 8}/10 in Ground Clearance**.\n- **Driving Pattern**: With ${highwayPct}% highway travel and ${dailyKm} km daily commute, its ${selectedVehicle.engine} delivers stable dynamics.\n- **Budget**: At ${selectedVehicle.priceDisplay}, it is **${suitabilityResult.budgetStatus}** for your ₹${budget} Lakh budget limit.`;
-    }
-    return `We analyze your daily commute (${dailyKm} km), road conditions (${userProfile.roadConditions || 'Mixed'}), passenger requirements, and top 3 priorities (${priorities.join(', ')}) to compute requirement-specific scores rather than just generic specs.`;
-  }
-
-  // Question 2: "Why didn't you recommend the Thar?" or Thar specific
-  if (q.includes('thar')) {
-    return `While the **Mahindra Thar** is unmatched in 4x4 off-roading (10/10 Ground Clearance), its suitability drops for high-mileage daily commuting (${dailyKm} km/day) and long highway trips because:\n1. **Mileage / Running Cost (4/10)**: Real-world mileage is 10-12 kmpl.\n2. **Rear Cabin Practicality (4/10)**: 4-seater with tight ingress and limited 150L boot space.\n3. **Highway Ride Comfort (5/10)**: Ladder-frame bounce compared to monocoque crossovers like Tata Nexon or Creta.\n\nIf off-roading is your primary desire, Thar is great, but for your balanced daily profile, a monocoque SUV is significantly more practical.`;
-  }
-
-  // Question 3: Height & Comfort (e.g. "I am 6'2\"..." or tall driver)
-  if (q.includes('height') || q.includes("6'") || q.includes('6.2') || q.includes('tall') || q.includes('headroom') || q.includes('legroom')) {
-    const height = userProfile.height || 185;
-    if (selectedVehicle) {
-      return `For someone **${height > 180 ? `${height} cm tall (approx 6'0"+)` : 'of your height'}**, **${vehicleName}** provides **${suitabilityResult?.requirementScores?.comfort || 8}/10 in Comfort**.\n- Front seat travel and tilt/telescopic steering allow generous legroom.\n- Upright SUV/crossover roofline offers adequate headroom without feeling cramped.\n- If you frequently carry tall passengers in the rear, sedans like Honda City or mid-size SUVs like Hyundai Creta offer the most rear knee room.`;
-    }
-    return `For tall drivers (>180 cm), we evaluate seat height, headroom, and steering reach. SUVs and spacious sedans with height-adjustable driver seats provide the most ergonomic comfort.`;
-  }
-
-  // Question 4: Disadvantages / Limitations / Compromises
-  if (q.includes('disadvantage') || q.includes('weakness') || q.includes('limitation') || q.includes('compromise') || q.includes('cons') || q.includes('bad')) {
-    if (suitabilityResult && suitabilityResult.considerations?.length > 0) {
-      const items = suitabilityResult.considerations.map(c => `- ${c}`).join('\n');
-      return `Here are the primary considerations for **${vehicleName}** based on your specific profile:\n\n${items}\n\n*AutoDezire transparently flags these points so you know exactly where compromises might exist.*`;
-    }
-    return `Every automobile involves trade-offs between performance, space, running costs, and price. Check the **Considerations** card on your evaluation dashboard for tailored trade-offs.`;
-  }
-
-  // Question 5: Budget increase (e.g. "What happens if I increase my budget by ₹2 lakh?")
-  if (q.includes('budget') || q.includes('increase') || q.includes('2 lakh') || q.includes('price')) {
-    return `If you increase your budget from **₹${budget} Lakh** to **₹${budget + 2} Lakh**:\n1. You can step up from base/mid variants to higher variants equipped with **6 Airbags, 360-degree cameras, and ADAS active safety**.\n2. In the SUV category, models like **Hyundai Creta SX** or **Maruti Grand Vitara Strong Hybrid (27.97 kmpl)** enter your direct consideration range, drastically reducing monthly fuel expenses.`;
-  }
-
-  // Question 6: Comparison / Which is better between two
-  if (q.includes('between') || q.includes('compare') || q.includes('versus') || q.includes('vs')) {
-    return `When comparing vehicles on AutoDezire, we focus on **suitability for you**, not just spec numbers:\n- For **high daily running**: Prioritize Strong Hybrid or EV options (Grand Vitara, Tiago EV).\n- For **highway comfort & safety**: Prioritize high safety rating and monocoque stability (Nexon, Honda City, XUV700).\n- For **rough terrain**: Prioritize 200mm+ ground clearance and all-terrain suspension (Nexon, Thar).\n\nYou can use our dedicated **Compare** page in the left sidebar to see a side-by-side suitability breakdown!`;
-  }
-
-  // Default contextual response
-  if (selectedVehicle && suitabilityResult) {
-    return `Regarding **${vehicleName}**: It currently holds an **Overall Suitability of ${suitabilityResult.overallScore}/100 (${suitabilityResult.overallStatus})** for your profile.\n\nKey highlights for your usage:\n- **Safety**: ${suitabilityResult.requirementScores?.safety || 8}/10\n- **Comfort**: ${suitabilityResult.requirementScores?.comfort || 8}/10\n- **Mileage & Running Cost**: ${suitabilityResult.requirementScores?.mileageRunningCost || 6}/10\n- **Highway Stability**: ${suitabilityResult.requirementScores?.highwayStability || 9}/10\n\nFeel free to ask about specific road conditions, passenger comfort, maintenance, or alternative model comparisons!`;
-  }
-
-  return `AutoDezire AI Advisor is ready to assist. You can ask why a specific vehicle was recommended, compare options, explore budget adjustments, or evaluate comfort for your exact height and driving route!`;
 }
 
 module.exports = {
   generateAdvisorResponse,
-  buildStructuredSystemPrompt
+  buildStructuredSystemPrompt,
+  callOpenRouterAPI,
+  normalizeModelId,
+  OPENROUTER_API_URL,
+  DEFAULT_MODEL,
 };

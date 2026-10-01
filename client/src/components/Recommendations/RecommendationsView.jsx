@@ -18,7 +18,8 @@ import {
   Zap,
   Car,
   Bike,
-  Fuel
+  Fuel,
+  Bot
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
@@ -34,6 +35,7 @@ export default function RecommendationsView() {
     selectedVehicleType,
     setSelectedVehicleType,
     evaluateVehicle,
+    setSelectedVehicle,
     compareList,
     toggleCompare,
     savedVehicles,
@@ -349,6 +351,17 @@ export default function RecommendationsView() {
                       title={isSaved ? 'Saved in Garage' : 'Save vehicle'}
                     >
                       <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setSelectedVehicle(vehicle);
+                        setActiveTab('ai-advisor');
+                      }}
+                      className="p-2.5 rounded-xl border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white transition-all shadow-sm"
+                      title="Ask AutoDezire AI about this vehicle"
+                    >
+                      <Bot className="w-4 h-4" />
                     </button>
 
                     <button

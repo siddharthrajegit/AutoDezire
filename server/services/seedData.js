@@ -7595,4 +7595,16 @@ const seedVehicles = [
   }
 ];
 
+const { TRIM_VARIANTS_DATA } = require('./trimVariantsData');
+if (TRIM_VARIANTS_DATA) {
+  seedVehicles.forEach(v => {
+    if (TRIM_VARIANTS_DATA[v.model]) {
+      v.trimVariants = TRIM_VARIANTS_DATA[v.model];
+    } else if (!v.trimVariants) {
+      v.trimVariants = [];
+    }
+  });
+}
+
 module.exports = { seedVehicles };
+

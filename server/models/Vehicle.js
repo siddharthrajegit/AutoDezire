@@ -102,6 +102,23 @@ const vehicleSchema = new mongoose.Schema(
     inherentConsiderations: [{ type: String }],
     
     isActive: { type: Boolean, default: true },
+    
+    // Variant-wise features (Trim levels: base to top)
+    trimVariants: [
+      {
+        name: { type: String, required: true },
+        priceApprox: { type: String, default: '' },
+        isTopModel: { type: Boolean, default: false },
+        features: {
+          safety: [{ type: String }],
+          comfort: [{ type: String }],
+          infotainment: [{ type: String }],
+          convenience: [{ type: String }],
+          exterior: [{ type: String }],
+          performance: [{ type: String }],
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

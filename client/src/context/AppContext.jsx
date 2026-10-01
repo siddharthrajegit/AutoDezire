@@ -148,6 +148,37 @@ export function AppProvider({ children }) {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // AI Chat Messages Navigation Memory (persisted across page changes until browser tab closes)
+  const [aiChatMessages, setAiChatMessagesState] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('autodezire_ai_chat');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const setAiChatMessages = updater => {
+    setAiChatMessagesState(prev => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      try {
+        if (next && Array.isArray(next) && next.length > 0) {
+          sessionStorage.setItem('autodezire_ai_chat', JSON.stringify(next));
+        } else {
+          sessionStorage.removeItem('autodezire_ai_chat');
+        }
+      } catch (e) {}
+      return next;
+    });
+  };
+
+  const clearAiChatMessages = () => {
+    try {
+      sessionStorage.removeItem('autodezire_ai_chat');
+    } catch (e) {}
+    setAiChatMessagesState(null);
+  };
+
   // Scroll-Scrubbed Video Entry state
   const [entryVehicleType, setEntryVehicleType] = useState('4-wheeler'); // '4-wheeler' or '2-wheeler'
   const [showScrollScrubbing, setShowScrollScrubbing] = useState(false);
@@ -317,6 +348,9 @@ export function AppProvider({ children }) {
         setEntryVehicleType,
         showScrollScrubbing,
         setShowScrollScrubbing,
+        aiChatMessages,
+        setAiChatMessages,
+        clearAiChatMessages,
       }}
     >
       {children}

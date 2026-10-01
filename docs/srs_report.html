@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoDezire — Software Requirements Specification & UML Models</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 18mm 16mm 18mm 16mm;
+            @bottom-right {
+                content: counter(page);
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            line-height: 1.55;
+            font-size: 10pt;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            page-break-after: always;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-bottom: 4px solid #1e3a8a;
+            padding-bottom: 40px;
+        }
+
+        .cover-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            font-size: 11pt;
+            padding: 6px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .cover-title {
+            font-size: 34pt;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin: 0 0 12px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .cover-subtitle {
+            font-size: 16pt;
+            font-weight: 600;
+            color: #0284c7;
+            max-width: 650px;
+            margin: 0 0 32px 0;
+        }
+
+        .cover-meta {
+            font-size: 10pt;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            margin-top: 40px;
+            width: 80%;
+            line-height: 1.8;
+        }
+
+        /* Section Headings */
+        h1 {
+            font-size: 18pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin-top: 28px;
+            margin-bottom: 14px;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            font-size: 13pt;
+            font-weight: 600;
+            color: #0369a1;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        /* Figures & Diagrams */
+        .figure-container {
+            margin: 16px auto;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
+        .diagram-img {
+            max-width: 95%;
+            height: auto;
+            max-height: 480px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            background: #ffffff;
+            padding: 8px;
+        }
+
+        .figure-caption {
+            font-size: 8.5pt;
+            font-style: italic;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0 18px 0;
+            font-size: 8.5pt;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: #ffffff;
+            font-weight: 600;
+            text-align: left;
+            padding: 7px 10px;
+            border: 1px solid #1e3a8a;
+        }
+
+        td {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .priority-high {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .priority-med {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin: 12px 0;
+            font-size: 9pt;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cover Page -->
+    <div class="cover-page">
+        <div class="cover-badge">Software Requirements Specification</div>
+        <div class="cover-title">AutoDezire</div>
+        <div class="cover-subtitle">AI-Powered Vehicle Recommendation & Ergonomic Decision Platform</div>
+        <div style="font-size: 11pt; color: #334155; font-weight: 600;">Complete UML Modeling & Use Case Specification Suite</div>
+        <div class="cover-meta">
+            <strong>Project:</strong> AutoDezire Recommendation Platform<br>
+            <strong>Standard:</strong> IEEE 830-1998 Software Requirements Specification<br>
+            <strong>Artifacts:</strong> Use Case Models • Domain Class Diagrams • System Architecture • Sequence Flows • Traceability<br>
+            <strong>Date:</strong> September 2026 | <strong>Version:</strong> 1.0.0
+        </div>
+    </div>
+
+    <!-- Section 1: Executive Summary -->
+    <h1>1. Executive Summary & Problem Domain</h1>
+    <p>
+        <strong>AutoDezire</strong> is a full-stack, AI-powered vehicle advisory platform engineered to address the critical gap in automobile purchasing:
+        matching a buyer's physical ergonomics, daily commute topography, family passenger needs, and long-term operating budget with the exact vehicular engineering profile.
+        Unlike legacy search engines that rank cars solely on horsepower or generic price points, AutoDezire calculates a weighted 12-dimension deterministic suitability score
+        (safety ratings, ground clearance for bad roads, cabin headroom, seat height/inseam for two-wheelers, fuel economy, and running cost) paired with
+        an interactive OpenRouter Google Gemma 4 26B conversational advisor.
+    </p>
+
+    <div class="highlight-box">
+        <strong>Key Architectural Philosophy:</strong> Deterministic Suitability Engine (mathematical guarantee against hallucinations)
+        paired with a Generative LLM Context Engine (OpenRouter Gemma 26B) for nuanced natural language reasoning.
+    </div>
+
+    <!-- Section 2: Actors -->
+    <h1>2. System Actors & Role Hierarchy</h1>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%;">Actor Name</th>
+                <th style="width: 18%;">Actor Type</th>
+                <th>Responsibilities & Privilege Scope</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Guest</strong></td>
+                <td>Human (Primary)</td>
+                <td>Unauthenticated user. Allowed to browse vehicle catalogue, filter cars/bikes/scooters, inspect detailed specs, and interact with the AI Advisor demo.</td>
+            </tr>
+            <tr>
+                <td><strong>Registered User</strong></td>
+                <td>Human (Primary)</td>
+                <td>Authenticated via JWT. Holds persistent 30+ parameter lifestyle profile, bookmarks saved wishlists, receives individualized suitability scores, compares vehicles.</td>
+            </tr>
+            <tr>
+                <td><strong>Administrator</strong></td>
+                <td>Human (Secondary)</td>
+                <td>Privileged administrative user (verified via admin JWT role). Exercises CRUD control over car and bike catalogs, monitors platform metrics and listing status.</td>
+            </tr>
+            <tr>
+                <td><strong>AI Service (Gemma)</strong></td>
+                <td>Automated External Actor</td>
+                <td>External OpenRouter LLM (Google Gemma 4 26B). Ingests user lifestyle constraints, vehicle engineering parameters, and outputs personalized advice.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 3: High-Level System Overview -->
+    <h1>3. High-Level System Overview Use Case Diagram</h1>
+    <p>
+        The System Overview diagram specifies the system boundary of AutoDezire, displaying the four actors and their associations
+        with the primary functional subsystems: Authentication, Vehicle Discovery, AI Advisor, Saved Wishlists, and the Administrative Dashboard.
+    </p>
+
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/01_System_Overview_UseCase.png" alt="Figure 1: AutoDezire High-Level System Overview Use Case Diagram" class="diagram-img"/>
+                <div class="figure-caption">Figure 1: AutoDezire High-Level System Overview Use Case Diagram</div>
+            </div>
+            
+
+    <div class="page-break"></div>
+
+    <!-- Section 4: Detailed Module Use Cases -->
+    <h1>4. Detailed Module-Level Use Case Diagrams & Specifications</h1>
+
+    <h2>4.1 Authentication & Identity Module</h2>
+    <p>
+        Manages user registration, credential authentication, JWT token generation, bcrypt password hashing, and seamless fallback to memory storage.
+    </p>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/02_Authentication_Module_UseCase.png" alt="Figure 2: Authentication & Identity Module Use Case" class="diagram-img"/>
+                <div class="figure-caption">Figure 2: Authentication & Identity Module Use Case</div>
+            </div>
+            
+
+    <table>
+        <thead>
+            <tr>
+                <th>Use Case</th>
+                <th>Actor</th>
+                <th>Priority</th>
+                <th>«include»</th>
+                <th>«extend»</th>
+                <th>Functional Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>UC-01: Register</strong></td>
+                <td>Guest</td>
+                <td><span class="priority-high">High</span></td>
+                <td>JWT Token Generation, Password Hashing, Validate Email</td>
+                <td>Memory Store Fallback</td>
+                <td>Creates user record with hashed password and returns bearer JWT token.</td>
+            </tr>
+            <tr>
+                <td><strong>UC-02: Login</strong></td>
+                <td>Guest / Admin</td>
+                <td><span class="priority-high">High</span></td>
+                <td>JWT Token Generation</td>
+                <td>Admin Hardcoded Override</td>
+                <td>Authenticates credentials and issues authenticated session token.</td>
+            </tr>
+            <tr>
+                <td><strong>UC-03: View Profile</strong></td>
+                <td>User</td>
+                <td><span class="priority-med">Medium</span></td>
+                <td>JWT Protection Middleware</td>
+                <td>—</td>
+                <td>Retrieves authenticated user profile and lifestyle parameters.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>4.2 Vehicle Discovery & Recommendation Engine Module</h2>
+    <p>
+        Gathers 30+ lifestyle parameters through an interactive questionnaire, processes constraints through the 12-dimension suitability engine,
+        and presents ranked, categorized recommendations.
+    </p>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/03_Vehicle_Discovery_Recommendations_UseCase.png" alt="Figure 3: Vehicle Discovery & Recommendation Engine Use Case" class="diagram-img"/>
+                <div class="figure-caption">Figure 3: Vehicle Discovery & Recommendation Engine Use Case</div>
+            </div>
+            
+
+    <table>
+        <thead>
+            <tr>
+                <th>Use Case</th>
+                <th>Actor</th>
+                <th>Priority</th>
+                <th>«include»</th>
+                <th>«extend»</th>
+                <th>Functional Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>UC-05: Questionnaire</strong></td>
+                <td>User</td>
+                <td><span class="priority-high">High</span></td>
+                <td>Submit Profile for Scoring</td>
+                <td>—</td>
+                <td>Captures height, age, daily km, terrain, passengers, luggage, and budget.</td>
+            </tr>
+            <tr>
+                <td><strong>UC-06: Recommendations</strong></td>
+                <td>User</td>
+                <td><span class="priority-high">High</span></td>
+                <td>12-Dimension Suitability Engine</td>
+                <td>Filter by Category</td>
+                <td>Returns ranked list of best-fit vehicles grouped by Cars, Bikes, and Scooters.</td>
+            </tr>
+            <tr>
+                <td><strong>UC-07: Vehicle Details</strong></td>
+                <td>Guest / User</td>
+                <td><span class="priority-high">High</span></td>
+                <td>Suitability Breakdown</td>
+                <td>Save to Wishlist</td>
+                <td>Displays comprehensive specifications, NCAP safety, and score breakdowns.</td>
+            </tr>
+            <tr>
+                <td><strong>UC-08: Compare Vehicles</strong></td>
+                <td>User</td>
+                <td><span class="priority-med">Medium</span></td>
+                <td>—</td>
+                <td>—</td>
+                <td>Renders side-by-side metric comparison between selected models.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>4.3 AI Conversational Advisor Module</h2>
+    <p>
+        Leverages OpenRouter Google Gemma 4 26B LLM with dynamic context injection: user physical profile, current vehicle specifications,
+        and suitability breakdown.
+    </p>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/04_AI_Advisor_Module_UseCase.png" alt="Figure 4: AI Advisor Module Use Case" class="diagram-img"/>
+                <div class="figure-caption">Figure 4: AI Advisor Module Use Case</div>
+            </div>
+            
+
+    <h2>4.4 Saved Vehicles & Admin Management Modules</h2>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/05_Saved_Vehicles_Module_UseCase.png" alt="Figure 5: Saved Vehicles Module Use Case" class="diagram-img"/>
+                <div class="figure-caption">Figure 5: Saved Vehicles Module Use Case</div>
+            </div>
+            
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/06_Admin_Panel_Module_UseCase.png" alt="Figure 6: Admin Panel Management Use Case" class="diagram-img"/>
+                <div class="figure-caption">Figure 6: Admin Panel Management Use Case</div>
+            </div>
+            
+
+    <div class="page-break"></div>
+
+    <!-- Section 5: UML Domain Class Diagram -->
+    <h1>5. UML Domain Structural Class Diagram</h1>
+    <p>
+        The following class diagram documents the Mongoose ODM domain model hierarchy, embedded documents, and computational objects.
+    </p>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/07_UML_Class_Diagram.png" alt="Figure 7: UML Domain Class Diagram" class="diagram-img"/>
+                <div class="figure-caption">Figure 7: UML Domain Class Diagram</div>
+            </div>
+            
+
+    <table>
+        <thead>
+            <tr>
+                <th>Entity Class</th>
+                <th>Type</th>
+                <th>Attributes & Types</th>
+                <th>Relationships & Associations</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>User</strong></td>
+                <td>Mongoose Model</td>
+                <td>name: String, email: String, password: String, role: Enum, profile: Profile</td>
+                <td>Composition with <code>Profile</code> (1:1). References <code>SavedVehicle</code> (1:N).</td>
+            </tr>
+            <tr>
+                <td><strong>Vehicle</strong></td>
+                <td>Mongoose Model</td>
+                <td>brand, model, category, bodyType, priceFrom, priceTo, mileage, groundClearance, safetyRating, baseScores: BaseScores, trimVariants: TrimVariant[]</td>
+                <td>Composition with <code>BaseScores</code> (1:1). Composition with <code>TrimVariant</code> (1:N).</td>
+            </tr>
+            <tr>
+                <td><strong>Bike</strong></td>
+                <td>Mongoose Model</td>
+                <td>brand, model, category, seatHeight, kerbWeight, riderTriangle, idealInseamMin, pillionSeatComfort, baseScores: BikeBaseScores</td>
+                <td>Composition with <code>BikeBaseScores</code> (1:1).</td>
+            </tr>
+            <tr>
+                <td><strong>SavedVehicle</strong></td>
+                <td>Mongoose Model</td>
+                <td>vehicleId: ObjectId (Ref), suitabilityScore: Number, savedAt: Date</td>
+                <td>Association with <code>Vehicle</code>.</td>
+            </tr>
+            <tr>
+                <td><strong>SuitabilityResult</strong></td>
+                <td>Compute Object</td>
+                <td>overallScore: Number, budgetStatus: String, dimensionScores: Map, strengths: String[], considerations: String[]</td>
+                <td>Computed output of <code>SuitabilityEngine</code> for any Vehicle + Profile.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 6: System Architecture -->
+    <h1>6. System Architecture & Component Interaction</h1>
+    <p>
+        Visualizes the 4-tier deployment topology: Client Tier (Vite React), Server Tier (Node.js Express),
+        Persistence Tier (MongoDB Atlas), and External AI Tier (OpenRouter Gemma).
+    </p>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/08_System_Architecture_Diagram.png" alt="Figure 8: 4-Tier System Architecture & Deployment Diagram" class="diagram-img"/>
+                <div class="figure-caption">Figure 8: 4-Tier System Architecture & Deployment Diagram</div>
+            </div>
+            
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/11_Component_Interaction_Summary.png" alt="Figure 9: Frontend Components to Express Endpoints Interaction Map" class="diagram-img"/>
+                <div class="figure-caption">Figure 9: Frontend Components to Express Endpoints Interaction Map</div>
+            </div>
+            
+
+    <div class="page-break"></div>
+
+    <!-- Section 7: Sequence Diagrams -->
+    <h1>7. Behavioral UML Sequence Diagrams</h1>
+
+    <h2>7.1 AI Advisor Chat Interaction Flow</h2>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/09_Sequence_AI_Advisor_Chat.png" alt="Figure 10: UML Sequence Diagram — AI Advisor Chat Interaction Flow" class="diagram-img"/>
+                <div class="figure-caption">Figure 10: UML Sequence Diagram — AI Advisor Chat Interaction Flow</div>
+            </div>
+            
+
+    <h2>7.2 Vehicle Recommendation & Scoring Execution Flow</h2>
+    
+            <div class="figure-container">
+                <img src="file:///c:/Users/yukta/OneDrive/Desktop/AutoDezire/docs/diagrams/png/10_Sequence_Vehicle_Recommendation.png" alt="Figure 11: UML Sequence Diagram — Vehicle Recommendation & Scoring Flow" class="diagram-img"/>
+                <div class="figure-caption">Figure 11: UML Sequence Diagram — Vehicle Recommendation & Scoring Flow</div>
+            </div>
+            
+
+    <div class="page-break"></div>
+
+    <!-- Section 8: Traceability Matrix -->
+    <h1>8. Requirements Traceability Matrix (RTM)</h1>
+    <p>
+        Maps functional use cases to backend REST API endpoints and React frontend components.
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">UC ID</th>
+                <th style="width: 25%;">Use Case Title</th>
+                <th style="width: 15%;">Actor</th>
+                <th style="width: 25%;">REST API Endpoint</th>
+                <th>Frontend Component</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>UC-01</td><td>Register Account</td><td>Guest</td><td>POST /api/auth/register</td><td>AuthModal.jsx</td></tr>
+            <tr><td>UC-02</td><td>Login</td><td>Guest / Admin</td><td>POST /api/auth/login</td><td>AuthModal.jsx</td></tr>
+            <tr><td>UC-03</td><td>View Profile</td><td>User</td><td>GET /api/auth/me</td><td>SettingsView.jsx</td></tr>
+            <tr><td>UC-04</td><td>Search / Filter Vehicles</td><td>Guest / User</td><td>GET /api/vehicles</td><td>SearchVehicleView.jsx</td></tr>
+            <tr><td>UC-05</td><td>Submit Questionnaire</td><td>User</td><td>POST /api/recommendations</td><td>QuestionnaireView.jsx</td></tr>
+            <tr><td>UC-06</td><td>Get AI Recommendations</td><td>User</td><td>POST /api/recommendations</td><td>RecommendationsView.jsx</td></tr>
+            <tr><td>UC-07</td><td>View Vehicle Details</td><td>Guest / User</td><td>GET /api/vehicles/:id</td><td>EvaluationView.jsx</td></tr>
+            <tr><td>UC-08</td><td>Compare Vehicles</td><td>User</td><td>Local State / Store</td><td>CompareView.jsx</td></tr>
+            <tr><td>UC-09</td><td>Chat with AI Advisor</td><td>Guest / User</td><td>POST /api/ai/chat</td><td>AIAdvisorView.jsx</td></tr>
+            <tr><td>UC-10</td><td>Receive AI Advice</td><td>AI Service</td><td>OpenRouter API</td><td>AIAdvisorView.jsx</td></tr>
+            <tr><td>UC-11</td><td>Save Vehicle Wishlist</td><td>User</td><td>POST /api/saved</td><td>EvaluationView.jsx</td></tr>
+            <tr><td>UC-12</td><td>View Saved Vehicles</td><td>User</td><td>GET /api/saved</td><td>SavedVehiclesView.jsx</td></tr>
+            <tr><td>UC-13</td><td>Remove Saved Vehicle</td><td>User</td><td>DELETE /api/saved/:id</td><td>SavedVehiclesView.jsx</td></tr>
+            <tr><td>UC-14</td><td>View Admin Metrics</td><td>Admin</td><td>GET /api/admin/metrics</td><td>AdminDashboard.jsx</td></tr>
+            <tr><td>UC-15</td><td>Browse Admin Inventory</td><td>Admin</td><td>GET /api/admin/vehicles</td><td>AdminDashboard.jsx</td></tr>
+            <tr><td>UC-16</td><td>Add Vehicle</td><td>Admin</td><td>POST /api/admin/vehicles</td><td>AdminDashboard.jsx</td></tr>
+            <tr><td>UC-17</td><td>Edit Vehicle</td><td>Admin</td><td>PUT /api/admin/vehicles/:id</td><td>AdminDashboard.jsx</td></tr>
+            <tr><td>UC-18</td><td>Delete Vehicle</td><td>Admin</td><td>DELETE /api/admin/vehicles/:id</td><td>AdminDashboard.jsx</td></tr>
+            <tr><td>UC-19</td><td>12-Dim Suitability Engine</td><td>System Engine</td><td>suitabilityEngine.js</td><td>Backend Internal</td></tr>
+            <tr><td>UC-20</td><td>Interactive Video Scrub</td><td>Guest</td><td>Client State</td><td>ScrollScrubbingLanding.jsx</td></tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

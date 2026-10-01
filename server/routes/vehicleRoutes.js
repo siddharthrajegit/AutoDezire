@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getAllVehicles, getVehicleById, getAllBikes, getBikeById } = require('../services/store');
 const { evaluateVehicleSuitability } = require('../services/suitabilityEngine');
+const { sendError } = require('../middleware/errorHelper');
 
 // GET /api/vehicles/bikes - List all 2-wheelers with optional brand, category, search
 router.get('/bikes', async (req, res) => {
@@ -10,7 +11,7 @@ router.get('/bikes', async (req, res) => {
     const bikes = await getAllBikes({ category, brand, search });
     res.json({ success: true, count: bikes.length, data: bikes });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -21,7 +22,7 @@ router.get('/', async (req, res) => {
     const vehicles = await getAllVehicles({ category, brand, search, type });
     res.json({ success: true, count: vehicles.length, data: vehicles });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -34,7 +35,7 @@ router.get('/:id', async (req, res) => {
     }
     res.json({ success: true, data: vehicle });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 
@@ -72,7 +73,7 @@ router.post('/evaluate', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 

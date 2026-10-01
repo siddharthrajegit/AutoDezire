@@ -71,12 +71,30 @@ export async function sendAiAdvisorChat(payload) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error('AI Advisor request failed');
-    const data = await res.json();
-    return data.data?.reply || 'I am analyzing your query against the vehicle specifications and user requirements.';
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      const errorMsg = data?.message || `AI service returned error (HTTP ${res.status})`;
+      return {
+        success: false,
+        error: errorMsg,
+        status: res.status
+      };
+    }
+
+    return {
+      success: true,
+      reply: data?.data?.reply || '',
+      model: data?.data?.model || 'google/gemma-4-26b-a4b',
+      timestamp: data?.data?.timestamp || new Date().toISOString()
+    };
   } catch (error) {
-    console.warn('[API] sendAiAdvisorChat fallback:', error.message);
-    return null;
+    console.warn('[API] sendAiAdvisorChat error:', error.message);
+    return {
+      success: false,
+      error: 'Unable to connect to AutoDezire AI service. Please verify your connection.'
+    };
   }
 }
 

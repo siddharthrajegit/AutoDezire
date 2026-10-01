@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getAllVehicles } = require('../services/store');
 const { evaluateVehicleSuitability } = require('../services/suitabilityEngine');
+const { sendError } = require('../middleware/errorHelper');
 
 // POST /api/recommendations - Process user profile questionnaire and return weighted recommendations
 router.post('/', async (req, res) => {
@@ -54,7 +55,7 @@ router.post('/', async (req, res) => {
       evaluatedAt: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    sendError(res, error);
   }
 });
 

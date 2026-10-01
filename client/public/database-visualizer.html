@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoDezire - Database & Schema Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(249, 115, 22, 0.4);
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-orange: #f97316;
+      --accent-orange-glow: rgba(249, 115, 22, 0.25);
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
+      --accent-yellow: #eab308;
+      --accent-pink: #ec4899;
+      --accent-blue: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px var(--accent-orange-glow);
+    }
+
+    .brand-title h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #d1d5db);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-orange);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      border-color: #f97316;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--accent-orange-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #ea580c, #c2410c);
+      box-shadow: 0 6px 18px var(--accent-orange-glow);
+    }
+
+    /* Stat Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-highlight);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Navigation Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: rgba(249, 115, 22, 0.12);
+      border-color: rgba(249, 115, 22, 0.4);
+      color: var(--accent-orange);
+    }
+
+    .tab-badge {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .tab-btn.active .tab-badge {
+      background: var(--accent-orange);
+      color: #fff;
+    }
+
+    /* ER Diagram Section */
+    .er-diagram-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .er-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .er-node {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .er-node:hover {
+      border-color: var(--accent-orange);
+      transform: translateY(-3px);
+    }
+
+    .er-node-header {
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .er-node-header h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .er-node-body {
+      padding: 0.75rem 1.25rem;
+      font-size: 0.825rem;
+    }
+
+    .er-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .er-field:last-child {
+      border-bottom: none;
+    }
+
+    .er-field-name {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .er-tag {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .tag-pk {
+      background: rgba(234, 179, 8, 0.2);
+      color: var(--accent-yellow);
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+
+    .tag-fk {
+      background: rgba(168, 85, 247, 0.2);
+      color: var(--accent-purple);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+
+    .tag-idx {
+      background: rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      background: var(--bg-card);
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.6rem 1rem 0.6rem 2.4rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-orange);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .filter-select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Attribute Table */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .table-header-meta {
+      padding: 1.25rem 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .table-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .table-title h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .table-badge-count {
+      font-size: 0.75rem;
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--accent-orange);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    th {
+      background: rgba(17, 24, 39, 0.95);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+
+    td {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .field-col {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Type Badges */
+    .type-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .type-string { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .type-number { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .type-boolean { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+    .type-array { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .type-object { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); }
+    .type-objectid { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .type-date { background: rgba(107, 114, 128, 0.2); color: #d1d5db; border: 1px solid rgba(107, 114, 128, 0.4); }
+
+    .req-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+    .req-yes { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .req-no { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+
+    .val-default {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .desc-text {
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      line-height: 1.4;
+    }
+
+    .badge-category {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+    }
+
+    /* Relationship Connector lines description */
+    .relation-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      background: rgba(249, 115, 22, 0.05);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .relation-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.875rem;
+    }
+
+    .arrow-icon {
+      color: var(--accent-orange);
+      font-weight: bold;
+    }
+
+    /* JSON Modal / Drawer */
+    .json-preview {
+      background: #060910;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.78rem;
+      color: #93c5fd;
+      overflow-x: auto;
+      max-height: 250px;
+      margin-top: 0.5rem;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #000; }
+      .container { max-width: 100%; padding: 0; }
+      .table-card { border: 1px solid #ccc; box-shadow: none; }
+      th { background: #f0f0f0; color: #000; }
+      td { border-bottom: 1px solid #ddd; }
+      .tabs-nav, .filter-bar, .header-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand-group">
+        <div class="logo-badge">🚗</div>
+        <div class="brand-title">
+          <h1>AutoDezire Database Schema & Tables Visualizer</h1>
+          <p>Complete Entity-Relationship (ER) Schema, Table Counts & Attributes Dictionary</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" onclick="window.print()">🖨️ Print / Export PDF</button>
+        <button class="btn btn-primary" onclick="exportSchemaJson()">⬇️ Export Schema JSON</button>
+      </div>
+    </header>
+
+    <!-- Stat Cards Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(249, 115, 22, 0.15); color: var(--accent-orange);">🗄️</div>
+        <div>
+          <div class="stat-val" id="stat-tables-count">4</div>
+          <div class="stat-label">Total Tables / Collections</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">📋</div>
+        <div>
+          <div class="stat-val" id="stat-attributes-count">175+</div>
+          <div class="stat-label">Total Document Attributes</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">⚡</div>
+        <div>
+          <div class="stat-val">MongoDB</div>
+          <div class="stat-label">Engine: Mongoose + Memory Fallback</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">🔗</div>
+        <div>
+          <div class="stat-val">Hybrid</div>
+          <div class="stat-label">Normalized Auth + Rich Denorm Specs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relationship Highlights Banner -->
+    <div class="relation-banner">
+      <div class="relation-item">
+        <span class="tag-fk er-tag">FK</span>
+        <span><strong>SavedVehicles.userId</strong> <span class="arrow-icon">➔</span> <strong>Users._id</strong> (1 : N)</span>
+      </div>
+      <div class="relation-item">
+        <span class="tag-fk er-tag">FK</span>
+        <span><strong>SavedVehicles.vehicleId</strong> <span class="arrow-icon">➔</span> <strong>Vehicles._id</strong> or <strong>Bikes._id</strong> (Polymorphic Reference)</span>
+      </div>
+      <div class="relation-item">
+        <span class="tag-idx er-tag">UNIQUE INDEX</span>
+        <span><strong>SavedVehicles compound</strong>: <code>{ userId: 1, vehicleId: 1 }</code> (Prevents duplicates)</span>
+      </div>
+      <div class="relation-item">
+        <span class="tag-idx er-tag">UNIQUE</span>
+        <span><strong>Users.email</strong> (Lowercase unique index for auth)</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav" id="tabsNav">
+      <button class="tab-btn active" onclick="switchTab('all')">
+        <span>👁️ Visual ER Diagram & Architecture</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('vehicles')">
+        <span>🚗 Vehicles (Cars)</span>
+        <span class="tab-badge" id="badge-cars">73</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('bikes')">
+        <span>🏍️ Bikes & Scooters</span>
+        <span class="tab-badge" id="badge-bikes">64</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('users')">
+        <span>👤 Users & Profiles</span>
+        <span class="tab-badge" id="badge-users">37</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('saved')">
+        <span>🔖 Saved Vehicles</span>
+        <span class="tab-badge" id="badge-saved">7</span>
+      </button>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="filter-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Search any attribute, type, description across collections..."
+          oninput="handleSearch()"
+        />
+      </div>
+      <select id="typeFilter" class="filter-select" onchange="handleSearch()">
+        <option value="">All Data Types</option>
+        <option value="String">String</option>
+        <option value="Number">Number</option>
+        <option value="Boolean">Boolean</option>
+        <option value="Array">Array</option>
+        <option value="Object">Object / Subdocument</option>
+        <option value="ObjectId">ObjectId (Ref)</option>
+      </select>
+      <select id="requiredFilter" class="filter-select" onchange="handleSearch()">
+        <option value="">All Constraints</option>
+        <option value="required">Required Only</option>
+        <option value="optional">Optional Only</option>
+      </select>
+    </div>
+
+    <!-- VIEW 1: Visual ER Diagram -->
+    <div id="view-diagram" class="er-diagram-container">
+      <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">Entity-Relationship Map (4 Collections)</h2>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Interactive overview of AutoDezire's collections, schema links, and subdocuments.</p>
+        </div>
+        <span style="font-size: 0.75rem; color: var(--accent-orange); font-family: 'JetBrains Mono', monospace;">Click any card to inspect full attributes</span>
+      </div>
+
+      <div class="er-grid">
+        <!-- Node 1: Users -->
+        <div class="er-node" onclick="switchTab('users')">
+          <div class="er-node-header" style="background: rgba(59, 130, 246, 0.1);">
+            <h3><span>👤</span> users</h3>
+            <span class="badge-category">37 fields</span>
+          </div>
+          <div class="er-node-body">
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-pk er-tag">PK</span> _id</span>
+              <span class="type-pill type-objectid">ObjectId</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-idx er-tag">UQ</span> email</span>
+              <span class="type-pill type-string">String</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">name</span>
+              <span class="type-pill type-string">String</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">role</span>
+              <span class="type-pill type-string">'user' | 'admin'</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">profile</span>
+              <span class="type-pill type-object">Object (30+ subfields)</span>
+            </div>
+            <div class="er-field" style="color: var(--text-muted); font-size: 0.75rem; padding-top: 0.5rem;">
+              <span>↳ Driving experience, usage, budget, priorities</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 2: SavedVehicles (Junction) -->
+        <div class="er-node" onclick="switchTab('saved')" style="border-color: rgba(168, 85, 247, 0.4);">
+          <div class="er-node-header" style="background: rgba(168, 85, 247, 0.1);">
+            <h3><span>🔖</span> savedvehicles</h3>
+            <span class="badge-category">Junction Table</span>
+          </div>
+          <div class="er-node-body">
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-pk er-tag">PK</span> _id</span>
+              <span class="type-pill type-objectid">ObjectId</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-fk er-tag">FK</span> userId</span>
+              <span class="type-pill type-objectid">Ref: users</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-fk er-tag">FK</span> vehicleId</span>
+              <span class="type-pill type-objectid">Ref: vehicles / bikes</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">suitabilityScoreAtSave</span>
+              <span class="type-pill type-number">Number</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-idx er-tag">UQ</span> {userId, vehicleId}</span>
+              <span class="type-pill type-object">Compound Index</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 3: Vehicles (Cars) -->
+        <div class="er-node" onclick="switchTab('vehicles')">
+          <div class="er-node-header" style="background: rgba(249, 115, 22, 0.1);">
+            <h3><span>🚗</span> vehicles</h3>
+            <span class="badge-category">73 fields</span>
+          </div>
+          <div class="er-node-body">
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-pk er-tag">PK</span> _id</span>
+              <span class="type-pill type-objectid">ObjectId</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">brand, model, category</span>
+              <span class="type-pill type-string">String</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">priceFrom, priceTo</span>
+              <span class="type-pill type-number">Number (Lakhs)</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">groundClearance, dimensions</span>
+              <span class="type-pill type-number">mm specs</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">baseScores</span>
+              <span class="type-pill type-object">Object (12 Dimensions)</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">trimVariants</span>
+              <span class="type-pill type-array">Array of Variants</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 4: Bikes & 2-Wheelers -->
+        <div class="er-node" onclick="switchTab('bikes')">
+          <div class="er-node-header" style="background: rgba(16, 185, 129, 0.1);">
+            <h3><span>🏍️</span> bikes</h3>
+            <span class="badge-category">64 fields</span>
+          </div>
+          <div class="er-node-body">
+            <div class="er-field">
+              <span class="er-field-name"><span class="tag-pk er-tag">PK</span> _id</span>
+              <span class="type-pill type-objectid">ObjectId</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">brand, model, category</span>
+              <span class="type-pill type-string">String</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">seatHeight, seatWidth</span>
+              <span class="type-pill type-number">Ergonomics</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">idealInseam, riderWeight</span>
+              <span class="type-pill type-number">Fit Criteria</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">riderTriangle, brakeSetup</span>
+              <span class="type-pill type-string">String</span>
+            </div>
+            <div class="er-field">
+              <span class="er-field-name">baseScores</span>
+              <span class="type-pill type-object">Object (10 Dimensions)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE 1: vehicles (Cars) -->
+    <div id="section-vehicles" class="table-card">
+      <div class="table-header-meta">
+        <div class="table-title">
+          <span style="font-size: 1.5rem;">🚗</span>
+          <div>
+            <h2>Collection: vehicles <span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted);">(Cars Specifications & Suitability)</span></h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Stores 4-wheeler specifications, dimensions, NCAP safety ratings, powertrain data, and baseline suitability scores.</p>
+          </div>
+        </div>
+        <span class="table-badge-count" id="count-vehicles">73 Attributes</span>
+      </div>
+      <div class="table-responsive">
+        <table id="table-vehicles">
+          <thead>
+            <tr>
+              <th style="width: 220px;">Attribute Name</th>
+              <th style="width: 140px;">Data Type</th>
+              <th style="width: 110px;">Required</th>
+              <th style="width: 160px;">Default / Constraints</th>
+              <th style="width: 130px;">Category</th>
+              <th>Description & Suitability Role</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-vehicles"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLE 2: bikes (2-Wheelers) -->
+    <div id="section-bikes" class="table-card">
+      <div class="table-header-meta">
+        <div class="table-title">
+          <span style="font-size: 1.5rem;">🏍️</span>
+          <div>
+            <h2>Collection: bikes <span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted);">(Motorcycles, Scooters & EV 2-Wheelers)</span></h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Stores 2-wheeler specifications including seat height, inseam flat-foot reach, kerb weight handling, and pillion comfort.</p>
+          </div>
+        </div>
+        <span class="table-badge-count" id="count-bikes">64 Attributes</span>
+      </div>
+      <div class="table-responsive">
+        <table id="table-bikes">
+          <thead>
+            <tr>
+              <th style="width: 220px;">Attribute Name</th>
+              <th style="width: 140px;">Data Type</th>
+              <th style="width: 110px;">Required</th>
+              <th style="width: 160px;">Default / Constraints</th>
+              <th style="width: 130px;">Category</th>
+              <th>Description & Suitability Role</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-bikes"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLE 3: users (Users & Driving Profile) -->
+    <div id="section-users" class="table-card">
+      <div class="table-header-meta">
+        <div class="table-title">
+          <span style="font-size: 1.5rem;">👤</span>
+          <div>
+            <h2>Collection: users <span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted);">(User Accounts & Questionnaire Driving Profiles)</span></h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Stores credentials, JWT auth role, and 30+ questionnaire factors (experience, usage mix, road terrain, family needs, budget).</p>
+          </div>
+        </div>
+        <span class="table-badge-count" id="count-users">37 Attributes</span>
+      </div>
+      <div class="table-responsive">
+        <table id="table-users">
+          <thead>
+            <tr>
+              <th style="width: 220px;">Attribute Name</th>
+              <th style="width: 140px;">Data Type</th>
+              <th style="width: 110px;">Required</th>
+              <th style="width: 160px;">Default / Constraints</th>
+              <th style="width: 130px;">Category</th>
+              <th>Description & Suitability Role</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-users"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLE 4: savedvehicles (Saved Bookmarks) -->
+    <div id="section-saved" class="table-card">
+      <div class="table-header-meta">
+        <div class="table-title">
+          <span style="font-size: 1.5rem;">🔖</span>
+          <div>
+            <h2>Collection: savedvehicles <span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted);">(User Bookmarks & Shortlist)</span></h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Junction collection linking users to saved vehicles with snapshot suitability match percentage and notes.</p>
+          </div>
+        </div>
+        <span class="table-badge-count" id="count-saved">7 Attributes</span>
+      </div>
+      <div class="table-responsive">
+        <table id="table-saved">
+          <thead>
+            <tr>
+              <th style="width: 220px;">Attribute Name</th>
+              <th style="width: 140px;">Data Type</th>
+              <th style="width: 110px;">Required</th>
+              <th style="width: 160px;">Default / Constraints</th>
+              <th style="width: 130px;">Category</th>
+              <th>Description & Suitability Role</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-saved"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Data definition for all 4 tables / collections
+    const schemaData = {
+      vehicles: [
+        { name: "_id", type: "ObjectId", required: true, default: "auto ObjectId", category: "Core / Identity", desc: "Unique primary key generated by MongoDB" },
+        { name: "brand", type: "String", required: true, default: "None (Trimmed)", category: "Identity", desc: "Vehicle manufacturer name (e.g. Tata, Hyundai, Mahindra, Maruti Suzuki)" },
+        { name: "model", type: "String", required: true, default: "None (Trimmed)", category: "Identity", desc: "Specific model line (e.g. Nexon, Creta, Thar, Brezza)" },
+        { name: "category", type: "String", required: true, default: "['Car', 'Motorcycle', 'Scooter']", category: "Identity", desc: "Vehicle macro-category discriminator" },
+        { name: "bodyType", type: "String", required: true, default: "SUV, Sedan, Hatchback...", category: "Identity", desc: "Car classification body style for form-factor matching" },
+        { name: "variantSummary", type: "String", required: false, default: "'Base to Top'", category: "Identity", desc: "Short descriptive label of available trims" },
+        { name: "priceFrom", type: "Number", required: true, default: "None", category: "Financial", desc: "Minimum ex-showroom price in Lakhs INR" },
+        { name: "priceTo", type: "Number", required: true, default: "None", category: "Financial", desc: "Maximum ex-showroom price in Lakhs INR" },
+        { name: "priceDisplay", type: "String", required: true, default: "None", category: "Financial", desc: "Pre-formatted price string (e.g. '₹8.69 - 16.78 Lakh*')" },
+        { name: "fuelType", type: "String", required: true, default: "None", category: "Powertrain", desc: "Primary fuel type (Petrol, Diesel, CNG, Electric, Hybrid)" },
+        { name: "availableFuelTypes", type: "Array", required: false, default: "[]", category: "Powertrain", desc: "List of all supported fuels for this model" },
+        { name: "fuelVariants", type: "Object", required: false, default: "{}", category: "Powertrain", desc: "Detailed engine / transmission specs partitioned by fuel type" },
+        { name: "transmission", type: "String", required: true, default: "None", category: "Powertrain", desc: "Gearbox setup (Manual, Automatic, CVT, DCT, EV)" },
+        { name: "engine", type: "String", required: true, default: "None", category: "Powertrain", desc: "Engine denomination or motor type (e.g. '1.2L Turbo Revotron')" },
+        { name: "engineCC", type: "Number", required: false, default: "1200", category: "Powertrain", desc: "Engine displacement in cubic centimeters (0 for EVs)" },
+        { name: "power", type: "String", required: true, default: "None", category: "Powertrain", desc: "Max engine horsepower (e.g. '118.27 bhp')" },
+        { name: "torque", type: "String", required: true, default: "None", category: "Powertrain", desc: "Max twisting force (e.g. '170 Nm')" },
+        { name: "mileage", type: "String", required: true, default: "None", category: "Efficiency", desc: "ARAI certified efficiency string (e.g. '17.0 kmpl')" },
+        { name: "mileageValue", type: "Number", required: false, default: "15", category: "Efficiency", desc: "Numeric fuel efficiency used by recommendation calculations" },
+        { name: "driveType", type: "String", required: false, default: "'FWD'", category: "Powertrain", desc: "Drivetrain setup ('FWD', 'RWD', 'AWD', '4WD')" },
+        { name: "groundClearance", type: "Number", required: true, default: "None", category: "Dimensions", desc: "Ride height clearance in mm; critical for Indian road conditions" },
+        { name: "seatingCapacity", type: "Number", required: false, default: "5", category: "Ergonomics", desc: "Number of passengers comfortably accommodated" },
+        { name: "bootSpace", type: "Number", required: false, default: "350", category: "Dimensions", desc: "Luggage capacity in Litres" },
+        { name: "seatHeight", type: "Number", required: false, default: "0", category: "Dimensions", desc: "Driver seat distance from ground in mm" },
+        { name: "kerbWeight", type: "Number", required: false, default: "1200", category: "Dimensions", desc: "Unladen vehicle weight in kg" },
+        { name: "length", type: "Number", required: false, default: "3995", category: "Dimensions", desc: "Total vehicle length in mm (affects sub-4m tax & parking)" },
+        { name: "width", type: "Number", required: false, default: "1804", category: "Dimensions", desc: "Vehicle width in mm (determines shoulder room & lane agility)" },
+        { name: "height", type: "Number", required: false, default: "1620", category: "Dimensions", desc: "Total vehicle height in mm" },
+        { name: "wheelbase", type: "Number", required: false, default: "2498", category: "Dimensions", desc: "Axle-to-axle distance in mm (governs highway ride stability)" },
+        { name: "turningRadius", type: "Number", required: false, default: "5.2", category: "Handling", desc: "Turning circle radius in meters (affects city U-turns)" },
+        { name: "cabinHeadroom", type: "Number", required: false, default: "980", category: "Ergonomics", desc: "Vertical headroom in mm inside the cabin" },
+        { name: "driverSeatHeightRange.min", type: "Number", required: false, default: "550", category: "Ergonomics", desc: "Lowest seat height adjustment in mm" },
+        { name: "driverSeatHeightRange.max", type: "Number", required: false, default: "620", category: "Ergonomics", desc: "Highest seat height adjustment in mm" },
+        { name: "roofHeight", type: "Number", required: false, default: "1620", category: "Dimensions", desc: "Roof height in mm (influences ingress/egress for elderly)" },
+        { name: "steeringType", type: "String", required: false, default: "'EPS'", category: "Handling", desc: "Steering assistance: 'EPS', 'Hydraulic', or 'Manual'" },
+        { name: "easeOfDriving", type: "String", required: false, default: "'Easy'", category: "Handling", desc: "'Very Easy', 'Easy', 'Moderate', or 'Demanding'" },
+        { name: "parkingDifficulty", type: "String", required: false, default: "'Easy'", category: "Handling", desc: "'Very Easy', 'Easy', 'Moderate', or 'Difficult'" },
+        { name: "idealHeightMin", type: "Number", required: false, default: "155", category: "Ergonomics", desc: "Minimum driver stature in cm for optimal visibility" },
+        { name: "idealHeightMax", type: "Number", required: false, default: "190", category: "Ergonomics", desc: "Maximum driver stature in cm without knee/head cramps" },
+        { name: "beginnerFriendly", type: "Boolean", required: false, default: "true", category: "Handling", desc: "Suitability flag for novice drivers with low experience" },
+        { name: "batteryCapacity", type: "String", required: false, default: "''", category: "EV Specs", desc: "Usable battery pack size (e.g. '40.5 kWh')" },
+        { name: "chargingRequired", type: "Boolean", required: false, default: "false", category: "EV Specs", desc: "Flag indicating vehicle relies on electric charge" },
+        { name: "homeChargingTime", type: "String", required: false, default: "''", category: "EV Specs", desc: "Time for AC home socket replenishment" },
+        { name: "fastChargingSupport", type: "Boolean", required: false, default: "false", category: "EV Specs", desc: "Support for DC fast chargers" },
+        { name: "evRangeReal", type: "Number", required: false, default: "0", category: "EV Specs", desc: "Realistic real-world range per full charge in km" },
+        { name: "safetyRating", type: "Number", required: false, default: "4", category: "Safety", desc: "Crash test safety score (1 to 5 Stars)" },
+        { name: "safetyAgency", type: "String", required: false, default: "'Global NCAP Rating'", category: "Safety", desc: "Testing body (Global NCAP or Bharat NCAP)" },
+        { name: "image", type: "String", required: true, default: "None", category: "Media", desc: "Primary vehicle exterior photography URL" },
+        { name: "secondaryImages", type: "Array", required: false, default: "[]", category: "Media", desc: "List of interior and side profile image URLs" },
+        { name: "description", type: "String", required: false, default: "''", category: "Media", desc: "Editorial summary highlighting key vehicle personality" },
+        { name: "baseScores.safety", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for structural rigidity & airbags" },
+        { name: "baseScores.groundClearance", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for rough terrain clearance" },
+        { name: "baseScores.comfort", type: "Number", required: false, default: "7", category: "Base Scores", desc: "Baseline rating (1-10) for suspension damping & NVH" },
+        { name: "baseScores.spacePracticality", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for passenger legroom & boot" },
+        { name: "baseScores.mileageRunningCost", type: "Number", required: false, default: "7", category: "Base Scores", desc: "Baseline rating (1-10) for fuel thriftiness" },
+        { name: "baseScores.maintenanceCost", type: "Number", required: false, default: "7", category: "Base Scores", desc: "Baseline rating (1-10) for service & spares affordability" },
+        { name: "baseScores.performance", type: "Number", required: false, default: "7", category: "Base Scores", desc: "Baseline rating (1-10) for throttle pickup & power" },
+        { name: "baseScores.resaleValue", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for market residual retention" },
+        { name: "baseScores.highwayStability", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for high-speed lane plantedness" },
+        { name: "baseScores.cityDriveSuitability", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for tight bumper-to-bumper ease" },
+        { name: "baseScores.ergonomicFit", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for seat adjustability & pedal reach" },
+        { name: "baseScores.handleability", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Baseline rating (1-10) for body roll control & steering feel" },
+        { name: "highlightBadges", type: "Array", required: false, default: "[]", category: "Metadata", desc: "Badges displayed in UI (e.g. '5-Star NCAP', 'Sunroof')" },
+        { name: "inherentStrengths", type: "Array", required: false, default: "[]", category: "Metadata", desc: "Key pros surfaced in the suitability breakdown" },
+        { name: "inherentConsiderations", type: "Array", required: false, default: "[]", category: "Metadata", desc: "Key trade-offs or cons to consider" },
+        { name: "isActive", type: "Boolean", required: false, default: "true", category: "Status", desc: "Soft-delete / catalog visibility toggle" },
+        { name: "trimVariants", type: "Array", required: false, default: "[]", category: "Trim Levels", desc: "Embedded sub-document array of trims (Pure, Adventure, Fearless)" },
+        { name: "trimVariants[].name", type: "String", required: true, default: "None", category: "Trim Levels", desc: "Trim level name (e.g. 'Creative Plus')" },
+        { name: "trimVariants[].priceApprox", type: "String", required: false, default: "''", category: "Trim Levels", desc: "Approximate ex-showroom price for this trim" },
+        { name: "trimVariants[].isTopModel", type: "Boolean", required: false, default: "false", category: "Trim Levels", desc: "Flag denoting the flagship trim variant" },
+        { name: "trimVariants[].features", type: "Object", required: false, default: "{}", category: "Trim Levels", desc: "Categorized feature checklist: safety, comfort, infotainment" },
+        { name: "createdAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Document creation UTC timestamp" },
+        { name: "updatedAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Last modification UTC timestamp" }
+      ],
+      bikes: [
+        { name: "_id", type: "ObjectId", required: true, default: "auto ObjectId", category: "Core / Identity", desc: "Unique primary key generated by MongoDB" },
+        { name: "brand", type: "String", required: true, default: "None (Trimmed)", category: "Identity", desc: "2-wheeler manufacturer (e.g. Royal Enfield, Yamaha, TVS, Ather)" },
+        { name: "model", type: "String", required: true, default: "None (Trimmed)", category: "Identity", desc: "Model title (e.g. Classic 350, MT-15 V2, Activa 6G, 450X)" },
+        { name: "category", type: "String", required: true, default: "['Motorcycle', 'Scooter', 'Electric Scooter']", category: "Identity", desc: "2-wheeler category classifier" },
+        { name: "bodyType", type: "String", required: true, default: "Cruiser, Commuter...", category: "Identity", desc: "Sub-style: Cruiser, Streetfighter, Commuter, Roadster, Sport" },
+        { name: "variantSummary", type: "String", required: false, default: "'Standard'", category: "Identity", desc: "Variant denomination indicator" },
+        { name: "priceFrom", type: "Number", required: true, default: "None", category: "Financial", desc: "Starting price in Lakhs INR (e.g. 1.93)" },
+        { name: "priceTo", type: "Number", required: true, default: "None", category: "Financial", desc: "Top price in Lakhs INR (e.g. 2.30)" },
+        { name: "priceDisplay", type: "String", required: true, default: "None", category: "Financial", desc: "Formatted price banner (e.g. '₹1.93 - 2.30 Lakh*')" },
+        { name: "fuelType", type: "String", required: true, default: "Petrol / Electric", category: "Powertrain", desc: "Primary energy carrier (Petrol or Electric)" },
+        { name: "transmission", type: "String", required: true, default: "None", category: "Powertrain", desc: "Transmission setup (5-Speed Manual, 6-Speed, CVT Automatic)" },
+        { name: "engine", type: "String", required: true, default: "None", category: "Powertrain", desc: "Engine or Motor tech description (e.g. '349cc Air-Oil Cooled')" },
+        { name: "engineCC", type: "Number", required: false, default: "125", category: "Powertrain", desc: "Cubic capacity displacement (0 for EV)" },
+        { name: "power", type: "String", required: true, default: "None", category: "Powertrain", desc: "Engine peak power (e.g. '20.2 bhp')" },
+        { name: "torque", type: "String", required: true, default: "None", category: "Powertrain", desc: "Peak torque (e.g. '27 Nm')" },
+        { name: "mileage", type: "String", required: true, default: "None", category: "Efficiency", desc: "Certified fuel mileage or range string (e.g. '37.0 kmpl')" },
+        { name: "mileageValue", type: "Number", required: false, default: "45", category: "Efficiency", desc: "Numeric fuel efficiency for suitability algorithm" },
+        { name: "driveType", type: "String", required: false, default: "'Chain'", category: "Powertrain", desc: "Final drive transmission ('Chain' or 'Belt')" },
+        { name: "seatHeight", type: "Number", required: true, default: "None", category: "Ergonomics", desc: "Rider saddle height in mm (crucial for flat-foot reach)" },
+        { name: "seatWidth", type: "String", required: false, default: "'Medium'", category: "Ergonomics", desc: "Saddle contour width ('Narrow', 'Medium', 'Wide Sprung')" },
+        { name: "kerbWeight", type: "Number", required: true, default: "None", category: "Handling", desc: "Wet weight in kg (influences balance for lighter riders)" },
+        { name: "groundClearance", type: "Number", required: true, default: "None", category: "Dimensions", desc: "Lowest bike point clearance in mm (speedbreaker protection)" },
+        { name: "length", type: "Number", required: false, default: "2000", category: "Dimensions", desc: "Total length in mm" },
+        { name: "width", type: "Number", required: false, default: "750", category: "Dimensions", desc: "Handlebar width in mm" },
+        { name: "height", type: "Number", required: false, default: "1100", category: "Dimensions", desc: "Overall vertical height in mm" },
+        { name: "wheelbase", type: "Number", required: false, default: "1300", category: "Dimensions", desc: "Distance between front and rear axle in mm" },
+        { name: "riderTriangle", type: "String", required: false, default: "'Upright Commuter'", category: "Ergonomics", desc: "Posture geometry ('Upright Commuter', 'Cruiser', 'Sporty Forward')" },
+        { name: "seatToFootpegHeight", type: "Number", required: false, default: "410", category: "Ergonomics", desc: "Distance from seat to pegs in mm (knee flexion angle)" },
+        { name: "handlebarReach", type: "Number", required: false, default: "580", category: "Ergonomics", desc: "Horizontal reach from seat edge to grips in mm" },
+        { name: "idealHeightMin", type: "Number", required: false, default: "155", category: "Rider Fit", desc: "Minimum rider height in cm" },
+        { name: "idealHeightMax", type: "Number", required: false, default: "190", category: "Rider Fit", desc: "Maximum rider height in cm" },
+        { name: "idealInseamMin", type: "Number", required: false, default: "72", category: "Rider Fit", desc: "Minimum rider leg inseam in cm for safe confident stopping" },
+        { name: "idealInseamMax", type: "Number", required: false, default: "95", category: "Rider Fit", desc: "Maximum leg inseam without folded knees" },
+        { name: "idealRiderWeightMin", type: "Number", required: false, default: "50", category: "Rider Fit", desc: "Recommended minimum rider body weight in kg" },
+        { name: "idealRiderWeightMax", type: "Number", required: false, default: "110", category: "Rider Fit", desc: "Recommended maximum rider weight without suspension bottoming" },
+        { name: "pillionSeatComfort", type: "Number", required: false, default: "7", category: "Practicality", desc: "Passenger comfort score (1-10) based on seat cushioning & grab rails" },
+        { name: "underseatStorageLitres", type: "Number", required: false, default: "0", category: "Practicality", desc: "Storage space under the seat (0 for bikes, 18-34L for scooters)" },
+        { name: "brakeSetup", type: "String", required: false, default: "'Disc/Drum'", category: "Safety", desc: "Braking hardware: 'Dual-Channel ABS', 'Single-Channel ABS', 'CBS'" },
+        { name: "beginnerFriendly", type: "Boolean", required: false, default: "true", category: "Handling", desc: "Friendly clutch & linear throttle suitable for learners" },
+        { name: "batteryCapacity", type: "String", required: false, default: "''", category: "EV Specs", desc: "Battery size (e.g. '3.7 kWh' for Ather / Ola)" },
+        { name: "chargingRequired", type: "Boolean", required: false, default: "false", category: "EV Specs", desc: "Indicates electric powertrain vehicle" },
+        { name: "homeChargingTime", type: "String", required: false, default: "''", category: "EV Specs", desc: "Standard household socket charging duration" },
+        { name: "fastChargingSupport", type: "Boolean", required: false, default: "false", category: "EV Specs", desc: "Grid fast charger compatibility" },
+        { name: "evRangeReal", type: "Number", required: false, default: "0", category: "EV Specs", desc: "Real-world range in TrueRange / Eco mode in km" },
+        { name: "safetyRating", type: "Number", required: false, default: "4", category: "Safety", desc: "Safety index rating (1-5)" },
+        { name: "safetyAgency", type: "String", required: false, default: "'Braking & Chassis Spec'", category: "Safety", desc: "Evaluation benchmark authority" },
+        { name: "image", type: "String", required: true, default: "None", category: "Media", desc: "High-resolution side perspective image URL" },
+        { name: "secondaryImages", type: "Array", required: false, default: "[]", category: "Media", desc: "Additional angle images" },
+        { name: "description", type: "String", required: false, default: "''", category: "Media", desc: "Short overview of riding dynamics & character" },
+        { name: "baseScores.mileageRunningCost", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Fuel economy and commute economy score (1-10)" },
+        { name: "baseScores.ergonomicFlatFoot", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Flat-footing ground accessibility score (1-10)" },
+        { name: "baseScores.riderWeightHandling", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Ease of moving & parking in tight spaces (1-10)" },
+        { name: "baseScores.cityTrafficAgility", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Flickability through dense traffic jams (1-10)" },
+        { name: "baseScores.pillionComfort", type: "Number", required: false, default: "7", category: "Base Scores", desc: "Two-up touring comfort & footrest placement (1-10)" },
+        { name: "baseScores.underseatStorage", type: "Number", required: false, default: "5", category: "Base Scores", desc: "Helmet & grocery hauling practicality (1-10)" },
+        { name: "baseScores.highwayTouringPoise", type: "Number", required: false, default: "7", category: "Base Scores", desc: "Wind resistance & 90 km/h cruising stability (1-10)" },
+        { name: "baseScores.brakingSafety", type: "Number", required: false, default: "8", category: "Base Scores", desc: "ABS modulation & emergency stopping distance (1-10)" },
+        { name: "baseScores.maintenanceCost", type: "Number", required: false, default: "8", category: "Base Scores", desc: "Service intervals & spare parts pricing (1-10)" },
+        { name: "baseScores.performanceAcceleration", type: "Number", required: false, default: "7", category: "Base Scores", desc: "0-60 km/h acceleration & roll-on overtaking (1-10)" },
+        { name: "highlightBadges", type: "Array", required: false, default: "[]", category: "Metadata", desc: "Highlights ('Dual-Channel ABS', 'Assist Slipper Clutch')" },
+        { name: "inherentStrengths", type: "Array", required: false, default: "[]", category: "Metadata", desc: "Algorithmic advantages surfaced in evaluation" },
+        { name: "inherentConsiderations", type: "Array", required: false, default: "[]", category: "Metadata", desc: "Cautions (e.g. 'Heavier kerb weight in bumper-to-bumper')" },
+        { name: "isActive", type: "Boolean", required: false, default: "true", category: "Status", desc: "Catalog visibility status" },
+        { name: "createdAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Document creation timestamp" },
+        { name: "updatedAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Last modification timestamp" }
+      ],
+      users: [
+        { name: "_id", type: "ObjectId", required: true, default: "auto ObjectId", category: "Core / Auth", desc: "Unique user identifier in MongoDB" },
+        { name: "name", type: "String", required: true, default: "None", category: "Core / Auth", desc: "User's full name" },
+        { name: "email", type: "String", required: true, default: "None (Unique, Lowercase)", category: "Core / Auth", desc: "Unique account email, indexed for fast credential lookup" },
+        { name: "password", type: "String", required: true, default: "None", category: "Core / Auth", desc: "Bcrypt salted hash string (10 rounds)" },
+        { name: "role", type: "String", required: false, default: "'user' | 'admin'", category: "Core / Auth", desc: "Access authorization role for Admin portal access" },
+        { name: "profile.height", type: "Number", required: false, default: "172", category: "Profile: Ergonomics", desc: "User physical height in cm; drives ergonomic suitability algorithm" },
+        { name: "profile.age", type: "Number", required: false, default: "28", category: "Profile: Demographics", desc: "User age; adjusts comfort and suspension weighting" },
+        { name: "profile.categoryPreference", type: "String", required: false, default: "'All'", category: "Profile: Preference", desc: "Filtered vehicle scope: 'All', 'Car', 'Motorcycle', 'Scooter'" },
+        { name: "profile.yearsExperience", type: "Number", required: false, default: "5", category: "Profile: Experience", desc: "Total years holding driving license" },
+        { name: "profile.totalKm", type: "Number", required: false, default: "35000", category: "Profile: Experience", desc: "Estimated lifetime distance driven in km" },
+        { name: "profile.previousVehicles", type: "String", required: false, default: "'Hatchback'", category: "Profile: Experience", desc: "Previous vehicle owned (e.g. 'Hatchback', 'Sedan', 'Bike')" },
+        { name: "profile.cityExperience", type: "Number", required: false, default: "8", category: "Profile: Experience", desc: "Self-rated comfort (1-10) driving in congested city streets" },
+        { name: "profile.highwayExperience", type: "Number", required: false, default: "7", category: "Profile: Experience", desc: "Self-rated comfort (1-10) on fast multi-lane highways" },
+        { name: "profile.ruralExperience", type: "Number", required: false, default: "5", category: "Profile: Experience", desc: "Self-rated comfort (1-10) on unpaved rural tracks" },
+        { name: "profile.hillsExperience", type: "Number", required: false, default: "5", category: "Profile: Experience", desc: "Self-rated comfort (1-10) in mountain ghats and hairpin bends" },
+        { name: "profile.roughRoadExperience", type: "Number", required: false, default: "6", category: "Profile: Experience", desc: "Self-rated comfort (1-10) handling broken roads & craters" },
+        { name: "profile.dailyKm", type: "Number", required: false, default: "35", category: "Profile: Usage", desc: "Average daily driving commute in km" },
+        { name: "profile.monthlyKm", type: "Number", required: false, default: "1100", category: "Profile: Usage", desc: "Average monthly driving total (triggers EV vs Diesel economics)" },
+        { name: "profile.cityPercent", type: "Number", required: false, default: "60", category: "Profile: Usage", desc: "Percentage of driving in city conditions" },
+        { name: "profile.highwayPercent", type: "Number", required: false, default: "30", category: "Profile: Usage", desc: "Percentage of driving on high-speed expressways" },
+        { name: "profile.ruralPercent", type: "Number", required: false, default: "10", category: "Profile: Usage", desc: "Percentage of driving in rural / broken road environments" },
+        { name: "profile.journeyDurationMinutes", type: "Number", required: false, default: "45", category: "Profile: Usage", desc: "Continuous driving stretch duration in minutes" },
+        { name: "profile.longDistanceFrequency", type: "String", required: false, default: "'Monthly'", category: "Profile: Usage", desc: "Outstation trip cadence: 'Weekly', 'Monthly', 'Occasionally', 'Rarely'" },
+        { name: "profile.roadConditions", type: "String", required: false, default: "'Mixed with Potholes'", category: "Profile: Environment", desc: "Primary road terrain: 'Smooth', 'Mixed with Potholes', 'Bad'" },
+        { name: "profile.regularPassengers", type: "Number", required: false, default: "2", category: "Profile: Practicality", desc: "Standard passenger head-count during daily commutes" },
+        { name: "profile.maxPassengers", type: "Number", required: false, default: "5", category: "Profile: Practicality", desc: "Maximum passenger capacity needed for family excursions" },
+        { name: "profile.hasChildren", type: "Boolean", required: false, default: "false", category: "Profile: Practicality", desc: "Requires ISOFIX child seat mounts & rear door safety child locks" },
+        { name: "profile.hasElderly", type: "Boolean", required: false, default: "false", category: "Profile: Practicality", desc: "Prioritizes low door sills, upright seating & easy ingress/egress" },
+        { name: "profile.luggageRequirement", type: "String", required: false, default: "'Medium'", category: "Profile: Practicality", desc: "Boot space demand: 'Light', 'Medium', 'Heavy'" },
+        { name: "profile.pillionFrequency", type: "String", required: false, default: "'Occasional'", category: "Profile: 2-Wheeler", desc: "2-wheeler passenger frequency: 'Never', 'Occasional', 'Daily'" },
+        { name: "profile.storageRequirement", type: "String", required: false, default: "'Medium'", category: "Profile: 2-Wheeler", desc: "Two-wheeler underseat storage need: 'Light', 'Medium', 'Heavy'" },
+        { name: "profile.budget", type: "Number", required: false, default: "14", category: "Profile: Financial", desc: "Upper on-road / ex-showroom price target in Lakhs INR" },
+        { name: "profile.expectedOwnershipYears", type: "Number", required: false, default: "5", category: "Profile: Financial", desc: "Planned holding period before resale" },
+        { name: "profile.runningCostImportance", type: "String", required: false, default: "'High'", category: "Profile: Financial", desc: "Sensitivity to fuel bills: 'High', 'Medium', 'Low'" },
+        { name: "profile.topPriorities", type: "Array", required: false, default: "['Safety', 'Ground Clearance', 'Comfort']", category: "Profile: Priorities", desc: "Top 3 weighted priorities for the AI recommendation formula (max 3)" },
+        { name: "createdAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Account registration timestamp" },
+        { name: "updatedAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Last profile update timestamp" }
+      ],
+      saved: [
+        { name: "_id", type: "ObjectId", required: true, default: "auto ObjectId", category: "Core / Identity", desc: "Unique bookmark entry primary key" },
+        { name: "userId", type: "ObjectId", required: true, default: "Ref: 'User'", category: "Relational Reference", desc: "Foreign key pointer to the saved User document (_id)" },
+        { name: "vehicleId", type: "ObjectId", required: true, default: "Ref: 'Vehicle'", category: "Relational Reference", desc: "Foreign key pointer to Vehicle._id or Bike._id" },
+        { name: "suitabilityScoreAtSave", type: "Number", required: false, default: "null", category: "Snapshot Score", desc: "Match percentage calculated by the recommendation engine when saved" },
+        { name: "notes", type: "String", required: false, default: "''", category: "User Notes", desc: "Personal user commentary or test-drive notes" },
+        { name: "createdAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Bookmark creation timestamp" },
+        { name: "updatedAt", type: "Date", required: false, default: "auto Timestamp", category: "System", desc: "Last bookmark note modification timestamp" }
+      ]
+    };
+
+    function getTypeBadgeClass(type) {
+      const t = type.toLowerCase();
+      if (t.includes('string')) return 'type-string';
+      if (t.includes('number')) return 'type-number';
+      if (t.includes('boolean')) return 'type-boolean';
+      if (t.includes('array')) return 'type-array';
+      if (t.includes('objectid')) return 'type-objectid';
+      if (t.includes('object')) return 'type-object';
+      if (t.includes('date')) return 'type-date';
+      return 'type-string';
+    }
+
+    function renderTables() {
+      for (const [key, fields] of Object.entries(schemaData)) {
+        const tbody = document.getElementById(`tbody-${key}`);
+        if (!tbody) continue;
+
+        tbody.innerHTML = fields.map(f => `
+          <tr data-name="${f.name.toLowerCase()}" data-type="${f.type.toLowerCase()}" data-desc="${f.desc.toLowerCase()}" data-req="${f.required ? 'required' : 'optional'}">
+            <td>
+              <div class="field-col">
+                ${f.name.startsWith('_id') ? '<span class="tag-pk er-tag">PK</span>' : ''}
+                ${f.name.endsWith('Id') ? '<span class="tag-fk er-tag">FK</span>' : ''}
+                <span>${f.name}</span>
+              </div>
+            </td>
+            <td>
+              <span class="type-pill ${getTypeBadgeClass(f.type)}">${f.type}</span>
+            </td>
+            <td>
+              <span class="req-badge ${f.required ? 'req-yes' : 'req-no'}">${f.required ? 'YES' : 'Optional'}</span>
+            </td>
+            <td>
+              <span class="val-default" title="${f.default}">${f.default}</span>
+            </td>
+            <td>
+              <span class="badge-category">${f.category}</span>
+            </td>
+            <td>
+              <span class="desc-text">${f.desc}</span>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Update counters
+      const totalFields = schemaData.vehicles.length + schemaData.bikes.length + schemaData.users.length + schemaData.saved.length;
+      document.getElementById('stat-attributes-count').innerText = totalFields;
+    }
+
+    function switchTab(tab) {
+      const tabs = ['all', 'vehicles', 'bikes', 'users', 'saved'];
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      const sections = {
+        all: document.getElementById('view-diagram'),
+        vehicles: document.getElementById('section-vehicles'),
+        bikes: document.getElementById('section-bikes'),
+        users: document.getElementById('section-users'),
+        saved: document.getElementById('section-saved')
+      };
+
+      if (tab === 'all') {
+        buttons[0].classList.add('active');
+        sections.all.style.display = 'block';
+        sections.vehicles.style.display = 'block';
+        sections.bikes.style.display = 'block';
+        sections.users.style.display = 'block';
+        sections.saved.style.display = 'block';
+      } else {
+        const index = tabs.indexOf(tab);
+        if (index !== -1) buttons[index].classList.add('active');
+        sections.all.style.display = 'none';
+        sections.vehicles.style.display = tab === 'vehicles' ? 'block' : 'none';
+        sections.bikes.style.display = tab === 'bikes' ? 'block' : 'none';
+        sections.users.style.display = tab === 'users' ? 'block' : 'none';
+        sections.saved.style.display = tab === 'saved' ? 'block' : 'none';
+      }
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
+      const reqFilter = document.getElementById('requiredFilter').value.toLowerCase();
+
+      const allRows = document.querySelectorAll('tbody tr');
+      allRows.forEach(row => {
+        const name = row.dataset.name || '';
+        const type = row.dataset.type || '';
+        const desc = row.dataset.desc || '';
+        const req = row.dataset.req || '';
+
+        const matchesQuery = !query || name.includes(query) || type.includes(query) || desc.includes(query);
+        const matchesType = !typeFilter || type.includes(typeFilter);
+        const matchesReq = !reqFilter || req === reqFilter;
+
+        if (matchesQuery && matchesType && matchesReq) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function exportSchemaJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(schemaData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "autodezire_database_schema.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTables();
+    });
+  </script>
+</body>
+</html>
