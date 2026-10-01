@@ -16,7 +16,28 @@ const { initializeData } = require('./services/store');
 const app = express();
 
 // ── Security Headers ────────────────────────────────────────────────────────
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https:", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https:", "data:", "https://fonts.gstatic.com"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https:", // Allow external vehicle image CDNs (Unsplash, CarWale, BikeWale, etc.)
+        ],
+        connectSrc: ["'self'", "https:", "http:"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = process.env.ALLOWED_ORIGINS
