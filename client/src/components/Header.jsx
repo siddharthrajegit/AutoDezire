@@ -13,7 +13,8 @@ import {
   SlidersHorizontal,
   Menu,
   X,
-  Film
+  Film,
+  LogIn
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -24,6 +25,7 @@ export default function Header() {
     theme,
     toggleTheme,
     currentUser,
+    setCurrentUser,
     userProfile,
     selectedVehicleType,
     setSelectedVehicleType,
@@ -214,62 +216,73 @@ export default function Header() {
           {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
         </button>
 
-        {/* User Profile Dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className="flex items-center space-x-2 pl-1.5 pr-2.5 py-1 rounded-xl bg-gray-100/90 dark:bg-gray-800/80 hover:bg-gray-200 dark:hover:bg-gray-700/80 transition-all text-left"
-          >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-              {currentUser?.name ? currentUser.name[0].toUpperCase() : 'A'}
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-xs font-bold text-gray-900 dark:text-white leading-tight">
-                Hi, {currentUser?.name || userProfile?.name || 'Aryan'}
-              </p>
-              <p className="text-[9px] text-gray-500 dark:text-gray-400 capitalize">
-                {currentUser?.role || 'User'}
-              </p>
-            </div>
-            <ChevronDown className="w-3 h-3 text-gray-400" />
-          </button>
+        {/* User Profile Dropdown or Sign In */}
+        {currentUser ? (
+          <div className="relative">
+            <button
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              className="flex items-center space-x-2 pl-1.5 pr-2.5 py-1 rounded-xl bg-gray-100/90 dark:bg-gray-800/80 hover:bg-gray-200 dark:hover:bg-gray-700/80 transition-all text-left"
+            >
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                {currentUser?.name ? currentUser.name[0].toUpperCase() : 'U'}
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-xs font-bold text-gray-900 dark:text-white leading-tight">
+                  Hi, {currentUser.name}
+                </p>
+                <p className="text-[9px] text-gray-500 dark:text-gray-400 capitalize">
+                  {currentUser?.role || 'User'}
+                </p>
+              </div>
+              <ChevronDown className="w-3 h-3 text-gray-400" />
+            </button>
 
-          {isProfileMenuOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-[#111827] shadow-xl border border-gray-200 dark:border-gray-800 py-1.5 z-50 animate-fadeIn">
-              <button
-                onClick={() => {
-                  setActiveTab('profile');
-                  setIsProfileMenuOpen(false);
-                }}
-                className="w-full px-4 py-2 text-xs text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60 flex items-center space-x-2"
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-orange-500" />
-                <span>Edit Questionnaire</span>
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab('settings');
-                  setIsProfileMenuOpen(false);
-                }}
-                className="w-full px-4 py-2 text-xs text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60 flex items-center space-x-2"
-              >
-                <User className="w-3.5 h-3.5 text-blue-500" />
-                <span>Account & Preferences</span>
-              </button>
-              <div className="h-px bg-gray-200 dark:bg-gray-800 my-1" />
-              <button
-                onClick={() => {
-                  setIsAuthModalOpen(true);
-                  setIsProfileMenuOpen(false);
-                }}
-                className="w-full px-4 py-2 text-xs text-left text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 flex items-center space-x-2 font-medium"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Switch / Login</span>
-              </button>
-            </div>
-          )}
-        </div>
+            {isProfileMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-[#111827] shadow-xl border border-gray-200 dark:border-gray-800 py-1.5 z-50 animate-fadeIn">
+                <button
+                  onClick={() => {
+                    setActiveTab('profile');
+                    setIsProfileMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-xs text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60 flex items-center space-x-2"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-orange-500" />
+                  <span>Edit Questionnaire</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab('settings');
+                    setIsProfileMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-xs text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60 flex items-center space-x-2"
+                >
+                  <User className="w-3.5 h-3.5 text-blue-500" />
+                  <span>Account & Preferences</span>
+                </button>
+                <div className="h-px bg-gray-200 dark:bg-gray-800 my-1" />
+                <button
+                  onClick={() => {
+                    setCurrentUser(null);
+                    localStorage.removeItem('autodezire_user');
+                    setIsProfileMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-xs text-left text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 flex items-center space-x-2 font-medium"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsAuthModalOpen(true)}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs shadow-sm transition-all"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </button>
+        )}
       </div>
     </header>
   );

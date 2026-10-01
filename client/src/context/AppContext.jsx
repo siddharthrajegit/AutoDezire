@@ -9,7 +9,7 @@ import { fetchVehicles } from '../services/api';
 const AppContext = createContext();
 
 const DEFAULT_PROFILE = {
-  name: 'Aryan',
+  name: 'Guest',
   height: 178, // cm
   age: 27,
   categoryPreference: 'All', // All, Car, Motorcycle, Scooter
@@ -58,7 +58,7 @@ const DEFAULT_PROFILE = {
 };
 
 const DEFAULT_BIKE_PROFILE = {
-  name: 'Aryan',
+  name: 'Guest',
   riderHeight: 172, // in cm
   riderInseam: 77, // in cm (flat-foot threshold)
   riderWeight: 68, // in kg (key factor)
@@ -140,8 +140,12 @@ export function AppProvider({ children }) {
 
   // Auth User
   const [currentUser, setCurrentUser] = useState(() => {
-    const user = localStorage.getItem('autodezire_user');
-    return user ? JSON.parse(user) : { name: 'Aryan', role: 'user', email: 'aryan@example.com' };
+    try {
+      const user = localStorage.getItem('autodezire_user');
+      return user ? JSON.parse(user) : null;
+    } catch {
+      return null;
+    }
   });
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);

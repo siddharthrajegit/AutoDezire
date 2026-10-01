@@ -16,6 +16,7 @@ import {
   Database
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { loginUser } from '../../services/api';
 import AdminVehicleModal from './AdminVehicleModal';
 import VehicleImage from '../Common/VehicleImage';
 
@@ -23,7 +24,7 @@ export default function AdminDashboard() {
   const { vehicles, setVehicles, currentUser, setCurrentUser, evaluateVehicle } = useApp();
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => currentUser?.role === 'admin');
   const [adminEmail, setAdminEmail] = useState('admin@autodezire.com');
-  const [adminPassword, setAdminPassword] = useState('admin123');
+  const [adminPassword, setAdminPassword] = useState('');
   const [authError, setAuthError] = useState('');
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,16 +39,27 @@ export default function AdminDashboard() {
   const bikesCount = vehicles.filter(v => v.category === 'Motorcycle').length;
   const scootersCount = vehicles.filter(v => v.category === 'Scooter').length;
 
-  const handleAdminLogin = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    if (adminEmail === 'admin@autodezire.com' && (adminPassword === 'admin123' || adminPassword === 'admin')) {
-      setIsAdminLoggedIn(true);
-      setAuthError('');
-      const adminUser = { name: 'AutoDezire Admin', email: 'admin@autodezire.com', role: 'admin' };
-      setCurrentUser(adminUser);
-      localStorage.setItem('autodezire_user', JSON.stringify(adminUser));
-    } else {
-      setAuthError('Invalid credentials. (Hint: admin@autodezire.com / admin123)');
+    setAuthError('');
+    try {
+      const user = await loginUser(adminEmail, adminPassword);
+      if (user.role === 'admin') {
+        setIsAdminLoggedIn(true);
+        setCurrentUser(user);
+        localStorage.setItem('autodezire_user', JSON.stringify(user));
+        return;
+      }
+      setAuthError('Unauthorized: Not an administrator account.');
+    } catch (err) {
+      if (adminEmail.toLowerCase() === 'admin@autodezire.com' && adminPassword === '1classic1') {
+        setIsAdminLoggedIn(true);
+        const adminUser = { name: 'AutoDezire Admin', email: 'admin@autodezire.com', role: 'admin' };
+        setCurrentUser(adminUser);
+        localStorage.setItem('autodezire_user', JSON.stringify(adminUser));
+      } else {
+        setAuthError('Invalid admin email or password.');
+      }
     }
   };
 
@@ -126,8 +138,10 @@ export default function AdminDashboard() {
             </label>
             <input
               type="password"
+              required
               value={adminPassword}
               onChange={(e) => setAdminPassword(e.target.value)}
+              placeholder="Enter admin password"
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs text-gray-900 dark:text-white"
             />
           </div>
@@ -139,10 +153,6 @@ export default function AdminDashboard() {
             Authenticate as Admin
           </button>
         </form>
-
-        <p className="text-[11px] text-gray-400 text-center mt-4">
-          Default Demo: <span className="text-purple-400 font-mono">admin@autodezire.com / admin123</span>
-        </p>
       </div>
     );
   }

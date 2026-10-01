@@ -13,7 +13,7 @@ import { useApp } from '../../context/AppContext';
 
 export default function SettingsView() {
   const { theme, toggleTheme, userProfile, updateProfile, currentUser, setCurrentUser } = useApp();
-  const [profileName, setProfileName] = useState(userProfile.name || 'Aryan');
+  const [profileName, setProfileName] = useState(currentUser?.name || userProfile.name || 'Guest');
   const [isSaved, setIsSaved] = useState(false);
 
   const handleSave = (e) => {
@@ -65,7 +65,7 @@ export default function SettingsView() {
             <input
               type="email"
               disabled
-              value={currentUser?.email || 'aryan@example.com'}
+              value={currentUser?.email || 'Not logged in (Guest)'}
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 text-sm text-gray-400 cursor-not-allowed"
             />
           </div>

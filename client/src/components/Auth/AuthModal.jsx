@@ -32,19 +32,7 @@ export default function AuthModal() {
         setIsAuthModalOpen(false);
       }
     } catch (err) {
-      // Fallback local login for quick demo
-      if (email) {
-        const fallbackUser = {
-          name: name || email.split('@')[0],
-          email,
-          role: email.includes('admin') ? 'admin' : 'user'
-        };
-        setCurrentUser(fallbackUser);
-        localStorage.setItem('autodezire_user', JSON.stringify(fallbackUser));
-        setIsAuthModalOpen(false);
-      } else {
-        setError(err.message || 'Authentication error');
-      }
+      setError(err.message || 'Authentication error. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -91,7 +79,7 @@ export default function AuthModal() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Aryan"
+                placeholder="Your Name"
                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -106,7 +94,7 @@ export default function AuthModal() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="aryan@example.com"
+              placeholder="you@example.com"
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500"
             />
           </div>
