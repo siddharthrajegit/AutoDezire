@@ -17,9 +17,9 @@ export default function VehicleImage({
   fallbackSrc = null,
   imgClassName = 'object-contain'
 }) {
-  const defaultCarFallback = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80';
-  const defaultBikeFallback = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=900&q=80';
-  const defaultScooterFallback = 'https://images.unsplash.com/photo-1558981408-db0ecd8a1ee4?auto=format&fit=crop&w=900&q=80';
+  const defaultCarFallback = 'https://imgd.aeplcdn.com/664x374/n/cw/ec/159099/swift-exterior-right-front-three-quarter.jpeg';
+  const defaultBikeFallback = 'https://imgd.aeplcdn.com/900x506/n/cw/ec/195355/s1000rr-left-side-view-6.png?isig=0';
+  const defaultScooterFallback = 'https://imgd.aeplcdn.com/664x374/n/cw/ec/1/versions/--standard1782976278426.jpg?q=80';
 
   const defaultFallback = (category === 'Scooter' || category === 'Electric Scooter')
     ? defaultScooterFallback
@@ -41,16 +41,10 @@ export default function VehicleImage({
 
   // Synchronously detect if image is already cached/complete in memory
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete) {
-      if (imgRef.current.naturalWidth > 0) {
-        setIsLoading(false);
-      } else if (!hasError) {
-        setHasError(true);
-        setImgSrc(fallbackSrc || defaultFallback);
-        setIsLoading(false);
-      }
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoading(false);
     }
-  }, [imgSrc, hasError, fallbackSrc, defaultFallback]);
+  }, [imgSrc]);
 
   const handleLoad = () => {
     setIsLoading(false);

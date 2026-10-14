@@ -5821,8 +5821,10 @@ export const BIKES_DATA = [
     "evRangeReal": 0,
     "safetyRating": 5,
     "safetyAgency": "Dual-Channel ABS + Certified Chassis",
-    "image": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=900&q=80",
-    "secondaryImages": [],
+    "image": "https://imgd.aeplcdn.com/900x506/n/cw/ec/195355/s1000rr-left-side-view-6.png?isig=0",
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/900x506/n/cw/ec/195355/s1000rr-left-side-view-6.png?isig=0"
+    ],
     "description": "BMW S 1000 RR [2027] is expected to launch in India in April 2027 in the expected price range of ₹ 28,00,000 to ₹ 35,00,000. Currently available bikes which are similar to S 1000 RR [2027] are BMW M 1000 R, Honda CBR1000RR-R Fireblade & Ducati Panigale V4 R.",
     "baseScores": {
       "mileageRunningCost": 8,
@@ -37177,8 +37179,10 @@ export const BIKES_DATA = [
     "evRangeReal": 120,
     "safetyRating": 4,
     "safetyAgency": "Combi-Braking System (CBS) + Certified Chassis",
-    "image": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=900&q=80",
-    "secondaryImages": [],
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/1/versions/--standard1782976278426.jpg?q=80",
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/1/versions/--standard1782976278426.jpg?q=80"
+    ],
     "description": "Vinfast Viper is expected to launch in India in December 2027 in the expected price range of ₹ 1,00,000 to ₹ 1,50,000. Currently available bikes which are similar to Viper are E3 Electric E3 Trion, Ather Konarc & Odysse Racer. Another bike similar to Viper is Honda QC3 which is launching in October 2026 in India.",
     "baseScores": {
       "mileageRunningCost": 10,
