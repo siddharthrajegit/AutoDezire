@@ -140,43 +140,43 @@ export default function VariantFeaturesPanel({ vehicle }) {
   const percentEquipped = totalMasterCount > 0 ? Math.round((activeIncludedCount / totalMasterCount) * 100) : 0;
 
   return (
-    <div className="bg-[#111827] dark:bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-sm space-y-6 transition-colors duration-200">
+    <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800/90 rounded-2xl p-6 shadow-sm space-y-6 transition-colors duration-200">
       {/* Header Row */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-800/80">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800/80">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-400 border border-orange-500/20">
+            <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
               Variant Intelligence
             </span>
-            <span className="text-xs text-gray-400">CarWale-style Feature Matrix</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">CarWale-style Feature Matrix</span>
           </div>
-          <h3 className="text-xl font-bold text-white mt-1">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-1">
             {vehicle.brand} {vehicle.model} - Variant-Wise Features
           </h3>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             Select any variant on the left to see which top-model features are included and which are omitted.
           </p>
         </div>
 
         {/* Feature summary badge */}
-        <div className="flex items-center space-x-4 bg-gray-900/80 border border-gray-800 rounded-xl px-4 py-2.5 self-start md:self-auto">
+        <div className="flex items-center space-x-4 bg-gray-50 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2.5 self-start md:self-auto">
           <div>
-            <div className="text-[11px] text-gray-400">Selected Trim Package</div>
-            <div className="text-sm font-bold text-white flex items-center space-x-1.5">
+            <div className="text-[11px] text-gray-500 dark:text-gray-400">Selected Trim Package</div>
+            <div className="text-sm font-bold text-gray-900 dark:text-white flex items-center space-x-1.5">
               <span>{activeVariant.name}</span>
               {activeVariant.isTopModel && (
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/30">
                   Top Trim
                 </span>
               )}
             </div>
           </div>
-          <div className="h-7 w-[1px] bg-gray-800" />
+          <div className="h-7 w-[1px] bg-gray-200 dark:bg-gray-800" />
           <div>
-            <div className="text-[11px] text-gray-400">Feature Match</div>
-            <div className="text-sm font-bold text-emerald-400">
+            <div className="text-[11px] text-gray-500 dark:text-gray-400">Feature Match</div>
+            <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
               {activeIncludedCount} / {totalMasterCount}{' '}
-              <span className="text-xs text-gray-400 font-normal">({percentEquipped}%)</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">({percentEquipped}%)</span>
             </div>
           </div>
         </div>
@@ -187,10 +187,10 @@ export default function VariantFeaturesPanel({ vehicle }) {
         {/* LEFT PANEL: Variant Selection (30-35% width on desktop) */}
         <div className="lg:col-span-4 space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Select Variant ({trimVariants.length})
             </span>
-            <span className="text-[11px] text-gray-500">Base to Top</span>
+            <span className="text-[11px] text-gray-400 dark:text-gray-500">Base to Top</span>
           </div>
 
           {/* Variant Cards List */}
@@ -220,36 +220,36 @@ export default function VariantFeaturesPanel({ vehicle }) {
                   onClick={() => setSelectedTrimName(v.name)}
                   className={`w-full text-left p-3.5 rounded-xl border transition-all duration-200 relative group flex items-center justify-between ${
                     isSelected
-                      ? 'bg-orange-500/10 border-orange-500 text-white shadow-md shadow-orange-500/5 ring-1 ring-orange-500/40'
-                      : 'bg-gray-900/60 border-gray-800 text-gray-300 hover:border-gray-700 hover:bg-gray-800/60 hover:text-white'
+                      ? 'bg-orange-500/10 border-orange-500 text-gray-900 dark:text-white shadow-md shadow-orange-500/5 ring-1 ring-orange-500/40'
+                      : 'bg-gray-50 dark:bg-gray-900/60 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
                     {/* Active Indicator Bar */}
                     <div
                       className={`w-1.5 h-10 rounded-full transition-colors ${
-                        isSelected ? 'bg-orange-500' : 'bg-gray-800 group-hover:bg-gray-700'
+                        isSelected ? 'bg-orange-500' : 'bg-gray-200 dark:bg-gray-800 group-hover:bg-gray-300 dark:group-hover:bg-gray-700'
                       }`}
                     />
                     
                     <div className="min-w-0">
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm font-bold text-white truncate">{v.name}</span>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white truncate">{v.name}</span>
                         {v.isTopModel && (
-                          <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                             <Award className="w-2.5 h-2.5" />
                             <span>Top Spec</span>
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-gray-400 mt-0.5 truncate">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
                         {v.priceApprox ? (
-                          <span className="font-semibold text-emerald-400">{v.priceApprox}</span>
+                          <span className="font-semibold text-emerald-600 dark:text-emerald-400">{v.priceApprox}</span>
                         ) : (
                           <span>Variant {index + 1}</span>
                         )}
-                        <span className="text-gray-500 mx-1.5">•</span>
-                        <span className="text-[11px] text-gray-400">
+                        <span className="text-gray-400 dark:text-gray-500 mx-1.5">•</span>
+                        <span className="text-[11px] text-gray-500 dark:text-gray-400">
                           {v.isTopModel ? 'Full Equipment' : `Tier ${index + 1}`}
                         </span>
                       </div>
@@ -258,7 +258,7 @@ export default function VariantFeaturesPanel({ vehicle }) {
 
                   <ChevronRight
                     className={`w-4 h-4 flex-shrink-0 transition-transform ${
-                      isSelected ? 'text-orange-500 translate-x-0.5' : 'text-gray-600 group-hover:text-gray-400'
+                      isSelected ? 'text-orange-500 translate-x-0.5' : 'text-gray-400 dark:text-gray-600 group-hover:text-gray-600 dark:group-hover:text-gray-400'
                     }`}
                   />
                 </button>
@@ -267,13 +267,13 @@ export default function VariantFeaturesPanel({ vehicle }) {
           </div>
 
           {/* Quick Informational Tip */}
-          <div className="p-3.5 bg-gray-900/50 border border-gray-800/80 rounded-xl text-xs text-gray-400 space-y-1.5">
-            <div className="flex items-center space-x-1.5 text-gray-300 font-semibold text-[11px]">
-              <Info className="w-3.5 h-3.5 text-orange-400" />
+          <div className="p-3.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/80 rounded-xl text-xs text-gray-600 dark:text-gray-400 space-y-1.5">
+            <div className="flex items-center space-x-1.5 text-gray-700 dark:text-gray-300 font-semibold text-[11px]">
+              <Info className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
               <span>How This Matrix Works</span>
             </div>
-            <p className="text-[11px] leading-relaxed text-gray-400">
-              All features from the flagship <span className="text-white font-medium">{topModel.name}</span> are shown on the right. When viewing a lower variant like <span className="text-orange-400 font-medium">{activeVariant.name}</span>, missing features are dimmed out while included ones shine bright.
+            <p className="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">
+              All features from the flagship <span className="text-gray-900 dark:text-white font-medium">{topModel.name}</span> are shown on the right. When viewing a lower variant like <span className="text-orange-600 dark:text-orange-400 font-medium">{activeVariant.name}</span>, missing features are dimmed out while included ones shine bright.
             </p>
           </div>
         </div>
@@ -281,26 +281,26 @@ export default function VariantFeaturesPanel({ vehicle }) {
         {/* RIGHT PANEL: Category-Grouped Feature Matrix (65-70% width on desktop) */}
         <div className="lg:col-span-8 space-y-6">
           {/* Active Variant Legend Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-900/60 border border-gray-800/90 rounded-xl text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800/90 rounded-xl text-xs">
             <div className="flex items-center space-x-2">
-              <span className="text-gray-400">Viewing specs for:</span>
+              <span className="text-gray-600 dark:text-gray-400">Viewing specs for:</span>
               <span className="px-2 py-0.5 rounded-md bg-orange-500 text-white font-bold text-xs">
                 {activeVariant.name}
               </span>
               {activeVariant.priceApprox && (
-                <span className="text-emerald-400 font-semibold">({activeVariant.priceApprox})</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">({activeVariant.priceApprox})</span>
               )}
             </div>
 
             <div className="flex items-center space-x-4 text-[11px]">
-              <div className="flex items-center space-x-1.5 text-gray-200">
-                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+              <div className="flex items-center space-x-1.5 text-gray-700 dark:text-gray-200">
+                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
                   ✓
                 </span>
                 <span>Included</span>
               </div>
-              <div className="flex items-center space-x-1.5 text-gray-500">
-                <span className="w-3.5 h-3.5 rounded-full bg-gray-800 text-gray-500 flex items-center justify-center font-bold">
+              <div className="flex items-center space-x-1.5 text-gray-500 dark:text-gray-400">
+                <span className="w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 flex items-center justify-center font-bold">
                   –
                 </span>
                 <span>Missing in this trim</span>
@@ -317,7 +317,7 @@ export default function VariantFeaturesPanel({ vehicle }) {
               const meta = CATEGORY_META[catKey] || {
                 label: catKey.toUpperCase(),
                 icon: Sparkles,
-                color: 'text-gray-300'
+                color: 'text-gray-400'
               };
               const IconComponent = meta.icon;
 
@@ -329,18 +329,18 @@ export default function VariantFeaturesPanel({ vehicle }) {
               return (
                 <div
                   key={catKey}
-                  className="bg-gray-900/40 border border-gray-800/70 rounded-xl p-4.5 space-y-3"
+                  className="bg-gray-50/70 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800/70 rounded-xl p-4.5 space-y-3"
                 >
                   {/* Category Header */}
-                  <div className="flex items-center justify-between pb-2 border-b border-gray-800/60">
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800/60">
                     <div className="flex items-center space-x-2">
                       <IconComponent className={`w-4 h-4 ${meta.color}`} />
-                      <h4 className="text-xs font-bold text-gray-200 uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">
                         {meta.label}
                       </h4>
                     </div>
-                    <span className="text-[11px] font-medium text-gray-400">
-                      <span className={categoryIncludedCount > 0 ? 'text-emerald-400 font-semibold' : 'text-gray-500'}>
+                    <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                      <span className={categoryIncludedCount > 0 ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-400 dark:text-gray-500'}>
                         {categoryIncludedCount}
                       </span>{' '}
                       / {masterList.length} Features
@@ -357,18 +357,18 @@ export default function VariantFeaturesPanel({ vehicle }) {
                           key={fIdx}
                           className={`flex items-start space-x-2.5 px-3 py-2.5 rounded-lg border text-xs transition-all duration-150 ${
                             isIncluded
-                              ? 'bg-gray-800/80 border-gray-700/80 text-gray-100 shadow-sm'
-                              : 'bg-gray-950/20 border-dashed border-gray-800/50 text-gray-500 opacity-40 hover:opacity-60'
+                              ? 'bg-white dark:bg-gray-800/80 border-gray-200 dark:border-gray-700/80 text-gray-900 dark:text-gray-100 shadow-sm'
+                              : 'bg-gray-100/50 dark:bg-gray-950/20 border-dashed border-gray-300 dark:border-gray-800/50 text-gray-400 dark:text-gray-500 opacity-50 hover:opacity-75'
                           }`}
                         >
                           {/* Status Icon */}
                           <div className="flex-shrink-0 mt-0.5">
                             {isIncluded ? (
-                              <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/40">
+                              <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/40">
                                 <Check className="w-2.5 h-2.5 stroke-[3]" />
                               </div>
                             ) : (
-                              <div className="w-4 h-4 rounded-full bg-gray-800 text-gray-500 flex items-center justify-center border border-gray-700/60">
+                              <div className="w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-500 flex items-center justify-center border border-gray-300 dark:border-gray-700/60">
                                 <Minus className="w-2.5 h-2.5 stroke-[2.5]" />
                               </div>
                             )}
@@ -378,7 +378,7 @@ export default function VariantFeaturesPanel({ vehicle }) {
                           <div className="min-w-0 flex-1">
                             <span
                               className={`block leading-snug ${
-                                isIncluded ? 'font-medium text-gray-100' : 'font-normal text-gray-500 line-through decoration-gray-600/40'
+                                isIncluded ? 'font-medium text-gray-900 dark:text-gray-100' : 'font-normal text-gray-400 dark:text-gray-500 line-through decoration-gray-400 dark:decoration-gray-600/40'
                               }`}
                             >
                               {feature}

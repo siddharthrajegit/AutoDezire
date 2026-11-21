@@ -117,7 +117,7 @@ export default function EvaluationView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <button
           onClick={() => setActiveTab('search')}
-          className="flex items-center space-x-2 text-xs font-medium text-gray-400 hover:text-orange-500 transition-colors self-start"
+          className="flex items-center space-x-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 transition-colors self-start"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Search & Inventory</span>
@@ -130,7 +130,7 @@ export default function EvaluationView() {
             className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
               isCompared
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-gray-800 text-gray-300 border border-gray-700 hover:border-blue-500 hover:text-white'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:text-blue-600 dark:hover:text-white shadow-sm'
             }`}
           >
             <BarChart2 className="w-3.5 h-3.5" />
@@ -143,7 +143,7 @@ export default function EvaluationView() {
             className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
               isSaved
                 ? 'bg-rose-500 text-white border-rose-500 shadow-sm'
-                : 'bg-gray-800/80 border-gray-700 text-gray-300 hover:border-gray-600 hover:text-white'
+                : 'bg-white dark:bg-gray-800/80 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-900 dark:hover:text-white shadow-sm'
             }`}
           >
             <Heart className={`w-3.5 h-3.5 ${isSaved ? 'fill-current' : ''}`} />
