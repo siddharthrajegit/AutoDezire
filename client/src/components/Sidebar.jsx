@@ -22,9 +22,16 @@ export default function Sidebar() {
     activeTab,
     setActiveTab,
     savedVehicles,
+    vehicles,
+    bikes,
     isMobileMenuOpen,
     setIsMobileMenuOpen
   } = useApp();
+
+  const allVehicles = [...(vehicles || []), ...(bikes || [])];
+  const validSavedCount = (savedVehicles || []).filter(id =>
+    allVehicles.some(v => (v.id || v._id) === id)
+  ).length;
 
   const navItems = [
     { id: 'home', label: 'Dashboard', icon: LayoutDashboard },
@@ -33,7 +40,7 @@ export default function Sidebar() {
     { id: 'search', label: 'Search Vehicle', icon: Search },
     { id: 'compare', label: 'Compare', icon: BarChart2 },
     { id: 'ai-advisor', label: 'AI Advisor', icon: Bot },
-    { id: 'saved', label: 'Saved Vehicles', icon: Heart, badge: savedVehicles.length > 0 ? savedVehicles.length : null },
+    { id: 'saved', label: 'Saved Vehicles', icon: Heart, badge: validSavedCount > 0 ? validSavedCount : null },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

@@ -1,29 +1,47 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   Heart,
   Trash2,
   BarChart2,
   ChevronRight,
   Star,
-  Car
+  Car,
+  Bike
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
+import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
 import VehicleImage from '../Common/VehicleImage';
 
 export default function SavedVehiclesView() {
   const {
     savedVehicles,
+    setSavedVehicles,
     toggleSaveVehicle,
+    clearSavedVehicles,
     vehicles,
+    bikes,
     userProfile,
+    bikeProfile,
     evaluateVehicle,
     toggleCompare,
     compareList,
     setActiveTab
   } = useApp();
 
-  const savedList = vehicles.filter(v => savedVehicles.includes(v.id || v._id));
+  const allVehicles = useMemo(() => [...(vehicles || []), ...(bikes || [])], [vehicles, bikes]);
+  const savedList = useMemo(() => allVehicles.filter(v => savedVehicles.includes(v.id || v._id)), [allVehicles, savedVehicles]);
+
+  // Clean up any stale or orphan IDs that do not exist in the vehicle/bike catalog
+  useEffect(() => {
+    if (savedVehicles && savedVehicles.length > 0 && allVehicles.length > 0) {
+      const validIds = savedVehicles.filter(id => allVehicles.some(v => (v.id || v._id) === id));
+      if (validIds.length !== savedVehicles.length) {
+        setSavedVehicles(validIds);
+        localStorage.setItem('autodezire_saved', JSON.stringify(validIds));
+      }
+    }
+  }, [savedVehicles, allVehicles, setSavedVehicles]);
 
   return (
     <div className="space-y-8 pb-16 max-w-[1400px] mx-auto animate-fadeIn">
@@ -38,9 +56,20 @@ export default function SavedVehiclesView() {
           </p>
         </div>
 
-        <span className="px-3.5 py-1.5 rounded-full bg-rose-500/10 text-rose-500 text-xs font-bold self-start sm:self-auto">
-          {savedList.length} Saved in Garage
-        </span>
+        <div className="flex items-center space-x-2 self-start sm:self-auto">
+          <span className="px-3.5 py-1.5 rounded-full bg-rose-500/10 text-rose-500 text-xs font-bold">
+            {savedList.length} Saved in Garage
+          </span>
+          {savedList.length > 0 && (
+            <button
+              onClick={clearSavedVehicles}
+              className="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 hover:border-rose-500 text-gray-500 hover:text-rose-500 text-xs font-semibold transition-all"
+              title="Remove all saved vehicles"
+            >
+              Clear All
+            </button>
+          )}
+        </div>
       </div>
 
       {savedList.length === 0 ? (
@@ -56,7 +85,7 @@ export default function SavedVehiclesView() {
           </p>
           <button
             onClick={() => setActiveTab('search')}
-            className="px-6 py-3 rounded-2xl bg-orange-500 text-white text-xs font-bold shadow-md"
+            className="px-6 py-3 rounded-2xl bg-orange-500 text-white text-xs font-bold shadow-md hover:bg-orange-600 transition-colors"
           >
             Explore Automobiles
           </button>
@@ -64,7 +93,13 @@ export default function SavedVehiclesView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {savedList.map(vehicle => {
-            const evalResult = evaluateSuitability(vehicle, userProfile);
+            const isTwoWheeler =
+              vehicle.category === 'Motorcycle' ||
+              vehicle.category === 'Scooter' ||
+              vehicle.category === 'Electric Scooter';
+            const evalResult = isTwoWheeler
+              ? evaluateBikeSuitability(vehicle, bikeProfile)
+              : evaluateSuitability(vehicle, userProfile);
             const isCompared = compareList.some(v => (v.id || v._id) === (vehicle.id || vehicle._id));
 
             return (
@@ -75,7 +110,9 @@ export default function SavedVehiclesView() {
                 <div>
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-600 text-white uppercase">
+                      <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold text-white uppercase ${
+                        isTwoWheeler ? 'bg-purple-600' : 'bg-orange-500'
+                      }`}>
                         {vehicle.bodyType || vehicle.category}
                       </span>
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white mt-1.5">
@@ -108,7 +145,7 @@ export default function SavedVehiclesView() {
                     </span>
                     <div className="flex items-center space-x-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
                       <Star className="w-3 h-3 fill-current" />
-                      <span>{evalResult.overallScore}/100</span>
+                      <span>{evalResult?.overallScore || 0}/100</span>
                     </div>
                   </div>
 

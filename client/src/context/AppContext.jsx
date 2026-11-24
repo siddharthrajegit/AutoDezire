@@ -127,8 +127,23 @@ export function AppProvider({ children }) {
 
   // Saved vehicles (Garage / Wishlist)
   const [savedVehicles, setSavedVehicles] = useState(() => {
-    const saved = localStorage.getItem('autodezire_saved');
-    return saved ? JSON.parse(saved) : ['nexon', 'classic_350'];
+    try {
+      const saved = localStorage.getItem('autodezire_saved');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Clear legacy hardcoded initial defaults ('nexon' & 'classic_350') so garage starts empty
+          if (parsed.length === 2 && parsed.includes('nexon') && parsed.includes('classic_350')) {
+            localStorage.setItem('autodezire_saved', JSON.stringify([]));
+            return [];
+          }
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading autodezire_saved from localStorage', e);
+    }
+    return [];
   });
 
   // Compare list (Array of vehicle objects, max 3)
@@ -296,6 +311,12 @@ export function AppProvider({ children }) {
     });
   };
 
+  // Clear All Saved Vehicles
+  const clearSavedVehicles = () => {
+    setSavedVehicles([]);
+    localStorage.setItem('autodezire_saved', JSON.stringify([]));
+  };
+
   // Toggle Compare Vehicle
   const toggleCompare = vehicle => {
     setCompareList(prev => {
@@ -336,7 +357,9 @@ export function AppProvider({ children }) {
         evaluation,
         evaluateVehicle,
         savedVehicles,
+        setSavedVehicles,
         toggleSaveVehicle,
+        clearSavedVehicles,
         compareList,
         setCompareList,
         toggleCompare,
