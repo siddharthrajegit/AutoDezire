@@ -65,7 +65,7 @@ export default function AIAdvisorView() {
   const initialWelcomeMessage = useMemo(() => ({
     id: 1,
     sender: 'ai',
-    text: `Hello **${activeProfile.name || 'Friend'}**! I am your personalized AutoDezire AI Advisor.\n\nI have received your profile (**₹${activeProfile.budget}L budget, ${isTwoWheeler ? `${activeProfile.riderHeight || 172} cm height, ${activeProfile.riderWeight || 68} kg` : `${activeProfile.height || 175} cm height, ${activeProfile.dailyKm || 35} km daily commute`}**) and AutoDezire's recommendation of **${vehicleName} (Score: ${evaluation?.overallScore || 'N/A'}/100)**.\n\nFeel free to ask why this automobile was chosen, how it compares with alternatives, or whether it suits your daily commute and body ergonomics!`,
+    text: `Hello **${activeProfile.name || 'Friend'}**! I am your personalized AutoDezire AI Advisor.\n\nI have received your profile (**₹${activeProfile.budget >= 100 ? `${activeProfile.budget}L (${(activeProfile.budget / 100).toFixed(2)} Cr)` : `${activeProfile.budget}L`} budget, ${isTwoWheeler ? `${activeProfile.riderHeight || 172} cm height, ${activeProfile.riderWeight || 68} kg` : `${activeProfile.height || 175} cm height, ${activeProfile.dailyKm || 35} km daily commute`}**) and AutoDezire's recommendation of **${vehicleName} (Score: ${evaluation?.overallScore || 'N/A'}/100)**.\n\nFeel free to ask why this automobile was chosen, how it compares with alternatives, or whether it suits your daily commute and body ergonomics!`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }), [activeProfile, vehicleName, evaluation, isTwoWheeler]);
 

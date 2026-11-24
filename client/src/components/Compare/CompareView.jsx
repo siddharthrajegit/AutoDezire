@@ -37,7 +37,7 @@ export default function CompareView() {
             Suitability Comparison
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Compare how different automobiles fit YOUR profile ({userProfile.name}, Height: {userProfile.height}cm, {userProfile.yearsExperience} yrs exp, ₹{userProfile.budget}L Budget).
+            Compare how different automobiles fit YOUR profile ({userProfile.name}, Height: {userProfile.height}cm, {userProfile.yearsExperience} yrs exp, ₹{userProfile.budget >= 100 ? `${userProfile.budget}L (${(userProfile.budget / 100).toFixed(2)} Cr)` : `${userProfile.budget}L`} Budget).
           </p>
         </div>
 

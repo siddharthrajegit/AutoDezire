@@ -131,7 +131,7 @@ export default function RecommendationsView() {
             <span>•</span>
             <span>Experience: <strong className="text-blue-500">{activeProfile.yearsExperience} yrs ({activeProfile.confidenceLevel || 'Confident'})</strong></span>
             <span>•</span>
-            <span>Budget: <strong className="text-emerald-500">₹{activeProfile.budget}L</strong></span>
+            <span>Budget: <strong className="text-emerald-500">₹{activeProfile.budget >= 100 ? `${activeProfile.budget}L (${(activeProfile.budget / 100).toFixed(2)} Cr)` : `${activeProfile.budget}L`}</strong></span>
             <span>•</span>
             <span>Charging: <strong className="text-purple-400">{activeProfile.hasHomeCharging ? 'Home Socket Available' : 'No Home Socket'}</strong></span>
           </div>

@@ -100,7 +100,7 @@ export default function SearchVehicleView() {
                 </>
               ) : (
                 <>
-                  Browse across India's top 8 car brands (<em>Maruti Suzuki, Mahindra, Tata, Hyundai, Toyota, Honda, Kia, MG</em>) to see: <strong className="text-orange-500 font-bold">“How suitable is this car for ME?”</strong>
+                  Browse across India's top 16 car brands (<em>BMW, Mercedes-Benz, Audi, Volvo, Land Rover, Lexus, BYD, Skoda, Toyota, Tata, Mahindra, Hyundai, Kia, MG, Maruti Suzuki, Honda</em>) to see: <strong className="text-orange-500 font-bold">“How suitable is this car for ME?”</strong>
                 </>
               )}
             </p>

@@ -1941,5 +1941,1158 @@ export const TRIM_VARIANTS_DATA = {
         ]
       }
     }
+  ],
+  "X1": [
+    {
+      "name": "sDrive18i M Sport",
+      "priceApprox": "₹ 49.50 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Dynamic Stability Control",
+          "Parking Assistant with Reversing Assistant",
+          "Attentiveness Assistant"
+        ],
+        "comfort": [
+          "BMW Curved Display (10.25-inch + 10.7-inch)",
+          "Sport Seats with Alcantara Upholstery",
+          "Dual-Zone Automatic Climate Control",
+          "Panoramic Glass Sunroof"
+        ],
+        "infotainment": [
+          "BMW Operating System 8",
+          "Wireless Apple CarPlay & Android Auto",
+          "BMW Live Cockpit Plus",
+          "Hi-Fi Loudspeaker Sound"
+        ],
+        "convenience": [
+          "Comfort Access Keyless Entry",
+          "Automatic Powered Tailgate",
+          "Wireless Device Charging",
+          "Rain-Sensing Automatic Wipers"
+        ],
+        "exterior": [
+          "M Sport Exterior Aerodynamic Package",
+          "18-inch M Double-Spoke Light Alloy Wheels",
+          "Adaptive LED Headlights with High Beam Assist"
+        ],
+        "performance": [
+          "1.5L TwinPower Turbo Petrol (134 bhp)",
+          "7-Speed Dual-Clutch Steptronic",
+          "Brake Energy Regeneration"
+        ]
+      }
+    },
+    {
+      "name": "sDrive18d M Sport",
+      "priceApprox": "₹ 52.70 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Cornering Brake Control",
+          "Front Collision Warning with Brake Intervention",
+          "ISOFIX Child Seat Mounts"
+        ],
+        "comfort": [
+          "Sport Seats with Memory Function",
+          "M Leather Multi-Function Steering Wheel",
+          "Ambient Interior Lighting with 6 Colour Profiles",
+          "Panoramic Glass Roof"
+        ],
+        "infotainment": [
+          "Harman Kardon Premium Surround Sound System",
+          "BMW Intelligent Personal Voice Assistant",
+          "BMW ConnectedDrive Services"
+        ],
+        "convenience": [
+          "Hands-Free Smart Tailgate Opening",
+          "Active Auto Park Distance Control",
+          "Electrochromic Auto-Dimming Mirrors"
+        ],
+        "exterior": [
+          "High-Gloss Shadowline Exterior Trim",
+          "Roof Rails in High-Gloss Black",
+          "M Sport Badging on Front Wings"
+        ],
+        "performance": [
+          "2.0L TwinPower Turbo Diesel (148 bhp / 360 Nm)",
+          "7-Speed Steptronic DCT",
+          "Steering Column Paddle Shifters"
+        ]
+      }
+    }
+  ],
+  "3 Series Gran Limousine": [
+    {
+      "name": "330Li M Sport",
+      "priceApprox": "₹ 60.60 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Cornering Brake Control (CBC)",
+          "Dynamic Stability Control (DSC)",
+          "Run-Flat Tyres with Tyre Pressure Indicator"
+        ],
+        "comfort": [
+          "Extended 2961mm Limousine Wheelbase",
+          "Vernasca Leather Upholstery with M Stitching",
+          "Rear Seat Lounge Comfort Headrest Pillows",
+          "3-Zone Climate Control"
+        ],
+        "infotainment": [
+          "BMW Curved Display (12.3-inch + 14.9-inch)",
+          "16-Speaker Harman Kardon 464W Surround Sound",
+          "Wireless Smartphone Integration"
+        ],
+        "convenience": [
+          "BMW Digital Key Plus",
+          "Panoramic Electric Sunroof",
+          "Automated Parking Assistant with 50m Reversing Memory"
+        ],
+        "exterior": [
+          "18-inch M Double-Spoke Bicolour Alloys",
+          "M Aerodynamic Kit",
+          "Gloss Black Kidney Grille and Window Surrounds"
+        ],
+        "performance": [
+          "2.0L TwinPower Turbo Petrol (258 bhp / 400 Nm)",
+          "0-100 km/h in 6.2 Seconds",
+          "8-Speed Steptronic Sport with Launch Control",
+          "Rear-Wheel Drive Dynamics"
+        ]
+      }
+    },
+    {
+      "name": "320Ld M Sport",
+      "priceApprox": "₹ 62.00 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Side Impact Protection",
+          "Dynamic Traction Control (DTC)",
+          "Front Collision Alert with City Braking"
+        ],
+        "comfort": [
+          "Extra 110mm Rear Knee Room",
+          "Roller Sunblinds for Rear Door Windows",
+          "Acoustic Glazing for Windscreen and Side Windows",
+          "Illuminated M Door Sills"
+        ],
+        "infotainment": [
+          "BMW Curved Display with iDrive 8",
+          "Connected Package Professional with Real-Time Traffic",
+          "Wireless Phone Charging Tray"
+        ],
+        "convenience": [
+          "Comfort Access Keyless System",
+          "Hands-Free Gesture-Controlled Boot Release",
+          "Electronic Parking Brake with Auto-Hold"
+        ],
+        "exterior": [
+          "Adaptive LED Headlights with Blue Accents",
+          "M Sport Exhaust Finisher",
+          "Anthracite Headliner"
+        ],
+        "performance": [
+          "2.0L 4-Cylinder Turbo Diesel (190 bhp / 400 Nm)",
+          "19.61 kmpl Highway Fuel Economy",
+          "8-Speed Steptronic Transmission with RWD"
+        ]
+      }
+    }
+  ],
+  "X3": [
+    {
+      "name": "xDrive20d M Sport",
+      "priceApprox": "₹ 68.50 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "BMW xDrive Permanent All-Wheel Drive",
+          "Hill Descent Control",
+          "Cornering Brake Control"
+        ],
+        "comfort": [
+          "Sensatec Perforated Sports Upholstery",
+          "Panoramic Glass Sunroof",
+          "3-Zone Automatic Climate Control",
+          "550L Cargo Boot"
+        ],
+        "infotainment": [
+          "12.3-inch Touchscreen Navigation",
+          "BMW Live Cockpit Professional",
+          "HiFi Loudspeaker Audio System"
+        ],
+        "convenience": [
+          "Parking Assistant Plus with Surround View Camera",
+          "Powered Tailgate Operation",
+          "Wireless Smartphone Charging"
+        ],
+        "exterior": [
+          "19-inch M Light Alloy Wheels",
+          "Adaptive LED Headlights",
+          "M High-Gloss Shadowline Trim",
+          "204mm Ground Clearance"
+        ],
+        "performance": [
+          "2.0L 4-Cylinder Turbo Diesel (188 bhp / 400 Nm)",
+          "8-Speed Steptronic Automatic",
+          "xDrive Torque Vectoring"
+        ]
+      }
+    },
+    {
+      "name": "xDrive30i M Sport",
+      "priceApprox": "₹ 74.90 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Attentiveness Assistant",
+          "Crash Sensor and Dynamic Braking Lights",
+          "Tyre Pressure Monitoring"
+        ],
+        "comfort": [
+          "Vernasca Leather Sports Seats with Lumbar Adjustment",
+          "Adaptive Suspension Dampers",
+          "Acoustic Glass Windows"
+        ],
+        "infotainment": [
+          "Harman Kardon 16-Speaker 600W Sound System",
+          "BMW Gesture Control",
+          "Head-Up Display"
+        ],
+        "convenience": [
+          "Comfort Access Entry",
+          "Drive Recorder Dashcam Capability",
+          "Remote Engine Start via Key"
+        ],
+        "exterior": [
+          "M Sport Aerodynamic Package with Diffuser",
+          "Blue M Sport Brake Calipers",
+          "Aluminium Roof Rails"
+        ],
+        "performance": [
+          "2.0L TwinPower Turbo Petrol (248 bhp / 350 Nm)",
+          "0-100 km/h in 6.6 Seconds",
+          "M Sport Differential and Launch Control"
+        ]
+      }
+    }
+  ],
+  "iX1": [
+    {
+      "name": "xDrive30 M Sport",
+      "priceApprox": "₹ 66.90 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Pedestrian Acoustic Protection",
+          "Lane Departure Warning with Steering Return",
+          "Electronic Stability Control with AWD Vectoring"
+        ],
+        "comfort": [
+          "Sport Seats with Massage Function",
+          "Panoramic Sunroof",
+          "Adaptive M Suspension",
+          "Dual-Zone Automatic Climate Control"
+        ],
+        "infotainment": [
+          "BMW Curved Display (10.25-inch + 10.7-inch)",
+          "Harman Kardon Surround Sound System",
+          "BMW IconicSounds Electric Sound Generator"
+        ],
+        "convenience": [
+          "130 kW DC Fast Charging Capability",
+          "BMW Wallbox 11kW AC Charger Included",
+          "Parking Assistant Plus with 360-degree Cameras"
+        ],
+        "exterior": [
+          "M Sport Exterior Package with Blue Accents",
+          "18-inch Aerodynamic Alloy Wheels",
+          "Flush Integrated Door Handles"
+        ],
+        "performance": [
+          "Dual Motor Electric AWD (308 bhp / 494 Nm)",
+          "0-100 km/h in 5.6 Seconds",
+          "66.4 kWh High-Voltage Battery with 440 km Range"
+        ]
+      }
+    }
+  ],
+  "GLA": [
+    {
+      "name": "GLA 200",
+      "priceApprox": "₹ 51.75 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "7 Airbags including Driver Knee Airbag",
+          "Active Brake Assist",
+          "Pre-Safe Predictive Safety System",
+          "Blind Spot Assist"
+        ],
+        "comfort": [
+          "Twin 10.25-inch MBUX Digital Cockpit",
+          "Artico Leatherette / Microfiber Upholstery",
+          "64-Colour Ambient Lighting",
+          "Panoramic Sliding Sunroof"
+        ],
+        "infotainment": [
+          "MBUX Infotainment with 'Hey Mercedes' Voice Control",
+          "Wireless Smartphone Integration (Apple CarPlay / Android Auto)",
+          "Mercedes-Me Connected Car Suite"
+        ],
+        "convenience": [
+          "Easy-Pack Powered Tailgate",
+          "Parktronic Active Parking Assist with Reversing Camera",
+          "Keyless-Go Start/Stop"
+        ],
+        "exterior": [
+          "LED High Performance Headlights",
+          "18-inch 5-Twin-Spoke Alloy Wheels",
+          "Aluminium Roof Rails"
+        ],
+        "performance": [
+          "1.3L 4-Cylinder Turbo Petrol (161 bhp / 250 Nm)",
+          "7G-DCT Dual-Clutch Automatic (FWD)",
+          "Dynamic Select Drive Modes"
+        ]
+      }
+    },
+    {
+      "name": "GLA 220d 4MATIC",
+      "priceApprox": "₹ 58.15 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "7 Airbags",
+          "4MATIC Permanent All-Wheel Drive",
+          "Downhill Speed Regulation (DSR)",
+          "Tyre Pressure Loss Warning"
+        ],
+        "comfort": [
+          "Memory Front Seats with 4-Way Lumbar Support",
+          "Turbine Air Vents with Ambient Backlight",
+          "Comfort Suspension for Indian Roads"
+        ],
+        "infotainment": [
+          "Advanced Sound System with 10 Speakers and 225W Output",
+          "Augmented Reality Video Navigation",
+          "Wireless Phone Charging"
+        ],
+        "convenience": [
+          "Hands-Free Access Boot Opening",
+          "Mirror Package with Auto-Dimming and Heated Mirrors",
+          "Rain-Sensing Auto Wipers"
+        ],
+        "exterior": [
+          "AMG Line Front Apron with Chrome Diamond Grille",
+          "19-inch AMG 5-Spoke Alloy Wheels",
+          "Dark Tinted Privacy Glass"
+        ],
+        "performance": [
+          "2.0L 4-Cylinder Turbo Diesel (188 bhp / 400 Nm)",
+          "8G-DCT Dual-Clutch Transmission",
+          "0-100 km/h in 7.3 Seconds"
+        ]
+      }
+    }
+  ],
+  "C-Class": [
+    {
+      "name": "C 200",
+      "priceApprox": "₹ 61.85 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "7 Airbags",
+          "Active Brake Assist",
+          "Pedestrian Protection with Active Bonnet",
+          "Pre-Safe System"
+        ],
+        "comfort": [
+          "11.9-inch Portrait Central Touchscreen",
+          "12.3-inch High-Resolution Digital Driver Display",
+          "64-Colour Ambient Lighting",
+          "Memory Package for Seats"
+        ],
+        "infotainment": [
+          "Second-Generation MBUX with Biometric Fingerprint Scanner",
+          "Wireless Apple CarPlay and Android Auto",
+          "3D Sound System"
+        ],
+        "convenience": [
+          "Keyless-Go Package",
+          "Panoramic Glass Sliding Roof",
+          "Remote Boot Lid Closing"
+        ],
+        "exterior": [
+          "LED High Performance Headlamps",
+          "17-inch 5-Spoke Aerodynamic Alloy Wheels",
+          "Chrome Exterior Trim Package"
+        ],
+        "performance": [
+          "1.5L Turbo Petrol + 48V Integrated Starter Generator (201 bhp / 300 Nm)",
+          "9G-Tronic 9-Speed Automatic Transmission",
+          "Agility Control Suspension"
+        ]
+      }
+    },
+    {
+      "name": "C 220d",
+      "priceApprox": "₹ 63.85 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "7 Airbags",
+          "Active Distance Assist Distronic",
+          "Blind Spot Assist with Exit Warning",
+          "Emergency Call System"
+        ],
+        "comfort": [
+          "Sienna Brown / Black Artico Leather Interior",
+          "Front Seat Ventilation and Seat Heating",
+          "Dual-Zone Thermatic Climate Control"
+        ],
+        "infotainment": [
+          "Burmester 3D Surround Sound System with 15 Speakers (710W)",
+          "MBUX Navigation Premium with Live Traffic",
+          "Wireless Charging Pad"
+        ],
+        "convenience": [
+          "Hands-Free Access Foot-Gesture Boot Release",
+          "360-Degree Parking Camera System",
+          "Auto-Dimming Frameless Rearview Mirror"
+        ],
+        "exterior": [
+          "Digital Light Headlamps with 1.3-Million Micro-Mirrors",
+          "18-inch Multi-Spoke AMG Line Alloys",
+          "Twin Exhaust Tailpipes"
+        ],
+        "performance": [
+          "2.0L Turbo Diesel + 48V Mild Hybrid (197 bhp / 440 Nm)",
+          "23.0 kmpl Highway Fuel Economy",
+          "0-100 km/h in 7.3 Seconds"
+        ]
+      }
+    }
+  ],
+  "GLC": [
+    {
+      "name": "GLC 300 4MATIC",
+      "priceApprox": "₹ 75.90 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "9 Airbags including Center Airbag",
+          "Active Lane Keeping Assist",
+          "Pre-Safe Impulse Side",
+          "Off-Road ABS with Hill Descent Control"
+        ],
+        "comfort": [
+          "620L Cavernous Boot Space",
+          "11.9-inch Waterfall Portrait Display",
+          "Acoustic Comfort Package with Dual-Glazed Glass",
+          "Panoramic Sunroof"
+        ],
+        "infotainment": [
+          "Burmester 3D Surround Audio (15 Speakers / 710W)",
+          "MBUX Interior Assistant with Gesture Control",
+          "Wireless Smartphone Integration"
+        ],
+        "convenience": [
+          "Virtual Transparent Bonnet View via 360 Camera",
+          "Hands-Free Tailgate Access",
+          "Memory Package for Front Seats and Steering"
+        ],
+        "exterior": [
+          "Digital Light Headlamps with Projection Functions",
+          "19-inch 10-Spoke Light Alloy Wheels",
+          "Polished Aluminium Roof Rails",
+          "187mm Ground Clearance"
+        ],
+        "performance": [
+          "2.0L Turbo Petrol + 48V ISG (254 bhp / 400 Nm)",
+          "9G-Tronic Automatic (4MATIC AWD)",
+          "0-100 km/h in 6.2 Seconds"
+        ]
+      }
+    },
+    {
+      "name": "GLC 220d 4MATIC",
+      "priceApprox": "₹ 77.90 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "9 Airbags",
+          "Blind Spot Assist",
+          "Active Brake Assist with Cross-Traffic Detection",
+          "Tyre Pressure Monitoring System"
+        ],
+        "comfort": [
+          "Nappa Leather Sports Steering Wheel",
+          "Heated and Ventilated Front Seats",
+          "Thermotronic 3-Zone Climate Control"
+        ],
+        "infotainment": [
+          "MBUX Augmented Reality Navigation",
+          "Connected Car Services via Smartphone App",
+          "Biometric Authentication"
+        ],
+        "convenience": [
+          "Easy-Pack Load Compartment Cover and Luggage Net",
+          "Keyless-Go with Flush Door Handles",
+          "Ambient Lighting with Dynamic Sound Visualizer"
+        ],
+        "exterior": [
+          "AMG Line Aerodynamics with Star Pattern Radiator Grille",
+          "20-inch AMG Multi-Spoke Bicolour Alloys",
+          "Running Boards in Aluminium Look"
+        ],
+        "performance": [
+          "2.0L Turbo Diesel + 48V ISG (194 bhp / 440 Nm)",
+          "19.4 kmpl Highway Fuel Economy",
+          "4MATIC Permanent All-Wheel Drive"
+        ]
+      }
+    }
+  ],
+  "A4": [
+    {
+      "name": "40 TFSI Premium",
+      "priceApprox": "₹ 46.88 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Electronic Stability Control (ESC)",
+          "Audi Pre-Sense Basic",
+          "Auto-Hold Assist"
+        ],
+        "comfort": [
+          "Leatherette Upholstery",
+          "3-Zone Deluxe Automatic Air Conditioning",
+          "Sunroof with Tinted Glass",
+          "Five-Link Comfort Suspension"
+        ],
+        "infotainment": [
+          "10.1-inch MMI Touchscreen Infotainment",
+          "Audi Sound System with 10 Speakers and Subwoofer",
+          "Apple CarPlay & Android Auto"
+        ],
+        "convenience": [
+          "Electrically Adjustable Front Seats with Driver Memory",
+          "Audi Parking System Plus (Front & Rear Sensors with Camera)",
+          "Cruise Control with Speed Limiter"
+        ],
+        "exterior": [
+          "LED Headlights with Dynamic Rear Indicators",
+          "17-inch 5-Arm Dynamic Style Alloy Wheels",
+          "Singleframe Chrome Radiator Grille"
+        ],
+        "performance": [
+          "2.0L 4-Cylinder TFSI Turbo Petrol (204 bhp / 320 Nm)",
+          "7-Speed S-Tronic Dual Clutch (FWD)",
+          "0-100 km/h in 7.1 Seconds"
+        ]
+      }
+    },
+    {
+      "name": "40 TFSI Technology",
+      "priceApprox": "₹ 55.83 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "8 Airbags (including Rear Side Airbags)",
+          "Tyre Pressure Monitor",
+          "Audi Pre-Sense City with Emergency Brake Intervention"
+        ],
+        "comfort": [
+          "Piano Black Inlays with Contour Ambient Lighting (30 Colours)",
+          "Comfort Center Armrest with Storage",
+          "Comfort Keyless Access with Foot-Gesture Boot Open"
+        ],
+        "infotainment": [
+          "Audi Virtual Cockpit Plus (12.3-inch Full Digital Cluster)",
+          "Audi Phone Box with Wireless Inductive Charging and Signal Booster",
+          "MMI Navigation Plus"
+        ],
+        "convenience": [
+          "Park Assist with Automated Steering",
+          "Frameless Auto-Dimming Interior Mirror",
+          "Electronic Child Safety Locks"
+        ],
+        "exterior": [
+          "Matrix LED Headlights with Dynamic Turn Signals",
+          "17-inch Cast Aluminium Multi-Spoke Wheels",
+          "High-Gloss Styling Package"
+        ],
+        "performance": [
+          "2.0L TFSI Turbocharged Engine with Mild-Hybrid 12V Tech",
+          "17.4 kmpl Fuel Economy",
+          "Audi Drive Select (Comfort, Auto, Dynamic, Individual)"
+        ]
+      }
+    }
+  ],
+  "Q3": [
+    {
+      "name": "40 TFSI Quattro Premium Plus",
+      "priceApprox": "₹ 51.99 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Quattro Permanent All-Wheel Drive",
+          "Electronic Stability Program (ESP)",
+          "Hill Descent Assist"
+        ],
+        "comfort": [
+          "Panoramic Glass Sunroof",
+          "2-Zone Deluxe Automatic Climate Control",
+          "Leather / Leatherette Combination Upholstery",
+          "Sliding Rear Seat Bench"
+        ],
+        "infotainment": [
+          "10.1-inch MMI Touch Display",
+          "Audi Sound System (10 Speakers)",
+          "Audi Smartphone Interface"
+        ],
+        "convenience": [
+          "Electrically Adjustable Front Seats with 4-Way Lumbar Support",
+          "Rear View Camera with Parking Aid Plus",
+          "Luggage Compartment Package (530L Boot)"
+        ],
+        "exterior": [
+          "LED Headlights with LED Rear Combination Lamps",
+          "18-inch 5-Arm Style Alloy Wheels",
+          "Aluminium Roof Rails"
+        ],
+        "performance": [
+          "2.0L TFSI Turbo Petrol (190 bhp / 320 Nm)",
+          "7-Speed S-Tronic Dual Clutch with Quattro AWD",
+          "0-100 km/h in 7.3 Seconds"
+        ]
+      }
+    },
+    {
+      "name": "40 TFSI Quattro Technology",
+      "priceApprox": "₹ 55.99 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Audi Pre-Sense Front",
+          "Speed Warning System",
+          "ISOFIX Child Anchorage Points"
+        ],
+        "comfort": [
+          "Contour Ambient Lighting Package (30 Colours)",
+          "Aluminium Look Interior Trim Elements",
+          "Wireless Phone Charging Pad with Antenna Coupling"
+        ],
+        "infotainment": [
+          "Audi Virtual Cockpit Plus (12.3-inch Display)",
+          "Audi Sound System with Subwoofer",
+          "Navigation System with 3D City Maps"
+        ],
+        "convenience": [
+          "Comfort Key with Sensor-Controlled Powered Tailgate Release",
+          "Auto-Dimming Frameless Interior Mirror",
+          "Audi Drive Select"
+        ],
+        "exterior": [
+          "Matrix LED Headlights with Dynamic Headlight Range Control",
+          "18-inch 5-Spoke V-Style Contrast Grey Alloys",
+          "Singleframe Octagonal Grille"
+        ],
+        "performance": [
+          "2.0L TFSI Turbocharged Petrol Engine",
+          "Quattro Intelligent AWD",
+          "Progressive Steering for Sharp Handling"
+        ]
+      }
+    }
+  ],
+  "Q5": [
+    {
+      "name": "45 TFSI Quattro Premium Plus",
+      "priceApprox": "₹ 65.55 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "8 Airbags",
+          "Quattro Ultra All-Wheel Drive",
+          "Audi Pre-Sense Basic & Rear",
+          "Hill Hold & Hill Descent Control"
+        ],
+        "comfort": [
+          "Adaptive Damper Suspension",
+          "Leather / Leatherette Combination Upholstery",
+          "Panoramic Sunroof",
+          "3-Zone Climate Control"
+        ],
+        "infotainment": [
+          "10.1-inch MMI Touch Screen with MMI Navigation",
+          "Audi Sound System with 10 Speakers",
+          "Audi Virtual Cockpit Plus"
+        ],
+        "convenience": [
+          "Comfort Key with Motion-Sensing Tailgate",
+          "Cruise Control with Speed Limiter",
+          "Park Assist Plus with Rear Camera"
+        ],
+        "exterior": [
+          "LED Headlamps with Dynamic Turn Signals",
+          "19-inch 5-Double-Spoke Style Alloy Wheels",
+          "200mm High Ground Clearance"
+        ],
+        "performance": [
+          "2.0L High-Output TFSI Turbo Petrol (245 bhp / 370 Nm)",
+          "7-Speed S-Tronic DCT",
+          "0-100 km/h in 6.3 Seconds"
+        ]
+      }
+    },
+    {
+      "name": "45 TFSI Quattro Technology",
+      "priceApprox": "₹ 70.73 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "8 Airbags",
+          "Tyre Pressure Monitoring System (TPMS)",
+          "Sideguard Head Airbag System",
+          "Emergency Braking Assist"
+        ],
+        "comfort": [
+          "Driver Seat Memory Function",
+          "Contour Ambient Lighting Package (30 Colours)",
+          "Piano Black Gloss Inlays",
+          "Rear Seat Reclining & Sliding Adjust"
+        ],
+        "infotainment": [
+          "Bang & Olufsen 3D Premium Sound System (19 Speakers / 755W)",
+          "Audi Phone Box with Wireless Charging",
+          "Audi Smartphone Interface"
+        ],
+        "convenience": [
+          "Sensor-Controlled Electronic Tailgate",
+          "Park Assist with Automated Perpendicular & Parallel Parking",
+          "Electrically Folding Auto-Dimming Door Mirrors"
+        ],
+        "exterior": [
+          "Matrix LED Headlights with OLED Taillight Technology",
+          "19-inch 5-Arm Pylon Style Graphite Grey Alloys",
+          "Aluminium Exterior Styling Package"
+        ],
+        "performance": [
+          "2.0L TFSI 245 bhp High-Output Engine",
+          "Quattro Ultra AWD with Dynamic Torque Distribution",
+          "Top Speed of 237 km/h"
+        ]
+      }
+    }
+  ],
+  "Kodiaq": [
+    {
+      "name": "2.0 TSI Style",
+      "priceApprox": "₹ 39.99 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "9 Airbags",
+          "Electronic Stability Control (ESC)",
+          "Multi-Collision Brake (MKB)",
+          "Fatigue Detection Driver Alertness System"
+        ],
+        "comfort": [
+          "7-Seater Configuration with Sliding Middle Row",
+          "Panoramic Sunroof with Bounce-Back Protection",
+          "3-Zone Climatronic AC with Air Care",
+          "Leatherette Upholstery"
+        ],
+        "infotainment": [
+          "8-inch Infotainment Display with Wireless SmartLink",
+          "Virtual Cockpit with 10.25-inch Display",
+          "Skoda Audio System with 8 Speakers"
+        ],
+        "convenience": [
+          "Keyless Entry and Push Button Start (KESSY)",
+          "Electrically Adjustable Driver Seat with Memory",
+          "Cruise Control"
+        ],
+        "exterior": [
+          "Full LED Headlights with AFS",
+          "18-inch Trinity Alloy Wheels",
+          "Black Roof Rails",
+          "192mm Ground Clearance"
+        ],
+        "performance": [
+          "2.0L TSI Turbo Petrol (190 bhp / 320 Nm)",
+          "7-Speed DSG Dual-Clutch with 4x4",
+          "Drive Mode Select"
+        ]
+      }
+    },
+    {
+      "name": "2.0 TSI L&K 4x4",
+      "priceApprox": "₹ 46.99 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "9 Airbags",
+          "Dynamic Chassis Control (DCC) with Adaptive Shock Absorbers",
+          "360-Degree Area View Camera",
+          "Tyre Pressure Monitoring"
+        ],
+        "comfort": [
+          "Laurin & Klement Perforated Leather Seats with Ventilation and Heating",
+          "Acoustic Side Windows",
+          "Virtual Pedal Hands-Free Tailgate",
+          "Power 12-Way Front Seats"
+        ],
+        "infotainment": [
+          "Canton 625W 12-Speaker Sound System with Subwoofer",
+          "10.25-inch Digital Virtual Cockpit",
+          "Wireless Phone Charging Pad"
+        ],
+        "convenience": [
+          "Roll-Up Sunshades for Rear Windows",
+          "Door-Edge Protective Strips",
+          "Umbrella Storage Compartments in Front Doors"
+        ],
+        "exterior": [
+          "Chrome Grille with L&K Chrome Badging",
+          "18-inch Soira Dual-Tone Anthracite Alloys",
+          "Silver Roof Rails"
+        ],
+        "performance": [
+          "Dynamic Chassis Control (Adaptive Dampers)",
+          "4x4 with Electronic Differential Lock (EDL)",
+          "Off-Road Traction Mode"
+        ]
+      }
+    }
+  ],
+  "Seal": [
+    {
+      "name": "Dynamic RWD",
+      "priceApprox": "₹ 41.00 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "9 Airbags",
+          "Level 2 ADAS Suite (Automatic Emergency Braking, Lane Keep Assist)",
+          "5-Star Euro NCAP & ANCAP"
+        ],
+        "comfort": [
+          "15.6-inch Rotatable Touchscreen Display",
+          "Panoramic Glass Roof with UV Coating",
+          "Dual-Zone Heat Pump Air Conditioning"
+        ],
+        "infotainment": [
+          "Dynaudio 12-Speaker Sound System",
+          "BYD DiLink Intelligent Connected System",
+          "Voice Recognition with 4-Zone Microphones"
+        ],
+        "convenience": [
+          "NFC Key Card and Smartphone Bluetooth Digital Key",
+          "Vehicle-to-Load (V2L) External Power Supply",
+          "360-Degree Holographic Camera"
+        ],
+        "exterior": [
+          "Crystal LED Headlights with Ocean Wave DRLs",
+          "19-inch Aerodynamic Alloy Wheels",
+          "Retractable Flush Door Handles"
+        ],
+        "performance": [
+          "61.44 kWh Blade Battery (201 bhp / 310 Nm)",
+          "510 km Range (ARAI)",
+          "Rear-Wheel Drive (0-100: 7.5s)"
+        ]
+      }
+    },
+    {
+      "name": "Performance AWD",
+      "priceApprox": "₹ 53.65 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "9 Airbags",
+          "Intelligent Torque Adaptation Control (iTAC)",
+          "Driver Attention Warning",
+          "Blind Spot Detection with Door Open Warning"
+        ],
+        "comfort": [
+          "Ventilated and Heated Front Sport Seats",
+          "Head-Up Display (W-HUD)",
+          "Cell-to-Body (CTB) Ultra-Rigid Structure (40,500 Nm/deg)"
+        ],
+        "infotainment": [
+          "Dynaudio Premium Surround Audio System",
+          "Dual 50W Wireless Fast Charging Trays with Air Cooling",
+          "OTA Software Updates"
+        ],
+        "convenience": [
+          "150 kW DC Ultra-Fast Charging (10-80% in 37 mins)",
+          "Front Trunk (53L Frunk) + 400L Rear Trunk",
+          "Hands-Free Sensor Tailgate"
+        ],
+        "exterior": [
+          "Continuous LED Flowing Tail Lamp",
+          "19-inch Sport Bicolour Wheels with Continental SportContact Tyres",
+          "Sport Brake Calipers"
+        ],
+        "performance": [
+          "Dual Motors producing 523 bhp / 670 Nm",
+          "0-100 km/h in 3.8 Seconds (Supercar Sprint)",
+          "82.56 kWh Blade Battery with 580 km Range"
+        ]
+      }
+    }
+  ],
+  "EX40": [
+    {
+      "name": "Plus Single Motor",
+      "priceApprox": "₹ 56.10 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "7 Airbags",
+          "Volvo City Safety Collision Avoidance with Auto-Brake",
+          "Blind Spot Information System (BLIS) with Steer Assist",
+          "Run-Off Road Protection"
+        ],
+        "comfort": [
+          "Charcoal Fusion Microtech Leatherette Interior",
+          "Fixed Panoramic Sunroof",
+          "2-Zone CleanZone Air Purification System with PM 2.5 Filter"
+        ],
+        "infotainment": [
+          "9-inch Touchscreen with Built-in Google Maps & Assistant",
+          "High Performance Audio System with 8 Speakers",
+          "Volvo Cars App Remote Pre-Conditioning"
+        ],
+        "convenience": [
+          "One-Pedal Drive Regenerative Braking",
+          "Hands-Free Power Operated Tailgate",
+          "Wireless Phone Charger"
+        ],
+        "exterior": [
+          "Thor's Hammer LED Headlights",
+          "19-inch 5-Spoke Black Diamond Cut Alloys",
+          "Integrated Roof Spoiler"
+        ],
+        "performance": [
+          "Rear-Wheel Drive Electric Motor (238 bhp / 420 Nm)",
+          "69 kWh Battery with 475 km Range",
+          "0-100 km/h in 7.3 Seconds"
+        ]
+      }
+    },
+    {
+      "name": "Ultimate Twin Motor AWD",
+      "priceApprox": "₹ 62.95 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "7 Airbags",
+          "Pilot Assist (L2 Semi-Autonomous Steering & Adaptive Cruise)",
+          "360-Degree Surround Camera with Bird's Eye View",
+          "Cross Traffic Alert with Auto-Brake"
+        ],
+        "comfort": [
+          "Topography Translucent Backlit Decor Inlays",
+          "Front Seat Cushion Extensions with Lumbar Support",
+          "Heat Pump for Efficient Cold Weather Cabin Heating"
+        ],
+        "infotainment": [
+          "Harman Kardon 600W Premium Sound (13 Speakers with Subwoofer)",
+          "Google Play Store App Ecosystem",
+          "Digital 12.3-inch Driver Information Display"
+        ],
+        "convenience": [
+          "150 kW DC Fast Charging (10-80% in 28 mins)",
+          "31L Front Load Frunk + 410L Rear Boot",
+          "Keyless Entry with Puddle Lights"
+        ],
+        "exterior": [
+          "Full-LED Active High Beam Headlamps",
+          "20-inch 5-Spoke Black Diamond Cut Alloys",
+          "Gloss Black Mirror Caps and Roof Rails"
+        ],
+        "performance": [
+          "Dual Motor Permanent AWD (402 bhp / 660 Nm)",
+          "0-100 km/h in 4.8 Seconds",
+          "78 kWh Battery with 530 km ARAI Range"
+        ]
+      }
+    }
+  ],
+  "ES": [
+    {
+      "name": "300h Exquisite",
+      "priceApprox": "₹ 66.10 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "10 Airbags",
+          "Vehicle Stability Control (VSC)",
+          "Hill-Start Assist Control",
+          "Tyre Pressure Warning System"
+        ],
+        "comfort": [
+          "Smooth Leather Upholstery with Shimamoku Wood Ornamentation",
+          "Power Front Seats with Driver Memory",
+          "Electric Rear Sunshade",
+          "Moonroof"
+        ],
+        "infotainment": [
+          "12.3-inch Touchscreen with Navigation",
+          "Lexus Premium Sound System with 10 Speakers",
+          "Wireless Apple CarPlay"
+        ],
+        "convenience": [
+          "Smart Entry with Push Button Start",
+          "Hands-Free Kick-Sensor Power Boot",
+          "Rain-Sensing Auto Wipers"
+        ],
+        "exterior": [
+          "Signature Spindle Grille",
+          "Bi-LED Headlamps with Daytime Running Lights",
+          "18-inch Noise-Reducing Alloy Wheels"
+        ],
+        "performance": [
+          "2.5L Self-Charging Hybrid Dynamic Force Engine (Combined 215 bhp)",
+          "22.58 kmpl Fuel Economy",
+          "e-CVT Transmission"
+        ]
+      }
+    },
+    {
+      "name": "300h Luxury",
+      "priceApprox": "₹ 72.50 Lakh",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "10 Airbags",
+          "Lexus Safety System+ 2.5 (Pre-Collision System, Lane Tracing Assist)",
+          "Dynamic Radar Cruise Control",
+          "Blind Spot Monitor"
+        ],
+        "comfort": [
+          "Semi-Aniline Leather Seats with 14-Way Power Adjust",
+          "Reclining Rear Seats with Center Armrest AC/Audio Control Panel",
+          "Ventilated Front Seats"
+        ],
+        "infotainment": [
+          "Mark Levinson 17-Speaker PurePlay Surround Audio System",
+          "Head-Up Display (HUD)",
+          "Wireless Phone Charging Tray"
+        ],
+        "convenience": [
+          "Panoramic View 360-Degree Monitor",
+          "Easy Access Steering Wheel with Auto Tilt & Return",
+          "Card Key Transmitter"
+        ],
+        "exterior": [
+          "3-Eye Bi-Beam LED Headlamps with BladeScan Adaptive High-beam",
+          "18-inch Multi-Spoke Metallic Alloys",
+          "Acoustic Noise-Insulating Glass"
+        ],
+        "performance": [
+          "EV Drive Mode for Near-Silent City Gliding",
+          "Drive Mode Select (Eco, Normal, Sport)",
+          "Regenerative Electronic Braking"
+        ]
+      }
+    }
+  ],
+  "Defender": [
+    {
+      "name": "110 S (2.0L Petrol)",
+      "priceApprox": "₹ 99.00 Lakh",
+      "isTopModel": false,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Terrain Response AWD System",
+          "Dynamic Stability Control (DSC)",
+          "Roll Stability Control (RSC)"
+        ],
+        "comfort": [
+          "Grained Leather Seats with Robust Woven Textile",
+          "12-Way Semi-Powered Front Seats",
+          "Dual-Zone Climate Control",
+          "786L Cargo Boot"
+        ],
+        "infotainment": [
+          "Pivi Pro 11.4-inch Touchscreen Navigation",
+          "Meridian 400W Sound System with 10 Speakers",
+          "Interactive Driver Display"
+        ],
+        "convenience": [
+          "Electronic Air Suspension with Adaptive Dynamics",
+          "3D Surround Camera with Wade Sensing",
+          "Cruise Control with Speed Limiter"
+        ],
+        "exterior": [
+          "LED Headlights with Signature DRL",
+          "19-inch Style 6010 Gloss Sparkle Silver Alloys",
+          "Body-Coloured Roof with Full-Size Spare on Tailgate"
+        ],
+        "performance": [
+          "2.0L Turbo Petrol P300 (296 bhp / 400 Nm)",
+          "8-Speed Automatic All-Wheel Drive",
+          "Twin-Speed Transfer Box with Low Range"
+        ]
+      }
+    },
+    {
+      "name": "110 HSE (3.0L Diesel MHEV)",
+      "priceApprox": "₹ 1.05 Crore",
+      "isTopModel": true,
+      "features": {
+        "safety": [
+          "6 Airbags",
+          "Terrain Response 2 with Configurable Off-Road Modes",
+          "Wade Sensing (Up to 900mm Wading Depth)",
+          "ClearSight Interior Rear View Mirror"
+        ],
+        "comfort": [
+          "Windsor Leather 14-Way Heated & Cooled Memory Front Seats",
+          "Sliding Panoramic Roof",
+          "3-Zone Climate Control with Rear Cooling Assist"
+        ],
+        "infotainment": [
+          "Meridian 700W Surround Sound System (14 Speakers + Subwoofer)",
+          "Head-Up Display",
+          "Wireless Apple CarPlay & Android Auto"
+        ],
+        "convenience": [
+          "Keyless Entry with Soft-Close Tailgate",
+          "Electrically Deployable Tow Bar",
+          "Domestic 230V Plug Socket in Boot"
+        ],
+        "exterior": [
+          "Matrix LED Headlights with Signature DRL",
+          "20-inch Style 5098 5-Spoke Satin Dark Grey Alloys",
+          "Electronic Air Suspension (Max 291mm Lift)"
+        ],
+        "performance": [
+          "3.0L 6-Cylinder Twin-Turbo Diesel MHEV (296 bhp / 650 Nm)",
+          "Electronic Active Differential with Torque Vectoring by Braking",
+          "Towing Capacity of 3500 kg"
+        ]
+      }
+    }
   ]
 };

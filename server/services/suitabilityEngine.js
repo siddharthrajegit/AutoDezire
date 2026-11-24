@@ -305,16 +305,18 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
 
   const userBudget = profile.budget || 14;
   const basePrice = vehicle.priceFrom;
+  const budgetFormatted = userBudget >= 100 ? `${userBudget}L (₹${(userBudget / 100).toFixed(2)} Cr)` : `₹${userBudget} Lakh`;
+  const budgetShort = userBudget >= 100 ? `${userBudget}L` : `₹${userBudget}L`;
   let budgetStatus = 'Within Budget';
-  let budgetMessage = `Fits comfortably within your ₹${userBudget} Lakh budget`;
+  let budgetMessage = `Fits comfortably within your ${budgetFormatted} budget`;
 
   if (basePrice > userBudget * 1.15) {
     budgetStatus = 'Beyond Consideration Range';
-    budgetMessage = `Exceeds your budget range (Base ₹${basePrice}L vs Budget ₹${userBudget}L)`;
+    budgetMessage = `Exceeds your budget range (Base ₹${basePrice}L vs Budget ${budgetShort})`;
     rawOverallScore = Math.max(10, rawOverallScore - 15);
   } else if (basePrice > userBudget) {
     budgetStatus = 'Slightly Above Budget';
-    budgetMessage = `Slightly above ₹${userBudget}L budget (within 10-15% tolerance range)`;
+    budgetMessage = `Slightly above ${budgetShort} budget (within 10-15% tolerance range)`;
   }
 
   if (!isEligible) {

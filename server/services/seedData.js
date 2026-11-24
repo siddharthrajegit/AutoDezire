@@ -1,7 +1,7 @@
 /**
  * Seed Vehicles Data for AutoDezire Database Seeding
- * 8 Major Indian Automobile Brands (2024-2026)
- * Total Models: 71
+ * 16 Major Indian Automobile Brands (2024-2026)
+ * Total Models: 86
  */
 
 const seedVehicles = [
@@ -9575,6 +9575,1612 @@ const seedVehicles = [
     "isActive": true,
     "secondaryImages": [
       "https://imgd.aeplcdn.com/664x374/n/cw/ec/129689/gloster-exterior-right-front-three-quarter-5.png?isig=0&q=80&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "bmw-x1",
+    "brand": "BMW",
+    "model": "X1",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "sDrive18i M Sport / sDrive18d M Sport | 7-Speed Steptronic",
+    "priceFrom": 49.5,
+    "priceTo": 52.7,
+    "priceDisplay": "₹ 49.50 - 52.70 Lakh*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "sDrive18i M Sport (1.5L TwinPower Turbo)",
+        "engine": "1499cc 3-Cylinder TwinPower Turbo Petrol",
+        "power": "134 bhp @ 4400-6500 rpm",
+        "torque": "230 Nm @ 1500-4000 rpm",
+        "mileage": "16.3 kmpl",
+        "runningCostPerKm": 6.2,
+        "transmission": "7-Speed Dual-Clutch Steptronic",
+        "priceRange": "₹ 49.50 Lakh",
+        "keyFit": "Best for premium urban commuting and weekend getaways with nimble steering and high fuel efficiency",
+        "limitations": "3-cylinder engine lacks the high-speed overtakes of larger 2.0L performance mills"
+      },
+      "Diesel": {
+        "name": "sDrive18d M Sport (2.0L Turbo Diesel)",
+        "engine": "1995cc 4-Cylinder TwinPower Turbo Diesel",
+        "power": "148 bhp @ 3750-4000 rpm",
+        "torque": "360 Nm @ 1500-2500 rpm",
+        "mileage": "20.37 kmpl",
+        "runningCostPerKm": 4.9,
+        "transmission": "7-Speed Dual-Clutch Steptronic",
+        "priceRange": "₹ 52.70 Lakh",
+        "keyFit": "Best for long-distance highway touring with generous 360 Nm low-end punch and 20+ kmpl economy",
+        "limitations": "Front-wheel-drive architecture rather than traditional BMW rear-wheel-drive dynamics"
+      }
+    },
+    "transmission": "Automatic (7-Speed DCT)",
+    "engine": "2.0L Turbo Diesel / 1.5L Turbo Petrol",
+    "engineCC": 1995,
+    "power": "148 bhp",
+    "torque": "360 Nm",
+    "mileage": "20.37 kmpl",
+    "mileageValue": 20.37,
+    "driveType": "FWD",
+    "groundClearance": 183,
+    "seatingCapacity": 5,
+    "bootSpace": 476,
+    "seatHeight": 0,
+    "kerbWeight": 1575,
+    "length": 4500,
+    "width": 1845,
+    "height": 1630,
+    "wheelbase": 2692,
+    "turningRadius": 5.4,
+    "cabinHeadroom": 1015,
+    "driverSeatHeightRange": {
+      "min": 610,
+      "max": 690
+    },
+    "roofHeight": 1630,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 152,
+    "idealHeightMax": 195,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/140591/x1-exterior-right-front-three-quarter-7.jpeg?isig=0&q=80",
+    "description": "BMW's best-selling luxury compact SUV in India, featuring modern curved display cockpit, sporty M Sport styling, compliant suspension, and exceptional diesel touring economy.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 8,
+      "comfort": 9,
+      "spacePracticality": 8,
+      "mileageRunningCost": 8,
+      "maintenanceCost": 6,
+      "performance": 8,
+      "resaleValue": 9,
+      "highwayStability": 9,
+      "cityDriveSuitability": 8,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Curved Display Cockpit",
+      "20.37 kmpl Diesel Mileage",
+      "5-Star Euro NCAP",
+      "M Sport Aerodynamics"
+    ],
+    "inherentStrengths": [
+      "Ergonomic front seating with generous 1015mm headroom and expansive curved infotainment display",
+      "Refined 2.0L diesel engine delivers effortless highway cruising and over 20 kmpl fuel economy",
+      "Plush low-speed ride quality engineered specifically for Indian tarmac and broken surfaces",
+      "Active front collision warning and automated parking assistant as standard equipment"
+    ],
+    "inherentConsiderations": [
+      "Front-wheel-drive architecture may not satisfy hardcore rear-wheel-drive BMW purists",
+      "3-cylinder petrol variant provides modest mid-range overtaking punch when fully loaded with luggage"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/140591/x1-exterior-right-front-three-quarter-7.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "bmw-3-series-gl",
+    "brand": "BMW",
+    "model": "3 Series Gran Limousine",
+    "category": "Car",
+    "bodyType": "Sedan",
+    "variantSummary": "330Li M Sport / 320Ld M Sport | Long Wheelbase Chauffeur Luxury",
+    "priceFrom": 60.6,
+    "priceTo": 62,
+    "priceDisplay": "₹ 60.60 - 62.00 Lakh*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "330Li M Sport (2.0L TwinPower Turbo)",
+        "engine": "1998cc 4-Cylinder TwinPower Turbo Petrol",
+        "power": "258 bhp @ 5000 rpm",
+        "torque": "400 Nm @ 1550-4400 rpm",
+        "mileage": "15.39 kmpl",
+        "runningCostPerKm": 6.8,
+        "transmission": "8-Speed Steptronic Sport (RWD)",
+        "priceRange": "₹ 60.60 Lakh",
+        "keyFit": "Best for driving enthusiasts who also need unmatched limousine rear legroom for executive commuting",
+        "limitations": "Firm M Sport suspension over sharp expansion joints"
+      },
+      "Diesel": {
+        "name": "320Ld M Sport (2.0L Turbo Diesel)",
+        "engine": "1995cc 4-Cylinder Turbo Diesel",
+        "power": "190 bhp @ 4000 rpm",
+        "torque": "400 Nm @ 1750-2500 rpm",
+        "mileage": "19.61 kmpl",
+        "runningCostPerKm": 5.1,
+        "transmission": "8-Speed Steptronic (RWD)",
+        "priceRange": "₹ 62.00 Lakh",
+        "keyFit": "Best for high-mileage intercity travel with low fuel consumption and rear-seat business class comfort",
+        "limitations": "Low 136mm unladen ground clearance requires care on oversized speed bumps"
+      }
+    },
+    "transmission": "Automatic (8-Speed Sport Steptronic)",
+    "engine": "2.0L TwinPower Turbo Petrol / Diesel",
+    "engineCC": 1998,
+    "power": "258 bhp",
+    "torque": "400 Nm",
+    "mileage": "15.39 kmpl",
+    "mileageValue": 15.39,
+    "driveType": "RWD",
+    "groundClearance": 136,
+    "seatingCapacity": 5,
+    "bootSpace": 480,
+    "seatHeight": 0,
+    "kerbWeight": 1640,
+    "length": 4819,
+    "width": 1827,
+    "height": 1441,
+    "wheelbase": 2961,
+    "turningRadius": 5.7,
+    "cabinHeadroom": 980,
+    "driverSeatHeightRange": {
+      "min": 530,
+      "max": 610
+    },
+    "roofHeight": 1441,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 150,
+    "idealHeightMax": 196,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/139537/3-series-gran-limousine-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+    "description": "The gold standard executive luxury sports sedan in India, boasting a massive 2961mm extended wheelbase, 258 bhp RWD performance, and rear lounge seating with panoramic roof.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 5,
+      "comfort": 10,
+      "spacePracticality": 9,
+      "mileageRunningCost": 8,
+      "maintenanceCost": 6,
+      "performance": 10,
+      "resaleValue": 9,
+      "highwayStability": 10,
+      "cityDriveSuitability": 7,
+      "ergonomicFit": 10,
+      "handleability": 10
+    },
+    "highlightBadges": [
+      "2961mm Extended Wheelbase",
+      "258 bhp RWD Acceleration (0-100: 6.2s)",
+      "Harman Kardon 16-Speaker Audio",
+      "Panoramic Glass Sunroof"
+    ],
+    "inherentStrengths": [
+      "Class-leading rear legroom with plush headrest pillows and dedicated climate zone",
+      "Exhilarating 258 bhp 330Li powertrain launches 0-100 km/h in an impressive 6.2 seconds",
+      "50:50 weight distribution and rear-wheel-drive layout deliver unmatched sports car handling",
+      "Curved display with BMW Operating System 8 and wireless Apple CarPlay / Android Auto"
+    ],
+    "inherentConsiderations": [
+      "Low 136mm ground clearance requires cautious angle approach over tall unmarked city speed bumps",
+      "Spare wheel housing occupies usable vertical trunk storage space"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/139537/3-series-gran-limousine-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "bmw-x3",
+    "brand": "BMW",
+    "model": "X3",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "xDrive20d M Sport / xDrive30i M Sport | Intelligent All-Wheel Drive",
+    "priceFrom": 68.5,
+    "priceTo": 74.9,
+    "priceDisplay": "₹ 68.50 - 74.90 Lakh*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "xDrive30i M Sport",
+        "engine": "1998cc 4-Cylinder TwinPower Turbo Petrol",
+        "power": "248 bhp @ 5200 rpm",
+        "torque": "350 Nm @ 1450-4800 rpm",
+        "mileage": "13.1 kmpl",
+        "runningCostPerKm": 7.9,
+        "transmission": "8-Speed Steptronic Sport with xDrive",
+        "priceRange": "₹ 68.50 Lakh",
+        "keyFit": "Best for spirited driving across twisty mountain roads and high-speed expressway travel",
+        "limitations": "Single-digit city fuel efficiency in bumper-to-bumper traffic"
+      },
+      "Diesel": {
+        "name": "xDrive20d M Sport",
+        "engine": "1995cc 4-Cylinder Turbo Diesel",
+        "power": "188 bhp @ 4000 rpm",
+        "torque": "400 Nm @ 1750-2500 rpm",
+        "mileage": "16.55 kmpl",
+        "runningCostPerKm": 6,
+        "transmission": "8-Speed Steptronic with xDrive",
+        "priceRange": "₹ 74.90 Lakh",
+        "keyFit": "Best for all-weather touring and broken mountain roads with 204mm ground clearance and 400 Nm torque",
+        "limitations": "Firm secondary damping on sharp expansion joints"
+      }
+    },
+    "transmission": "Automatic (8-Speed Steptronic xDrive)",
+    "engine": "2.0L Turbo Diesel / Petrol xDrive AWD",
+    "engineCC": 1995,
+    "power": "188 bhp",
+    "torque": "400 Nm",
+    "mileage": "16.55 kmpl",
+    "mileageValue": 16.55,
+    "driveType": "AWD",
+    "groundClearance": 204,
+    "seatingCapacity": 5,
+    "bootSpace": 550,
+    "seatHeight": 0,
+    "kerbWeight": 1875,
+    "length": 4708,
+    "width": 1891,
+    "height": 1676,
+    "wheelbase": 2864,
+    "turningRadius": 6,
+    "cabinHeadroom": 1020,
+    "driverSeatHeightRange": {
+      "min": 650,
+      "max": 730
+    },
+    "roofHeight": 1676,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Challenging",
+    "idealHeightMin": 155,
+    "idealHeightMax": 200,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/110503/x3-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "Athletic mid-size luxury German SUV equipped with BMW xDrive permanent AWD, 204mm ground clearance, adaptive suspension damping, and 550L cargo volume.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 9,
+      "comfort": 9,
+      "spacePracticality": 9,
+      "mileageRunningCost": 7,
+      "maintenanceCost": 6,
+      "performance": 9,
+      "resaleValue": 8,
+      "highwayStability": 10,
+      "cityDriveSuitability": 7,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "BMW xDrive Intelligent AWD",
+      "204mm High Ground Clearance",
+      "550L Expandable Cargo Boot",
+      "Adaptive Suspension"
+    ],
+    "inherentStrengths": [
+      "High 204mm ground clearance tackles harsh waterlogged roads and potholes with ease",
+      "Intelligent xDrive all-wheel drive redistributes torque between axles in milliseconds for foul-weather safety",
+      "Generous 550-litre boot expands to 1600 litres with 40:20:40 split fold",
+      "Acoustic glazing and panoramic glass roof create a serene, airy cabin atmosphere"
+    ],
+    "inherentConsiderations": [
+      "6.0m turning radius requires wide parallel parking margins in tight city lots",
+      "Run-flat tyres transmit road thumps on deeply cratered roads"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/110503/x3-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "bmw-ix1",
+    "brand": "BMW",
+    "model": "iX1",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "xDrive30 M Sport | Dual-Motor Electric AWD (308 bhp)",
+    "priceFrom": 66.9,
+    "priceTo": 66.9,
+    "priceDisplay": "₹ 66.90 Lakh*",
+    "fuelType": "Electric",
+    "availableFuelTypes": [
+      "Electric"
+    ],
+    "fuelVariants": {
+      "Electric": {
+        "name": "xDrive30 M Sport (Dual Motor AWD)",
+        "engine": "Dual Electrically Excited Synchronous Motors + 66.4 kWh Battery",
+        "power": "308 bhp (230 kW) with temporary Boost Mode",
+        "torque": "494 Nm instant torque",
+        "mileage": "440 km / charge (ARAI)",
+        "runningCostPerKm": 1.6,
+        "transmission": "Single-Speed Automatic AWD",
+        "priceRange": "₹ 66.90 Lakh",
+        "keyFit": "Best for luxury EV adopters wanting instant 308 bhp twin-motor acceleration and zero tailpipe emissions",
+        "limitations": "Highway range drops to ~330 km when cruising sustained 110-120 km/h with AC"
+      }
+    },
+    "transmission": "Automatic (Electric Single-Speed)",
+    "engine": "Dual Electric Motors (66.4 kWh Battery)",
+    "engineCC": 0,
+    "power": "308 bhp",
+    "torque": "494 Nm",
+    "mileage": "440 km range",
+    "mileageValue": 26,
+    "driveType": "AWD",
+    "groundClearance": 170,
+    "seatingCapacity": 5,
+    "bootSpace": 490,
+    "seatHeight": 0,
+    "kerbWeight": 2085,
+    "length": 4500,
+    "width": 1845,
+    "height": 1616,
+    "wheelbase": 2692,
+    "turningRadius": 5.5,
+    "cabinHeadroom": 1010,
+    "driverSeatHeightRange": {
+      "min": 610,
+      "max": 690
+    },
+    "roofHeight": 1616,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 152,
+    "idealHeightMax": 195,
+    "chargingRequired": true,
+    "homeChargingTime": "6.5 hours (11kW AC Wallbox)",
+    "fastChargingSupport": true,
+    "evRangeReal": 380,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/158567/ix1-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "All-electric compact luxury SUV from BMW featuring dual-motor AWD producing 308 bhp, 0-100 km/h in 5.6s, 130 kW DC fast charging, and curved digital dashboard.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 7,
+      "comfort": 9,
+      "spacePracticality": 8,
+      "mileageRunningCost": 10,
+      "maintenanceCost": 8,
+      "performance": 10,
+      "resaleValue": 8,
+      "highwayStability": 10,
+      "cityDriveSuitability": 9,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Dual Motor Electric AWD",
+      "308 bhp / 494 Nm (0-100: 5.6s)",
+      "130 kW DC Fast Charging",
+      "₹1.60/km Running Cost"
+    ],
+    "inherentStrengths": [
+      "Violent twin-motor acceleration with instant 494 Nm torque and steering paddle boost mode",
+      "Extremely quiet cabin insulation with Hans Zimmer IconicSounds electric propulsion audio",
+      "Low center of gravity from battery skateboard chassis gives razor-sharp cornering stability",
+      "130 kW DC rapid charging takes battery from 10% to 80% in approximately 29 minutes"
+    ],
+    "inherentConsiderations": [
+      "Requires designated 11 kW AC home charger or access to public CCS2 charging network",
+      "Heavier kerb weight (2085 kg) results in firmer damping over sharp speed ramps"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/158567/ix1-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "mercedes-gla",
+    "brand": "Mercedes-Benz",
+    "model": "GLA",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "GLA 200 / GLA 220d 4MATIC | MBUX Dual Screen Luxury",
+    "priceFrom": 51.75,
+    "priceTo": 58.15,
+    "priceDisplay": "₹ 51.75 - 58.15 Lakh*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "GLA 200 (1.3L Turbo Petrol)",
+        "engine": "1332cc 4-Cylinder Turbo Petrol",
+        "power": "161 bhp @ 5500 rpm",
+        "torque": "250 Nm @ 1620-4000 rpm",
+        "mileage": "17.4 kmpl",
+        "runningCostPerKm": 5.9,
+        "transmission": "7-Speed Dual-Clutch (7G-DCT)",
+        "priceRange": "₹ 51.75 Lakh",
+        "keyFit": "Best for effortless city driving and chic corporate commuting with low fuel consumption",
+        "limitations": "Front-wheel drive only; firm low-speed damping"
+      },
+      "Diesel": {
+        "name": "GLA 220d 4MATIC (2.0L Turbo Diesel AWD)",
+        "engine": "1950cc 4-Cylinder OM654 Turbo Diesel",
+        "power": "188 bhp @ 3800 rpm",
+        "torque": "400 Nm @ 1600-2600 rpm",
+        "mileage": "18.9 kmpl",
+        "runningCostPerKm": 5.3,
+        "transmission": "8-Speed Dual-Clutch (8G-DCT) 4MATIC",
+        "priceRange": "₹ 58.15 Lakh",
+        "keyFit": "Best for all-season highway touring with 4MATIC permanent all-wheel drive and 400 Nm torque",
+        "limitations": "Premium price tag over GLA 200 petrol"
+      }
+    },
+    "transmission": "Automatic (8-Speed / 7-Speed DCT)",
+    "engine": "2.0L Turbo Diesel 4MATIC / 1.3L Turbo Petrol",
+    "engineCC": 1950,
+    "power": "188 bhp",
+    "torque": "400 Nm",
+    "mileage": "18.9 kmpl",
+    "mileageValue": 18.9,
+    "driveType": "AWD",
+    "groundClearance": 183,
+    "seatingCapacity": 5,
+    "bootSpace": 425,
+    "seatHeight": 0,
+    "kerbWeight": 1570,
+    "length": 4412,
+    "width": 1834,
+    "height": 1616,
+    "wheelbase": 2729,
+    "turningRadius": 5.3,
+    "cabinHeadroom": 1010,
+    "driverSeatHeightRange": {
+      "min": 610,
+      "max": 690
+    },
+    "roofHeight": 1616,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Easy",
+    "idealHeightMin": 150,
+    "idealHeightMax": 194,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/170173/gla-facelift-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+    "description": "Sophisticated entry-luxury crossover by Mercedes-Benz featuring twin 10.25-inch MBUX screens, 64-colour turbine ambient lighting, 4MATIC all-wheel drive, and compact city footprint.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 8,
+      "comfort": 9,
+      "spacePracticality": 8,
+      "mileageRunningCost": 8,
+      "maintenanceCost": 6,
+      "performance": 8,
+      "resaleValue": 9,
+      "highwayStability": 9,
+      "cityDriveSuitability": 9,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "4MATIC All-Wheel Drive",
+      "Twin 10.25-inch MBUX Screens",
+      "64-Colour Ambient Lighting",
+      "Compact 4.41m City Profile"
+    ],
+    "inherentStrengths": [
+      "Breathtaking interior cabin atmosphere with turbine air vents and configurable ambient glow",
+      "Compact 4412mm length and 5.3m turning circle make parallel parking effortlessly simple",
+      "4MATIC permanent all-wheel drive provides excellent traction in heavy monsoon rains",
+      "Hands-free powered tailgate and panoramic sunroof come as standard"
+    ],
+    "inherentConsiderations": [
+      "425-litre boot is on the smaller side for large family suitcases",
+      "Rear bench under-thigh support is slightly shallow for passengers over 6 feet tall"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/170173/gla-facelift-exterior-right-front-three-quarter.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "mercedes-c-class",
+    "brand": "Mercedes-Benz",
+    "model": "C-Class",
+    "category": "Car",
+    "bodyType": "Sedan",
+    "variantSummary": "C 200 / C 220d / C 300 AMG Line | 48V Mild-Hybrid Luxury",
+    "priceFrom": 61.85,
+    "priceTo": 69,
+    "priceDisplay": "₹ 61.85 - 69.00 Lakh*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "C 200 (1.5L Turbo + 48V ISG Mild Hybrid)",
+        "engine": "1496cc 4-Cylinder Turbo Petrol with Integrated Starter Generator",
+        "power": "201 bhp + 20 bhp EQ Boost",
+        "torque": "300 Nm @ 1800-4000 rpm",
+        "mileage": "16.9 kmpl",
+        "runningCostPerKm": 6.1,
+        "transmission": "9G-Tronic 9-Speed Automatic (RWD)",
+        "priceRange": "₹ 61.85 Lakh",
+        "keyFit": "Best for executive city commuting with silky smooth engine shut-off and start-up",
+        "limitations": "Engine needs high revs for aggressive high-speed overtaking"
+      },
+      "Diesel": {
+        "name": "C 220d (2.0L Turbo + 48V ISG Mild Hybrid)",
+        "engine": "1993cc 4-Cylinder OM654M Turbo Diesel MHEV",
+        "power": "197 bhp + 20 bhp EQ Boost",
+        "torque": "440 Nm @ 1800-2800 rpm",
+        "mileage": "23.0 kmpl",
+        "runningCostPerKm": 4.3,
+        "transmission": "9G-Tronic 9-Speed Automatic (RWD)",
+        "priceRange": "₹ 63.85 Lakh",
+        "keyFit": "Best for cross-country highway express cruising with sensational 23 kmpl mileage and 440 Nm torque",
+        "limitations": "Rear seat legroom is tighter than the long-wheelbase BMW 3 Series"
+      }
+    },
+    "transmission": "Automatic (9G-Tronic 9-Speed)",
+    "engine": "2.0L Turbo Diesel / 1.5L Petrol + 48V Mild Hybrid",
+    "engineCC": 1993,
+    "power": "197 bhp",
+    "torque": "440 Nm",
+    "mileage": "23.0 kmpl",
+    "mileageValue": 23,
+    "driveType": "RWD",
+    "groundClearance": 157,
+    "seatingCapacity": 5,
+    "bootSpace": 455,
+    "seatHeight": 0,
+    "kerbWeight": 1675,
+    "length": 4751,
+    "width": 1820,
+    "height": 1437,
+    "wheelbase": 2865,
+    "turningRadius": 5.5,
+    "cabinHeadroom": 975,
+    "driverSeatHeightRange": {
+      "min": 540,
+      "max": 620
+    },
+    "roofHeight": 1437,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 150,
+    "idealHeightMax": 194,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/115871/c-class-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "Affectionately known as the 'Baby S-Class', the W206 C-Class features an 11.9-inch portrait touchscreen, 48V integrated starter generator, S-Class design cues, and phenomenal 23 kmpl diesel economy.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 6,
+      "comfort": 10,
+      "spacePracticality": 8,
+      "mileageRunningCost": 9,
+      "maintenanceCost": 6,
+      "performance": 9,
+      "resaleValue": 9,
+      "highwayStability": 10,
+      "cityDriveSuitability": 8,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Baby S-Class Portrait Display",
+      "23.0 kmpl Diesel Highway Economy",
+      "48V Integrated Starter Generator",
+      "9G-Tronic Transmission"
+    ],
+    "inherentStrengths": [
+      "Stunning interior architecture with waterfall 11.9-inch OLED touchscreen and biometric fingerprint scanner",
+      "Astonishing diesel fuel economy reaching 23 kmpl on open highway stretches with 1000+ km tank range",
+      "Superb ride refinement with ultra-low NVH levels and 48V seamless start-stop",
+      "7 airbags with active brake assist and Pre-Safe passenger protection suite"
+    ],
+    "inherentConsiderations": [
+      "Rear legroom is adequate but cannot match the extended wheelbase of the BMW 3 Gran Limousine",
+      "Low seating posture requires bending down slightly for senior citizens during ingress"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/115871/c-class-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "mercedes-glc",
+    "brand": "Mercedes-Benz",
+    "model": "GLC",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "GLC 300 4MATIC / GLC 220d 4MATIC | Transparent Bonnet & Burmester Audio",
+    "priceFrom": 75.9,
+    "priceTo": 77.9,
+    "priceDisplay": "₹ 75.90 - 77.90 Lakh*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "GLC 300 4MATIC (2.0L Turbo MHEV)",
+        "engine": "1999cc 4-Cylinder Turbo Petrol + 48V Mild Hybrid",
+        "power": "254 bhp + 23 bhp EQ Boost",
+        "torque": "400 Nm @ 2000-3200 rpm",
+        "mileage": "14.7 kmpl",
+        "runningCostPerKm": 7.1,
+        "transmission": "9G-Tronic 4MATIC AWD",
+        "priceRange": "₹ 75.90 Lakh",
+        "keyFit": "Best for executive families wanting whisper-quiet petrol luxury, rapid overtakes, and 4MATIC safety",
+        "limitations": "Real-world city mileage hovers around 9-10 kmpl"
+      },
+      "Diesel": {
+        "name": "GLC 220d 4MATIC (2.0L Turbo Diesel MHEV)",
+        "engine": "1993cc 4-Cylinder Turbo Diesel + 48V Mild Hybrid",
+        "power": "194 bhp + 23 bhp EQ Boost",
+        "torque": "440 Nm @ 1800-2800 rpm",
+        "mileage": "19.4 kmpl",
+        "runningCostPerKm": 5.2,
+        "transmission": "9G-Tronic 4MATIC AWD",
+        "priceRange": "₹ 77.90 Lakh",
+        "keyFit": "Best for high-mileage grand touring across Indian highways with massive 620L boot space",
+        "limitations": "Premium upfront ex-showroom price"
+      }
+    },
+    "transmission": "Automatic (9G-Tronic 4MATIC AWD)",
+    "engine": "2.0L Turbo Petrol / Diesel + 48V Mild Hybrid",
+    "engineCC": 1999,
+    "power": "254 bhp",
+    "torque": "400 Nm",
+    "mileage": "14.7 kmpl",
+    "mileageValue": 14.7,
+    "driveType": "AWD",
+    "groundClearance": 187,
+    "seatingCapacity": 5,
+    "bootSpace": 620,
+    "seatHeight": 0,
+    "kerbWeight": 1925,
+    "length": 4716,
+    "width": 1890,
+    "height": 1640,
+    "wheelbase": 2888,
+    "turningRadius": 5.9,
+    "cabinHeadroom": 1025,
+    "driverSeatHeightRange": {
+      "min": 640,
+      "max": 720
+    },
+    "roofHeight": 1640,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Challenging",
+    "idealHeightMin": 152,
+    "idealHeightMax": 198,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/139651/glc-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "The crown jewel of Mercedes-Benz's Indian SUV lineup, featuring a cavernous 620L boot, 360-degree camera with virtual transparent bonnet view, 15-speaker Burmester 3D sound, and 4MATIC AWD.",
+    "baseScores": {
+      "safety": 10,
+      "groundClearance": 8,
+      "comfort": 10,
+      "spacePracticality": 10,
+      "mileageRunningCost": 8,
+      "maintenanceCost": 6,
+      "performance": 9,
+      "resaleValue": 9,
+      "highwayStability": 10,
+      "cityDriveSuitability": 7,
+      "ergonomicFit": 10,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Cavernous 620L Luggage Boot",
+      "Virtual Transparent Bonnet View",
+      "15-Speaker Burmester 3D Audio",
+      "48V ISG Mild-Hybrid Refinement"
+    ],
+    "inherentStrengths": [
+      "Huge 620-litre boot space effortlessly swallows luggage for 5 adults on extended holiday trips",
+      "Off-road display with transparent bonnet camera renders obstacles directly underneath vehicle on central screen",
+      "Burmester 15-speaker 710W surround audio system delivers studio-grade acoustics",
+      "9 airbags including front center airbag to prevent front occupants colliding during side impact"
+    ],
+    "inherentConsiderations": [
+      "Wide 1.89m track and nearly 4.72m length require deliberate maneuvering in congested bazaar streets",
+      "Infotainment controls are entirely touch-based with minimal tactile physical buttons"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/139651/glc-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "audi-a4",
+    "brand": "Audi",
+    "model": "A4",
+    "category": "Car",
+    "bodyType": "Sedan",
+    "variantSummary": "40 TFSI Premium / Premium Plus / Technology | 2.0L Turbo Luxury",
+    "priceFrom": 46.88,
+    "priceTo": 55.83,
+    "priceDisplay": "₹ 46.88 - 55.83 Lakh*",
+    "fuelType": "Petrol",
+    "availableFuelTypes": [
+      "Petrol"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "40 TFSI (2.0L Turbo Petrol)",
+        "engine": "1984cc 4-Cylinder TFSI Turbocharged Petrol",
+        "power": "204 bhp @ 4200-6000 rpm",
+        "torque": "320 Nm @ 1450-4200 rpm",
+        "mileage": "17.4 kmpl",
+        "runningCostPerKm": 5.9,
+        "transmission": "7-Speed S-Tronic Dual-Clutch (FWD)",
+        "priceRange": "₹ 46.88 - 55.83 Lakh",
+        "keyFit": "Best for executives seeking understated German luxury, ultra-pliant ride comfort, and exceptional value under ₹50 Lakh",
+        "limitations": "Front-wheel drive only; lacks diesel or AWD option"
+      }
+    },
+    "transmission": "Automatic (7-Speed S-Tronic DCT)",
+    "engine": "2.0L 4-Cyl TFSI Turbo Petrol",
+    "engineCC": 1984,
+    "power": "204 bhp",
+    "torque": "320 Nm",
+    "mileage": "17.4 kmpl",
+    "mileageValue": 17.4,
+    "driveType": "FWD",
+    "groundClearance": 145,
+    "seatingCapacity": 5,
+    "bootSpace": 460,
+    "seatHeight": 0,
+    "kerbWeight": 1555,
+    "length": 4762,
+    "width": 1847,
+    "height": 1433,
+    "wheelbase": 2820,
+    "turningRadius": 5.6,
+    "cabinHeadroom": 980,
+    "driverSeatHeightRange": {
+      "min": 530,
+      "max": 610
+    },
+    "roofHeight": 1433,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 150,
+    "idealHeightMax": 196,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/51909/a4-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+    "description": "The most comfortable and value-oriented German luxury sedan in its class, featuring a 204 bhp 2.0L TFSI engine, Audi Virtual Cockpit Plus, compliant five-link suspension, and 17.4 kmpl efficiency.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 6,
+      "comfort": 10,
+      "spacePracticality": 8,
+      "mileageRunningCost": 8,
+      "maintenanceCost": 7,
+      "performance": 8,
+      "resaleValue": 8,
+      "highwayStability": 9,
+      "cityDriveSuitability": 8,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Outstanding Value under ₹50L",
+      "Audi Virtual Cockpit Plus",
+      "Pliant Magic Carpet Ride",
+      "204 bhp TFSI Engine (0-100: 7.1s)"
+    ],
+    "inherentStrengths": [
+      "Pliant five-link suspension absorbs road ruts and paver blocks significantly better than stiff German rivals",
+      "Audi Virtual Cockpit Plus offers full-screen Google satellite navigation right in front of driver's eyes",
+      "Exceptional sound insulation and dual-pane acoustic front glass create whisper-quiet cabin",
+      "Physical tactile buttons for climate control and volume ensure zero driving distraction"
+    ],
+    "inherentConsiderations": [
+      "Front-wheel-drive layout lacks the tail-happy sports agility of BMW rear-wheel-drive sedans",
+      "No diesel variant available for very high-running commercial commuters"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/51909/a4-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "audi-q3",
+    "brand": "Audi",
+    "model": "Q3",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "40 TFSI Quattro Premium Plus / Technology / Sportback",
+    "priceFrom": 51.99,
+    "priceTo": 55.99,
+    "priceDisplay": "₹ 51.99 - 55.99 Lakh*",
+    "fuelType": "Petrol",
+    "availableFuelTypes": [
+      "Petrol"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "40 TFSI Quattro (2.0L Turbo + Quattro AWD)",
+        "engine": "1984cc 4-Cylinder TFSI Turbo Petrol",
+        "power": "190 bhp @ 4200-6000 rpm",
+        "torque": "320 Nm @ 1500-4100 rpm",
+        "mileage": "14.93 kmpl",
+        "runningCostPerKm": 7,
+        "transmission": "7-Speed S-Tronic DCT (Quattro AWD)",
+        "priceRange": "₹ 51.99 - 55.99 Lakh",
+        "keyFit": "Best for buyers demanding genuine permanent all-wheel drive, punchy 2.0L turbo acceleration, and large 530L boot",
+        "limitations": "No ADAS suite or diesel option"
+      }
+    },
+    "transmission": "Automatic (7-Speed S-Tronic Quattro AWD)",
+    "engine": "2.0L 4-Cyl TFSI Turbo Petrol Quattro",
+    "engineCC": 1984,
+    "power": "190 bhp",
+    "torque": "320 Nm",
+    "mileage": "14.93 kmpl",
+    "mileageValue": 14.93,
+    "driveType": "AWD",
+    "groundClearance": 170,
+    "seatingCapacity": 5,
+    "bootSpace": 530,
+    "seatHeight": 0,
+    "kerbWeight": 1695,
+    "length": 4484,
+    "width": 1849,
+    "height": 1616,
+    "wheelbase": 2680,
+    "turningRadius": 5.4,
+    "cabinHeadroom": 1010,
+    "driverSeatHeightRange": {
+      "min": 610,
+      "max": 690
+    },
+    "roofHeight": 1616,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 152,
+    "idealHeightMax": 195,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/129759/q3-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+    "description": "Compact luxury crossover equipped with Audi's legendary Quattro permanent all-wheel drive, 190 bhp 2.0L TFSI powertrain, panoramic sunroof, and huge 530-litre luggage capacity.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 7,
+      "comfort": 9,
+      "spacePracticality": 9,
+      "mileageRunningCost": 7,
+      "maintenanceCost": 7,
+      "performance": 9,
+      "resaleValue": 8,
+      "highwayStability": 10,
+      "cityDriveSuitability": 8,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Quattro Permanent All-Wheel Drive",
+      "530L Class-Leading Boot Space",
+      "190 bhp 2.0L TFSI Powertrain",
+      "Audi Virtual Cockpit"
+    ],
+    "inherentStrengths": [
+      "Quattro permanent all-wheel drive is standard across all trims, offering superb wet-tarmac cornering grip",
+      "Class-leading 530-litre boot space with sliding rear seats expands practicality",
+      "2.0L TFSI petrol engine delivers effortless 0-100 km/h sprint in 7.3 seconds",
+      "Audi Drive Select allows custom tailoring of steering weight and gearbox shift mapping"
+    ],
+    "inherentConsiderations": [
+      "Fuel economy drops to 8-10 kmpl in heavy stop-and-go city crawling",
+      "Lacks Level 2 ADAS driver assistance features compared to Volvo competitors"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/129759/q3-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "audi-q5",
+    "brand": "Audi",
+    "model": "Q5",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "45 TFSI Quattro Premium Plus / Technology | 245 bhp AWD",
+    "priceFrom": 65.55,
+    "priceTo": 70.73,
+    "priceDisplay": "₹ 65.55 - 70.73 Lakh*",
+    "fuelType": "Petrol",
+    "availableFuelTypes": [
+      "Petrol"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "45 TFSI Quattro (2.0L High-Output Turbo)",
+        "engine": "1984cc 4-Cylinder TFSI Turbo Petrol",
+        "power": "245 bhp @ 5000-6000 rpm",
+        "torque": "370 Nm @ 1600-4300 rpm",
+        "mileage": "13.4 kmpl",
+        "runningCostPerKm": 7.7,
+        "transmission": "7-Speed S-Tronic DCT (Quattro Ultra AWD)",
+        "priceRange": "₹ 65.55 - 70.73 Lakh",
+        "keyFit": "Best for families who prioritize buttery smooth suspension damping, 245 bhp overtaking muscle, and Quattro all-weather confidence",
+        "limitations": "Single-digit city fuel economy (7-9 kmpl in heavy traffic)"
+      }
+    },
+    "transmission": "Automatic (7-Speed S-Tronic Quattro AWD)",
+    "engine": "2.0L 4-Cyl TFSI Turbo Petrol (245 bhp)",
+    "engineCC": 1984,
+    "power": "245 bhp",
+    "torque": "370 Nm",
+    "mileage": "13.4 kmpl",
+    "mileageValue": 13.4,
+    "driveType": "AWD",
+    "groundClearance": 200,
+    "seatingCapacity": 5,
+    "bootSpace": 520,
+    "seatHeight": 0,
+    "kerbWeight": 1870,
+    "length": 4682,
+    "width": 1893,
+    "height": 1653,
+    "wheelbase": 2827,
+    "turningRadius": 5.9,
+    "cabinHeadroom": 1020,
+    "driverSeatHeightRange": {
+      "min": 640,
+      "max": 720
+    },
+    "roofHeight": 1653,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Challenging",
+    "idealHeightMin": 152,
+    "idealHeightMax": 198,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/53591/q5-exterior-right-front-three-quarter-36.jpeg?isig=0&q=80",
+    "description": "Versatile mid-size luxury SUV boasting a high-output 245 bhp 2.0L TFSI engine, 200mm ground clearance, adaptive damper suspension, and Bang & Olufsen 19-speaker 3D sound.",
+    "baseScores": {
+      "safety": 9,
+      "groundClearance": 9,
+      "comfort": 10,
+      "spacePracticality": 9,
+      "mileageRunningCost": 7,
+      "maintenanceCost": 6,
+      "performance": 9,
+      "resaleValue": 8,
+      "highwayStability": 10,
+      "cityDriveSuitability": 7,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "245 bhp High-Output TFSI (0-100: 6.3s)",
+      "200mm High Ground Clearance",
+      "Bang & Olufsen 3D Sound",
+      "Adaptive Damper Suspension"
+    ],
+    "inherentStrengths": [
+      "High-output 245 bhp engine and Quattro AWD propel the SUV to 100 km/h in just 6.3 seconds",
+      "200mm ground clearance and adaptive suspension soak up rural highway road damage effortlessly",
+      "Bang & Olufsen 755W 19-speaker 3D sound system offers benchmark acoustic fidelity",
+      "Audi Phone Box with wireless inductive charging and signal booster"
+    ],
+    "inherentConsiderations": [
+      "Substantial thirst for premium high-octane petrol in dense urban traffic",
+      "Styling is understated and conservative compared to flamboyant Mercedes GLC or BMW X3"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/53591/q5-exterior-right-front-three-quarter-36.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "skoda-kodiaq",
+    "brand": "Skoda",
+    "model": "Kodiaq",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "2.0 TSI Style / Sportline / L&K 4x4 | Dynamic Chassis Control (7-Seater)",
+    "priceFrom": 39.99,
+    "priceTo": 46.99,
+    "priceDisplay": "₹ 39.99 - 46.99 Lakh*",
+    "fuelType": "Petrol",
+    "availableFuelTypes": [
+      "Petrol"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "2.0 TSI 4x4 (Dynamic Chassis Control)",
+        "engine": "1984cc 4-Cylinder TSI Turbocharged Petrol",
+        "power": "190 bhp @ 4200-6000 rpm",
+        "torque": "320 Nm @ 1500-4100 rpm",
+        "mileage": "13.32 kmpl",
+        "runningCostPerKm": 7.8,
+        "transmission": "7-Speed DSG Dual-Clutch with 4x4",
+        "priceRange": "₹ 39.99 - 46.99 Lakh",
+        "keyFit": "Best for discerning families needing European luxury, 7-seater versatility, and adaptive suspension damping under ₹50 Lakh",
+        "limitations": "Third row is best suited for children; city fuel economy is 8-9 kmpl"
+      }
+    },
+    "transmission": "Automatic (7-Speed DSG 4x4)",
+    "engine": "2.0L TSI 4-Cyl Turbo Petrol 4x4",
+    "engineCC": 1984,
+    "power": "190 bhp",
+    "torque": "320 Nm",
+    "mileage": "13.32 kmpl",
+    "mileageValue": 13.32,
+    "driveType": "4WD",
+    "groundClearance": 192,
+    "seatingCapacity": 7,
+    "bootSpace": 270,
+    "seatHeight": 0,
+    "kerbWeight": 1793,
+    "length": 4699,
+    "width": 1882,
+    "height": 1685,
+    "wheelbase": 2790,
+    "turningRadius": 5.8,
+    "cabinHeadroom": 1020,
+    "driverSeatHeightRange": {
+      "min": 630,
+      "max": 710
+    },
+    "roofHeight": 1685,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 150,
+    "idealHeightMax": 198,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/110543/kodiaq-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "Skoda's flagship 7-seater luxury SUV featuring Dynamic Chassis Control (DCC) with adaptive dampers, 2.0L TSI engine, 9 airbags, Canton 12-speaker audio, and 4x4 capability.",
+    "baseScores": {
+      "safety": 10,
+      "groundClearance": 8,
+      "comfort": 10,
+      "spacePracticality": 10,
+      "mileageRunningCost": 7,
+      "maintenanceCost": 7,
+      "performance": 9,
+      "resaleValue": 8,
+      "highwayStability": 10,
+      "cityDriveSuitability": 7,
+      "ergonomicFit": 10,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "Dynamic Chassis Control (DCC)",
+      "7-Seater European Luxury",
+      "9 Airbags & 5-Star Euro NCAP",
+      "Canton 12-Speaker 625W Sound"
+    ],
+    "inherentStrengths": [
+      "Dynamic Chassis Control electronically alters shock absorber firmness from cloud-like comfort to taut sport mode",
+      "Flexible 7-seat configuration with 630L boot space in 5-seat mode and 2005L with all rows folded",
+      "Superlative build quality with 9 airbags, driver fatigue alert, and roll-over protection",
+      "Canton 12-speaker sound system with digital equalizer and subwoofer"
+    ],
+    "inherentConsiderations": [
+      "Third-row legroom is suitable primarily for kids or teenagers on long drives",
+      "Petrol-only drivetrain incurs high monthly fuel expenses for 50+ km daily commuters"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/110543/kodiaq-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "byd-seal",
+    "brand": "BYD",
+    "model": "Seal",
+    "category": "Car",
+    "bodyType": "Sedan",
+    "variantSummary": "Dynamic RWD / Premium RWD / Performance AWD (523 bhp)",
+    "priceFrom": 41,
+    "priceTo": 53.65,
+    "priceDisplay": "₹ 41.00 - 53.65 Lakh*",
+    "fuelType": "Electric",
+    "availableFuelTypes": [
+      "Electric"
+    ],
+    "fuelVariants": {
+      "Electric": {
+        "name": "Performance AWD (Dual Motor 523 bhp)",
+        "engine": "Dual Permanent Magnet Motors + 82.56 kWh Blade Battery",
+        "power": "523 bhp (390 kW)",
+        "torque": "670 Nm instant torque",
+        "mileage": "580 km / charge (ARAI)",
+        "runningCostPerKm": 1.2,
+        "transmission": "Single-Speed Automatic AWD",
+        "priceRange": "₹ 53.65 Lakh",
+        "keyFit": "Best for tech enthusiasts craving supercar acceleration (0-100: 3.8s) and ultra-rigid CTB Blade Battery safety under ₹55L",
+        "limitations": "Low 145mm ground clearance demands caution over tall unscientific speed bumps"
+      }
+    },
+    "transmission": "Automatic (Electric Single-Speed)",
+    "engine": "Dual Electric Motors (82.56 kWh Blade Battery)",
+    "engineCC": 0,
+    "power": "523 bhp",
+    "torque": "670 Nm",
+    "mileage": "580 km range",
+    "mileageValue": 27,
+    "driveType": "AWD",
+    "groundClearance": 145,
+    "seatingCapacity": 5,
+    "bootSpace": 453,
+    "seatHeight": 0,
+    "kerbWeight": 2150,
+    "length": 4800,
+    "width": 1875,
+    "height": 1460,
+    "wheelbase": 2920,
+    "turningRadius": 5.7,
+    "cabinHeadroom": 965,
+    "driverSeatHeightRange": {
+      "min": 520,
+      "max": 600
+    },
+    "roofHeight": 1460,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 150,
+    "idealHeightMax": 195,
+    "chargingRequired": true,
+    "homeChargingTime": "7.5 hours (11kW AC Wallbox)",
+    "fastChargingSupport": true,
+    "evRangeReal": 520,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP & ANCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/172381/seal-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "High-performance luxury electric sports sedan delivering an astonishing 523 bhp, 0-100 km/h in 3.8 seconds, Cell-to-Body (CTB) Blade Battery technology, 650 km range, and rotatable 15.6-inch screen.",
+    "baseScores": {
+      "safety": 10,
+      "groundClearance": 5,
+      "comfort": 9,
+      "spacePracticality": 8,
+      "mileageRunningCost": 10,
+      "maintenanceCost": 9,
+      "performance": 10,
+      "resaleValue": 7,
+      "highwayStability": 10,
+      "cityDriveSuitability": 8,
+      "ergonomicFit": 9,
+      "handleability": 10
+    },
+    "highlightBadges": [
+      "523 bhp Supercar Acceleration (0-100: 3.8s)",
+      "Ultra-Safe BYD Blade Battery (CTB)",
+      "650 km Max Range (ARAI)",
+      "Rotatable 15.6-inch Touchscreen"
+    ],
+    "inherentStrengths": [
+      "Astonishing 523 bhp twin-motor Performance trim reaches 0-100 km/h in 3.8s, out-accelerating cars thrice its price",
+      "Cell-to-Body (CTB) Blade Battery integration achieves massive 40,500 Nm/deg torsional stiffness",
+      "Up to 650 km ARAI certified range allows stress-free intercity Delhi-Jaipur or Mumbai-Pune return trips",
+      "150 kW DC rapid charging recharges 10% to 80% in 37 minutes; V2L vehicle-to-load function powers appliances"
+    ],
+    "inherentConsiderations": [
+      "Low 145mm ground clearance requires careful diagonal maneuvering over tall city speed breakers",
+      "Relatively nascent dealer and service network across Tier 2 and Tier 3 Indian towns"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/172381/seal-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "volvo-ex40",
+    "brand": "Volvo",
+    "model": "EX40",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "Plus Single Motor / Ultimate Twin Motor AWD (402 bhp)",
+    "priceFrom": 56.1,
+    "priceTo": 62.95,
+    "priceDisplay": "₹ 56.10 - 62.95 Lakh*",
+    "fuelType": "Electric",
+    "availableFuelTypes": [
+      "Electric"
+    ],
+    "fuelVariants": {
+      "Electric": {
+        "name": "Ultimate Twin Motor AWD (402 bhp)",
+        "engine": "Dual Electric Motors + 78 kWh Lithium-Ion Battery",
+        "power": "402 bhp (300 kW)",
+        "torque": "660 Nm instant torque",
+        "mileage": "530 km / charge (ARAI)",
+        "runningCostPerKm": 1.5,
+        "transmission": "Single-Speed Automatic AWD",
+        "priceRange": "₹ 62.95 Lakh",
+        "keyFit": "Best for safety-conscious families seeking exhilarating 402 bhp electric acceleration and Scandinavian luxury",
+        "limitations": "Rear seat floor is slightly raised due to battery tunnel"
+      }
+    },
+    "transmission": "Automatic (Electric Single-Speed AWD)",
+    "engine": "Dual Electric Motors (78 kWh Battery)",
+    "engineCC": 0,
+    "power": "402 bhp",
+    "torque": "660 Nm",
+    "mileage": "530 km range",
+    "mileageValue": 26,
+    "driveType": "AWD",
+    "groundClearance": 175,
+    "seatingCapacity": 5,
+    "bootSpace": 410,
+    "seatHeight": 0,
+    "kerbWeight": 2110,
+    "length": 4440,
+    "width": 1863,
+    "height": 1591,
+    "wheelbase": 2702,
+    "turningRadius": 5.7,
+    "cabinHeadroom": 1010,
+    "driverSeatHeightRange": {
+      "min": 610,
+      "max": 690
+    },
+    "roofHeight": 1591,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Moderate",
+    "idealHeightMin": 152,
+    "idealHeightMax": 196,
+    "chargingRequired": true,
+    "homeChargingTime": "7.5 hours (11kW AC Wallbox)",
+    "fastChargingSupport": true,
+    "evRangeReal": 440,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating (Highest Tier)",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/171505/ex40-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+    "description": "Pure electric luxury crossover from Volvo featuring twin motors producing 402 bhp, 0-100 km/h in 4.8 seconds, Google built-in infotainment, Pilot Assist L2 ADAS, and 530 km range.",
+    "baseScores": {
+      "safety": 10,
+      "groundClearance": 8,
+      "comfort": 9,
+      "spacePracticality": 8,
+      "mileageRunningCost": 10,
+      "maintenanceCost": 8,
+      "performance": 10,
+      "resaleValue": 8,
+      "highwayStability": 10,
+      "cityDriveSuitability": 9,
+      "ergonomicFit": 9,
+      "handleability": 9
+    },
+    "highlightBadges": [
+      "402 bhp Twin Motor Electric AWD",
+      "5-Star Euro NCAP Highest Safety",
+      "Google Built-in Infotainment OS",
+      "Pilot Assist L2 Semi-Autonomous ADAS"
+    ],
+    "inherentStrengths": [
+      "Colossal 402 bhp and 660 Nm output catapults this compact SUV to 100 km/h in 4.8 seconds",
+      "World-renowned Volvo safety cage engineering with blind-spot steering assistance and cross-traffic auto-brake",
+      "Native Google Maps, Google Assistant, and Play Store built directly into vertical infotainment system",
+      "Harman Kardon 600W premium sound system with 13 speakers and air woofer technology"
+    ],
+    "inherentConsiderations": [
+      "Rear seat knee room is adequate but floor hump limits middle passenger foot space",
+      "180 km/h top speed electronic limiter as per global Volvo safety policy"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/171505/ex40-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "lexus-es",
+    "brand": "Lexus",
+    "model": "ES",
+    "category": "Car",
+    "bodyType": "Sedan",
+    "variantSummary": "300h Exquisite / Luxury | 2.5L Self-Charging Hybrid",
+    "priceFrom": 66.1,
+    "priceTo": 72.5,
+    "priceDisplay": "₹ 66.10 - 72.50 Lakh*",
+    "fuelType": "Strong Hybrid",
+    "availableFuelTypes": [
+      "Strong Hybrid"
+    ],
+    "fuelVariants": {
+      "Strong Hybrid": {
+        "name": "300h (2.5L Strong Hybrid Dynamic Force)",
+        "engine": "2487cc 4-Cylinder Atkinson Cycle Petrol + Permanent Magnet Electric Motor",
+        "power": "Combined 215 bhp (176 bhp engine + 118 bhp electric motor)",
+        "torque": "221 Nm engine + 202 Nm instant electric motor",
+        "mileage": "22.58 kmpl",
+        "runningCostPerKm": 4.5,
+        "transmission": "Electronic Continuously Variable Transmission (e-CVT)",
+        "priceRange": "₹ 66.10 - 72.50 Lakh",
+        "keyFit": "Best for luxury business owners wanting peerless Japanese bulletproof reliability, ultra-quiet gliding, and 22+ kmpl efficiency",
+        "limitations": "Relaxed acceleration response compared to German turbo competitors"
+      }
+    },
+    "transmission": "Automatic (e-CVT Strong Hybrid)",
+    "engine": "2.5L 4-Cyl Petrol Hybrid (215 bhp)",
+    "engineCC": 2487,
+    "power": "215 bhp",
+    "torque": "221 Nm + 202 Nm motor",
+    "mileage": "22.58 kmpl",
+    "mileageValue": 22.58,
+    "driveType": "FWD",
+    "groundClearance": 150,
+    "seatingCapacity": 5,
+    "bootSpace": 454,
+    "seatHeight": 0,
+    "kerbWeight": 1680,
+    "length": 4975,
+    "width": 1865,
+    "height": 1445,
+    "wheelbase": 2870,
+    "turningRadius": 5.8,
+    "cabinHeadroom": 975,
+    "driverSeatHeightRange": {
+      "min": 530,
+      "max": 610
+    },
+    "roofHeight": 1445,
+    "steeringType": "EPS",
+    "easeOfDriving": "Easy",
+    "parkingDifficulty": "Challenging",
+    "idealHeightMin": 150,
+    "idealHeightMax": 196,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/42609/es-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+    "description": "The pinnacle of peaceful Japanese craftsmanship, this 5-meter executive hybrid sedan offers near-silent EV mode city commuting, 22.58 kmpl economy, 10 airbags, and legendary Toyota/Lexus durability.",
+    "baseScores": {
+      "safety": 10,
+      "groundClearance": 6,
+      "comfort": 10,
+      "spacePracticality": 9,
+      "mileageRunningCost": 9,
+      "maintenanceCost": 9,
+      "performance": 8,
+      "resaleValue": 9,
+      "highwayStability": 10,
+      "cityDriveSuitability": 7,
+      "ergonomicFit": 10,
+      "handleability": 8
+    },
+    "highlightBadges": [
+      "22.58 kmpl Strong Hybrid Mileage",
+      "Legendary Japanese Reliability",
+      "10 Airbags & Lexus Safety System+",
+      "Whisper-Quiet EV City Gliding"
+    ],
+    "inherentStrengths": [
+      "Self-charging 4th-generation hybrid powertrain delivers an incredible 22.58 kmpl without ever needing a plug",
+      "Unmatched long-term mechanical reliability with the lowest breakdown and repair rates in the luxury segment",
+      "Executive rear reclining seats with dedicated center armrest audio and air-con controls",
+      "10 airbags and Lexus Safety System+ with Dynamic Radar Cruise Control and Lane Tracing Assist"
+    ],
+    "inherentConsiderations": [
+      "Nearly 5 meters long (4975mm) which requires deliberate care when parking in crowded markets",
+      "CVT transmission and gentle steering setup are tuned for relaxed cruising rather than aggressive canyon carving"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/42609/es-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80"
+    ],
+    "trimVariants": []
+  },
+  {
+    "id": "land-rover-defender",
+    "brand": "Land Rover",
+    "model": "Defender",
+    "category": "Car",
+    "bodyType": "SUV",
+    "variantSummary": "110 S / SE / HSE | 2.0L Turbo / 3.0L Diesel MHEV (AWD Air Suspension)",
+    "priceFrom": 99,
+    "priceTo": 105,
+    "priceDisplay": "₹ 99.00 Lakh - 1.05 Crore*",
+    "fuelType": "Petrol / Diesel",
+    "availableFuelTypes": [
+      "Petrol",
+      "Diesel"
+    ],
+    "fuelVariants": {
+      "Petrol": {
+        "name": "110 2.0L Turbo Petrol (P300)",
+        "engine": "1997cc 4-Cylinder Ingenium Turbo Petrol",
+        "power": "296 bhp @ 5500 rpm",
+        "torque": "400 Nm @ 1500-4500 rpm",
+        "mileage": "9.2 kmpl",
+        "runningCostPerKm": 11.2,
+        "transmission": "8-Speed ZF Automatic with AWD",
+        "priceRange": "₹ 99.00 Lakh",
+        "keyFit": "Best for high-status urban presence combined with genuine weekend expedition off-road muscle",
+        "limitations": "Heavy fuel consumption in city traffic"
+      },
+      "Diesel": {
+        "name": "110 3.0L Diesel MHEV (D300)",
+        "engine": "2996cc 6-Cylinder Ingenium Twin-Turbo Diesel MHEV",
+        "power": "296 bhp @ 4000 rpm",
+        "torque": "650 Nm @ 1500-2500 rpm",
+        "mileage": "11.4 kmpl",
+        "runningCostPerKm": 8.8,
+        "transmission": "8-Speed ZF Automatic with AWD",
+        "priceRange": "₹ 1.05 Crore",
+        "keyFit": "Best for long-distance highway hauling and deep muddy trail explorations with 650 Nm torque",
+        "limitations": "Touches upper ₹1 Crore boundary"
+      }
+    },
+    "transmission": "Automatic (8-Speed ZF AWD)",
+    "engine": "2.0L Turbo / 3.0L 6-Cyl Diesel AWD",
+    "engineCC": 1997,
+    "power": "296 bhp",
+    "torque": "400 Nm",
+    "mileage": "9.2 kmpl",
+    "mileageValue": 9.2,
+    "driveType": "4WD",
+    "groundClearance": 218,
+    "seatingCapacity": 7,
+    "bootSpace": 786,
+    "seatHeight": 0,
+    "kerbWeight": 2360,
+    "length": 5018,
+    "width": 2008,
+    "height": 1967,
+    "wheelbase": 3022,
+    "turningRadius": 6.4,
+    "cabinHeadroom": 1040,
+    "driverSeatHeightRange": {
+      "min": 720,
+      "max": 820
+    },
+    "roofHeight": 1967,
+    "steeringType": "EPS",
+    "easeOfDriving": "Moderate",
+    "parkingDifficulty": "Challenging",
+    "idealHeightMin": 160,
+    "idealHeightMax": 205,
+    "chargingRequired": false,
+    "homeChargingTime": "",
+    "fastChargingSupport": false,
+    "evRangeReal": 0,
+    "safetyRating": 5,
+    "safetyAgency": "Euro NCAP Rating",
+    "image": "https://imgd.aeplcdn.com/664x374/n/cw/ec/110233/defender-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+    "description": "The world's most iconic luxury go-anywhere expedition SUV, offering electronic air suspension with up to 291mm ground clearance, 900mm wading depth, 786L boot space, and unstoppable road authority.",
+    "baseScores": {
+      "safety": 10,
+      "groundClearance": 10,
+      "comfort": 10,
+      "spacePracticality": 10,
+      "mileageRunningCost": 5,
+      "maintenanceCost": 5,
+      "performance": 9,
+      "resaleValue": 10,
+      "highwayStability": 10,
+      "cityDriveSuitability": 5,
+      "ergonomicFit": 9,
+      "handleability": 7
+    },
+    "highlightBadges": [
+      "Iconic Global Road Presence",
+      "291mm Max Air Suspension Clearance",
+      "900mm Water Wading Capability",
+      "Terrain Response 2 AWD"
+    ],
+    "inherentStrengths": [
+      "Electronic Air Suspension adjusts ride height from 218mm highway stance up to 291mm extreme boulder-climbing height",
+      "Unrivalled 900mm water wading depth with Wade Sensing ultrasound sonar sensors in wing mirrors",
+      "Commanding high driving position with exceptional 360-degree visibility over traffic",
+      "Massive 786-litre cargo volume expandable to 1878 litres with flat load floor"
+    ],
+    "inherentConsiderations": [
+      "Over 2 meters wide (2008mm) and 5.01m long; tight basement ramps and parallel city parking require seasoned driving skill",
+      "Single-digit city fuel economy and high annual maintenance overheads"
+    ],
+    "isActive": true,
+    "secondaryImages": [
+      "https://imgd.aeplcdn.com/664x374/n/cw/ec/110233/defender-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80"
     ],
     "trimVariants": []
   }

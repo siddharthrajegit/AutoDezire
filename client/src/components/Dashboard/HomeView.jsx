@@ -233,7 +233,7 @@ export default function HomeView() {
               </h2>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Live suitability calculated for {isTwoWheeler ? bikeProfile.name : userProfile.name}'s profile (₹{isTwoWheeler ? bikeProfile.budget : userProfile.budget}L budget)
+              Live suitability calculated for {isTwoWheeler ? bikeProfile.name : userProfile.name}'s profile (₹{isTwoWheeler ? bikeProfile.budget : (userProfile.budget >= 100 ? `${userProfile.budget}L (${(userProfile.budget / 100).toFixed(2)} Cr)` : `${userProfile.budget}L`)} budget)
             </p>
           </div>
 

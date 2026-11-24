@@ -520,23 +520,41 @@ export default function QuestionnaireView() {
                     Maximum Comfortable Budget
                   </label>
                   <span className="text-xl font-black text-emerald-500 dark:text-emerald-400">
-                    ₹ {form.budget} Lakh
+                    ₹ {form.budget >= 100 ? `${form.budget} Lakh (₹${(form.budget / 100).toFixed(2)} Cr)` : `${form.budget} Lakh`}
                   </span>
                 </div>
 
                 <input
                   type="range"
                   min="0.8"
-                  max="40"
+                  max="100"
                   step="0.5"
                   value={form.budget || 14}
                   onChange={(e) => handleChange('budget', Number(e.target.value))}
                   className="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                 />
 
+                {/* Quick preset buttons */}
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {[8, 15, 25, 40, 60, 80, 100].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => handleChange('budget', preset)}
+                      className={`px-2.5 py-1 text-xs rounded-lg font-semibold border transition-all ${
+                        Number(form.budget) === preset
+                          ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-emerald-500/50'
+                      }`}
+                    >
+                      {preset >= 100 ? '₹1 Cr (100L)' : `₹${preset}L`}
+                    </button>
+                  ))}
+                </div>
+
                 <div className="mt-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 flex items-center justify-between">
-                  <span>Standard Budget: <strong>≤ ₹{form.budget}L</strong></span>
-                  <span>15% Consideration Range: <strong>₹{form.budget}L → ₹{(form.budget * 1.15).toFixed(2)}L</strong></span>
+                  <span>Standard Budget: <strong>≤ ₹{form.budget >= 100 ? `${form.budget}L (${(form.budget / 100).toFixed(2)} Cr)` : `${form.budget}L`}</strong></span>
+                  <span>15% Consideration Range: <strong>₹{form.budget}L → ₹{(form.budget * 1.15).toFixed(1)}L</strong></span>
                 </div>
               </div>
 
