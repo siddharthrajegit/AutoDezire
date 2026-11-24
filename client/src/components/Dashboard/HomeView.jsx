@@ -74,15 +74,15 @@ export default function HomeView() {
           {/* OPTION 1: 4 WHEELERS */}
           <div
             onClick={() => launchScrollytelling('4-wheeler')}
-            className={`group relative rounded-3xl p-8 border cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col justify-between overflow-hidden ${
+            className={`group relative rounded-3xl p-8 border cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col justify-between overflow-hidden bg-white dark:bg-[#111827] ${
               selectedVehicleType === '4-wheeler'
-                ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-black border-orange-500/60 ring-2 ring-orange-500/20 shadow-xl'
-                : 'bg-white dark:bg-[#111827] border-gray-200 dark:border-gray-800 hover:border-orange-500/60'
+                ? 'border-orange-500 ring-2 ring-orange-500/20 shadow-xl'
+                : 'border-gray-200 dark:border-gray-800 hover:border-orange-500/60'
             }`}
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-14 h-14 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Car className="w-7 h-7" />
                 </div>
                 <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-orange-500 text-white shadow-sm">
@@ -94,7 +94,7 @@ export default function HomeView() {
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white">
                   Cars, SUVs & Sedans
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
                   Tailored for cabin headroom (tall 6ft+ comfort), 5/7 family seating, luggage boot space, NCAP safety, and highway stability.
                 </p>
               </div>
@@ -113,7 +113,7 @@ export default function HomeView() {
             </div>
 
             <div className="mt-8 flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-              <span className="text-xs font-bold text-orange-500 group-hover:underline flex items-center space-x-1">
+              <span className="text-xs font-bold text-orange-600 dark:text-orange-500 group-hover:underline flex items-center space-x-1">
                 <Film className="w-3.5 h-3.5" />
                 <span>Play 60FPS Scroll Video & Begin Profile</span>
               </span>
@@ -126,15 +126,15 @@ export default function HomeView() {
           {/* OPTION 2: 2 WHEELERS */}
           <div
             onClick={() => launchScrollytelling('2-wheeler')}
-            className={`group relative rounded-3xl p-8 border cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col justify-between overflow-hidden ${
+            className={`group relative rounded-3xl p-8 border cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col justify-between overflow-hidden bg-white dark:bg-[#111827] ${
               selectedVehicleType === '2-wheeler'
-                ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-black border-purple-500/60 ring-2 ring-purple-500/20 shadow-xl'
-                : 'bg-white dark:bg-[#111827] border-gray-200 dark:border-gray-800 hover:border-purple-500/60'
+                ? 'border-purple-500 ring-2 ring-purple-500/20 shadow-xl'
+                : 'border-gray-200 dark:border-gray-800 hover:border-purple-500/60'
             }`}
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-14 h-14 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Bike className="w-7 h-7" />
                 </div>
                 <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-600 text-white shadow-sm">
@@ -146,7 +146,7 @@ export default function HomeView() {
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white">
                   Motorcycles & Scooters
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
                   Tailored for <strong>Rider Height & Inseam (Flat-Footing)</strong>, <strong>Rider Body Weight</strong> balance, pillion comfort, and underseat storage.
                 </p>
               </div>
@@ -165,7 +165,7 @@ export default function HomeView() {
             </div>
 
             <div className="mt-8 flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-              <span className="text-xs font-bold text-purple-400 group-hover:underline flex items-center space-x-1">
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 group-hover:underline flex items-center space-x-1">
                 <Film className="w-3.5 h-3.5" />
                 <span>Play 60FPS Scroll Video & Begin Profile</span>
               </span>
