@@ -1,90 +1,56 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { INITIAL_VEHICLES } from '../data/initialVehicles';
 import { BIKES_DATA } from '../data/bikesData';
 import { evaluateSuitability } from '../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../services/bikeSuitabilityEngine';
 import { fetchVehicles } from '../services/api';
+import {
+  EMPTY_CAR_PROFILE,
+  EMPTY_BIKE_PROFILE,
+  getUserStorageKey,
+  getCarProfileStorageKey,
+  getBikeProfileStorageKey,
+  isTwoWheelerVehicle,
+  isCarProfileComplete,
+  isBikeProfileComplete,
+} from '../utils/profileUtils';
 
 const AppContext = createContext();
 
-const DEFAULT_PROFILE = {
-  name: 'Guest',
-  height: 178, // cm
-  age: 27,
-  categoryPreference: 'All', // All, Car, Motorcycle, Scooter
-  
-  // Experience
-  yearsExperience: 5,
-  totalKm: 35000,
-  confidenceLevel: 'Confident', // 'Nervous' | 'Getting Comfortable' | 'Confident' | 'Very Confident'
-  previousVehicles: 'Hatchback',
-  cityExperience: 8,
-  highwayExperience: 7,
-  ruralExperience: 5,
-  hillsExperience: 5,
-  roughRoadExperience: 6,
-  
-  // Usage
-  dailyKm: 35,
-  monthlyKm: 1100,
-  cityPercent: 60,
-  highwayPercent: 30,
-  ruralPercent: 10,
-  journeyDurationMinutes: 45,
-  longDistanceFrequency: 'Monthly',
-  roadConditions: 'Mixed with Potholes',
-  parkingType: 'Open Driveway', // 'Open Driveway' | 'Narrow Street' | 'Apartment Basement' | 'Shared Parking'
-  primaryTerrain: 'Flat Plains', // 'Flat Plains' | 'Moderate Hills' | 'Steep Ghats / Mountains'
-  
-  // Passenger / Practicality
-  regularPassengers: 2,
-  maxPassengers: 5,
-  hasChildren: false,
-  hasElderly: false,
-  luggageRequirement: 'Medium',
-  pillionFrequency: 'Occasional',
-  storageRequirement: 'Medium',
-  
-  // Financial & Infrastructure
-  budget: 14, // Lakhs
-  expectedOwnershipYears: 5,
-  runningCostImportance: 'High',
-  hasHomeCharging: false,
-  nearbyFastCharging: false,
-  
-  // Top 3 Priorities (Max 3)
-  topPriorities: ['Safety', 'Ground Clearance', 'Comfort'],
-};
+function readStoredCarProfile(user) {
+  if (!user) return { ...EMPTY_CAR_PROFILE };
+  try {
+    const key = getCarProfileStorageKey(user);
+    const saved = key ? localStorage.getItem(key) : null;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed._completed === true) {
+        return { ...EMPTY_CAR_PROFILE, ...parsed };
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading stored car profile', e);
+  }
+  return { ...EMPTY_CAR_PROFILE, name: user.name || '' };
+}
 
-const DEFAULT_BIKE_PROFILE = {
-  name: 'Guest',
-  riderHeight: 172, // in cm
-  riderInseam: 77, // in cm (flat-foot threshold)
-  riderWeight: 68, // in kg (key factor)
-  age: 27,
-  categoryPreference: 'All', // 'All' | 'Motorcycle' | 'Scooter' | 'Electric Scooter'
-  
-  // Experience
-  yearsExperience: 4,
-  totalKm: 20000,
-  confidenceLevel: 'Confident', // 'Nervous' | 'Getting Comfortable' | 'Confident' | 'Very Confident'
-  riderTriangle: 'Upright Commuter', // 'Upright Commuter' | 'Relaxed Cruiser' | 'Sporty Forward'
-  
-  // Usage & Passengers
-  pillionFrequency: 'Occasional', // 'Solo' | 'Occasional' | 'Daily'
-  storageRequirement: 'Medium', // 'Light' | 'Medium' | 'Heavy'
-  dailyKm: 30,
-  highwayPercent: 20,
-  
-  // Budget & Charging
-  budget: 1.8, // in Lakhs INR (e.g. ₹1.80 Lakh)
-  hasHomeCharging: false,
-  nearbyFastCharging: false,
-  
-  // Top 3 Priorities
-  topPriorities: ['Mileage / Running Cost', 'Ergonomic Flat-Foot Reach', 'City Traffic Agility'],
-};
+function readStoredBikeProfile(user) {
+  if (!user) return { ...EMPTY_BIKE_PROFILE };
+  try {
+    const key = getBikeProfileStorageKey(user);
+    const saved = key ? localStorage.getItem(key) : null;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed._completed === true) {
+        return { ...EMPTY_BIKE_PROFILE, ...parsed };
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading stored bike profile', e);
+  }
+  return { ...EMPTY_BIKE_PROFILE, name: user.name || '' };
+}
 
 export function AppProvider({ children }) {
   const navigate = useNavigate();
@@ -102,27 +68,55 @@ export function AppProvider({ children }) {
     return localStorage.getItem('autodezire_vehicle_type') || '4-wheeler';
   });
 
-  // Car User Profile
-  const [userProfile, setUserProfile] = useState(() => {
-    const saved = localStorage.getItem('autodezire_profile');
-    return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
+  // Auth User (read before profiles so profile state is strictly scoped per user)
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const user = localStorage.getItem('autodezire_user');
+      return user ? JSON.parse(user) : null;
+    } catch {
+      return null;
+    }
   });
 
-  // 2-Wheeler / Bike User Profile
-  const [bikeProfile, setBikeProfile] = useState(() => {
-    const saved = localStorage.getItem('autodezire_bike_profile');
-    return saved ? JSON.parse(saved) : DEFAULT_BIKE_PROFILE;
-  });
+  // Car User Profile (never pre-populated with assumed scoring defaults)
+  const [userProfile, setUserProfile] = useState(() => readStoredCarProfile(currentUser));
+
+  // 2-Wheeler / Bike User Profile (never pre-populated with assumed scoring defaults)
+  const [bikeProfile, setBikeProfile] = useState(() => readStoredBikeProfile(currentUser));
+
+  // Profile completion and score visibility gates
+  const carProfileCompleted = useMemo(
+    () => isCarProfileComplete(currentUser, userProfile),
+    [currentUser, userProfile]
+  );
+
+  const bikeProfileCompleted = useMemo(
+    () => isBikeProfileComplete(currentUser, bikeProfile),
+    [currentUser, bikeProfile]
+  );
+
+  const canShowCarScore = carProfileCompleted;
+  const canShowBikeScore = bikeProfileCompleted;
+  const canShowActiveScore =
+    selectedVehicleType === '2-wheeler' ? canShowBikeScore : canShowCarScore;
+
+  const canShowScoreForVehicle = useCallback(
+    vehicle => (isTwoWheelerVehicle(vehicle) ? canShowBikeScore : canShowCarScore),
+    [canShowBikeScore, canShowCarScore]
+  );
 
   // Selected vehicle for Evaluation / AI context
   const [selectedVehicle, setSelectedVehicle] = useState(() => {
     return INITIAL_VEHICLES.find(v => v.model === 'Nexon') || INITIAL_VEHICLES[0];
   });
 
-  // Evaluation calculation
+  // Evaluation calculation (only computed when authenticated and profile form completed)
   const [evaluation, setEvaluation] = useState(() => {
     const defaultVeh = INITIAL_VEHICLES.find(v => v.model === 'Nexon') || INITIAL_VEHICLES[0];
-    return evaluateSuitability(defaultVeh, DEFAULT_PROFILE);
+    if (isCarProfileComplete(currentUser, readStoredCarProfile(currentUser))) {
+      return evaluateSuitability(defaultVeh, readStoredCarProfile(currentUser));
+    }
+    return null;
   });
 
   // Saved vehicles (Garage / Wishlist)
@@ -153,16 +147,6 @@ export function AppProvider({ children }) {
     return [nexon, wagonr].filter(Boolean);
   });
 
-  // Auth User
-  const [currentUser, setCurrentUser] = useState(() => {
-    try {
-      const user = localStorage.getItem('autodezire_user');
-      return user ? JSON.parse(user) : null;
-    } catch {
-      return null;
-    }
-  });
-
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -191,12 +175,25 @@ export function AppProvider({ children }) {
     });
   };
 
-  const clearAiChatMessages = () => {
+  const clearAiChatMessages = useCallback(() => {
     try {
       sessionStorage.removeItem('autodezire_ai_chat');
     } catch (e) {}
     setAiChatMessagesState(null);
-  };
+  }, []);
+
+  // Sync per-user profiles on login / logout / account switch without assuming data
+  const userKey = getUserStorageKey(currentUser);
+  const prevUserKeyRef = useRef(userKey);
+
+  useEffect(() => {
+    if (prevUserKeyRef.current !== userKey) {
+      prevUserKeyRef.current = userKey;
+      setUserProfile(readStoredCarProfile(currentUser));
+      setBikeProfile(readStoredBikeProfile(currentUser));
+      clearAiChatMessages();
+    }
+  }, [userKey, currentUser, clearAiChatMessages]);
 
   // Scroll-Scrubbed Video Entry state
   const [entryVehicleType, setEntryVehicleType] = useState('4-wheeler'); // '4-wheeler' or '2-wheeler'
@@ -222,17 +219,17 @@ export function AppProvider({ children }) {
 
   const evaluateVehicle = vehicle => {
     setSelectedVehicle(vehicle);
-    const isBike = vehicle.category === 'Motorcycle' || vehicle.category === 'Scooter' || vehicle.category === 'Electric Scooter';
+    const isBike = isTwoWheelerVehicle(vehicle);
     if (isBike) {
       if (selectedVehicleType !== '2-wheeler') {
         setSelectedVehicleType('2-wheeler');
       }
-      setEvaluation(evaluateBikeSuitability(vehicle, bikeProfile));
+      setEvaluation(canShowBikeScore ? evaluateBikeSuitability(vehicle, bikeProfile) : null);
     } else {
       if (selectedVehicleType !== '4-wheeler') {
         setSelectedVehicleType('4-wheeler');
       }
-      setEvaluation(evaluateSuitability(vehicle, userProfile));
+      setEvaluation(canShowCarScore ? evaluateSuitability(vehicle, userProfile) : null);
     }
     const vId = vehicle.id || vehicle._id;
     if (vId) {
@@ -265,32 +262,50 @@ export function AppProvider({ children }) {
     load();
   }, []);
 
-  // Recalculate evaluation whenever selectedVehicle, userProfile, or bikeProfile changes
+  // Recalculate evaluation whenever selectedVehicle, profile, or completion state changes
   useEffect(() => {
-    if (selectedVehicle) {
-      const isBike = selectedVehicle.category === 'Motorcycle' || selectedVehicle.category === 'Scooter' || selectedVehicle.category === 'Electric Scooter';
-      if (isBike) {
-        const evalResult = evaluateBikeSuitability(selectedVehicle, bikeProfile);
-        setEvaluation(evalResult);
-      } else {
-        const evalResult = evaluateSuitability(selectedVehicle, userProfile);
-        setEvaluation(evalResult);
-      }
+    if (!selectedVehicle) {
+      setEvaluation(null);
+      return;
     }
-  }, [selectedVehicle, userProfile, bikeProfile]);
+    const isBike = isTwoWheelerVehicle(selectedVehicle);
+    if (isBike) {
+      setEvaluation(canShowBikeScore ? evaluateBikeSuitability(selectedVehicle, bikeProfile) : null);
+    } else {
+      setEvaluation(canShowCarScore ? evaluateSuitability(selectedVehicle, userProfile) : null);
+    }
+  }, [selectedVehicle, userProfile, bikeProfile, canShowCarScore, canShowBikeScore]);
 
-  // Save profile changes for Cars
-  const updateProfile = newProfile => {
-    const updated = { ...userProfile, ...newProfile };
-    setUserProfile(updated);
-    localStorage.setItem('autodezire_profile', JSON.stringify(updated));
+  // Save profile changes for Cars (only marks completed when explicitly submitted via Questionnaire)
+  const updateProfile = (newProfile, options = {}) => {
+    const { markCompleted = false } = options;
+    setUserProfile(prev => {
+      const nextCompleted = markCompleted ? true : Boolean(prev?._completed);
+      const updated = { ...prev, ...newProfile, _completed: nextCompleted };
+      if (currentUser) {
+        const storageKey = getCarProfileStorageKey(currentUser);
+        if (storageKey && nextCompleted) {
+          localStorage.setItem(storageKey, JSON.stringify(updated));
+        }
+      }
+      return updated;
+    });
   };
 
-  // Save profile changes for Bikes
-  const updateBikeProfile = newProfile => {
-    const updated = { ...bikeProfile, ...newProfile };
-    setBikeProfile(updated);
-    localStorage.setItem('autodezire_bike_profile', JSON.stringify(updated));
+  // Save profile changes for Bikes (only marks completed when explicitly submitted via Bike Questionnaire)
+  const updateBikeProfile = (newProfile, options = {}) => {
+    const { markCompleted = false } = options;
+    setBikeProfile(prev => {
+      const nextCompleted = markCompleted ? true : Boolean(prev?._completed);
+      const updated = { ...prev, ...newProfile, _completed: nextCompleted };
+      if (currentUser) {
+        const storageKey = getBikeProfileStorageKey(currentUser);
+        if (storageKey && nextCompleted) {
+          localStorage.setItem(storageKey, JSON.stringify(updated));
+        }
+      }
+      return updated;
+    });
   };
 
   // Set vehicle mode and persist
@@ -352,6 +367,13 @@ export function AppProvider({ children }) {
         updateProfile,
         bikeProfile,
         updateBikeProfile,
+        profileCompleted: carProfileCompleted,
+        carProfileCompleted,
+        bikeProfileCompleted,
+        canShowCarScore,
+        canShowBikeScore,
+        canShowActiveScore,
+        canShowScoreForVehicle,
         selectedVehicle,
         setSelectedVehicle,
         evaluation,

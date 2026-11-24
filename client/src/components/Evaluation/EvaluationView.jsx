@@ -10,7 +10,8 @@ import VariantFeaturesPanel from './VariantFeaturesPanel';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
-import { Heart, BarChart2, MessageSquare, ArrowLeft } from 'lucide-react';
+import { isTwoWheelerVehicle } from '../../utils/profileUtils';
+import { Heart, BarChart2, MessageSquare, ArrowLeft, Lock, LogIn, SlidersHorizontal } from 'lucide-react';
 
 export default function EvaluationView() {
   const { id } = useParams();
@@ -28,7 +29,11 @@ export default function EvaluationView() {
     toggleSaveVehicle,
     compareList,
     toggleCompare,
-    setActiveTab
+    setActiveTab,
+    currentUser,
+    setIsAuthModalOpen,
+    canShowCarScore,
+    canShowBikeScore
   } = useApp();
 
   // If a URL parameter /evaluation/:id is provided, sync selectedVehicle to it
@@ -70,31 +75,30 @@ export default function EvaluationView() {
   }, [id, vehicles, bikes, selectedVehicle, setSelectedVehicle, selectedVehicleType, setSelectedVehicleType]);
 
   const isTwoWheeler =
-    selectedVehicle?.category === 'Motorcycle' ||
-    selectedVehicle?.category === 'Scooter' ||
-    selectedVehicle?.category === 'Electric Scooter' ||
-    selectedVehicleType === '2-wheeler';
+    isTwoWheelerVehicle(selectedVehicle) ||
+    (!selectedVehicle && selectedVehicleType === '2-wheeler');
 
-  // Synchronously compute active evaluation to prevent 1-frame rendering lag or profile mismatch
+  const canShowScore = isTwoWheelerVehicle(selectedVehicle)
+    ? canShowBikeScore
+    : canShowCarScore;
+
+  // Synchronously compute active evaluation ONLY when user is logged in & form is completed
   const activeEvaluation = useMemo(() => {
-    if (!selectedVehicle) return evaluation;
-    const vehicleIsBike =
-      selectedVehicle.category === 'Motorcycle' ||
-      selectedVehicle.category === 'Scooter' ||
-      selectedVehicle.category === 'Electric Scooter';
+    if (!selectedVehicle || !canShowScore) return null;
+    const vehicleIsBike = isTwoWheelerVehicle(selectedVehicle);
 
     if (vehicleIsBike) {
       return evaluation?.personalizedFit
         ? evaluation
         : evaluateBikeSuitability(selectedVehicle, bikeProfile);
     } else {
-      return (evaluation?.fuelRecommendation || !evaluation?.personalizedFit)
+      return evaluation && (evaluation.fuelRecommendation || !evaluation.personalizedFit)
         ? evaluation
         : evaluateSuitability(selectedVehicle, userProfile);
     }
-  }, [selectedVehicle, evaluation, bikeProfile, userProfile]);
+  }, [selectedVehicle, evaluation, bikeProfile, userProfile, canShowScore]);
 
-  if (!selectedVehicle || !activeEvaluation) {
+  if (!selectedVehicle) {
     return (
       <div className="p-8 text-center space-y-4">
         <p className="text-gray-400">No vehicle currently selected for evaluation.</p>
@@ -161,33 +165,68 @@ export default function EvaluationView() {
         </div>
       </div>
 
-      {/* 1st Row: Vehicle Hero Card & Suitability Gauge */}
+      {/* 1st Row: Vehicle Hero Card & Suitability Gauge (or Lock CTA) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <div className="lg:col-span-8 flex flex-col">
-          <VehicleInfoCard vehicle={selectedVehicle} evaluation={activeEvaluation} />
+          <VehicleInfoCard vehicle={selectedVehicle} evaluation={canShowScore ? activeEvaluation : null} />
         </div>
         <div className="lg:col-span-4 flex flex-col">
-          <SemiCircleGauge
-            score={activeEvaluation.overallScore}
-            status={activeEvaluation.overallStatus}
-          />
+          {canShowScore && activeEvaluation ? (
+            <SemiCircleGauge
+              score={activeEvaluation.overallScore}
+              status={activeEvaluation.overallStatus}
+            />
+          ) : (
+            <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800/90 rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center text-center h-full space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
+                <Lock className="w-7 h-7" />
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                  Suitability Score Locked
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
+                  {!currentUser
+                    ? 'Scores are not shown until you log in and fill your profile questionnaire.'
+                    : `We do not assume your profile inputs. Complete your ${isTwoWheeler ? '2-Wheeler' : 'Car'} questionnaire first to view your suitability score.`}
+                </p>
+              </div>
+              <button
+                onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl text-white text-xs font-bold shadow-md transition-all ${
+                  isTwoWheeler
+                    ? 'bg-purple-600 hover:bg-purple-700'
+                    : 'bg-orange-500 hover:bg-orange-600'
+                }`}
+              >
+                {!currentUser ? <LogIn className="w-4 h-4" /> : <SlidersHorizontal className="w-4 h-4" />}
+                <span>
+                  {!currentUser ? 'Sign In to Unlock Score' : `Complete ${isTwoWheeler ? 'Bike' : 'Car'} Form`}
+                </span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* 2nd Row: Requirement-wise Scores (12 Dimensions) */}
-      <RequirementGrid evaluation={activeEvaluation} />
+      {/* 2nd Row: Requirement-wise Scores (12 Dimensions — only shown after login & form completion) */}
+      {canShowScore && activeEvaluation && (
+        <RequirementGrid evaluation={activeEvaluation} />
+      )}
 
-      {/* 3rd Row: Powertrain & Fuel Variant Intelligence (or Rider Ergonomics for 2-Wheelers) */}
+      {/* 3rd Row: Powertrain & Fuel Variant Intelligence (or Rider Ergonomics when unlocked) */}
       {isTwoWheeler ? (
-        <RiderErgonomicsCard
-          vehicle={selectedVehicle}
-          evaluation={activeEvaluation}
-          profile={bikeProfile}
-        />
+        canShowScore && activeEvaluation && (
+          <RiderErgonomicsCard
+            vehicle={selectedVehicle}
+            evaluation={activeEvaluation}
+            profile={bikeProfile}
+          />
+        )
       ) : (
         <PowertrainIntelligenceCard
           vehicle={selectedVehicle}
-          evaluation={activeEvaluation}
+          evaluation={canShowScore ? activeEvaluation : null}
         />
       )}
 
@@ -196,11 +235,11 @@ export default function EvaluationView() {
         <VariantFeaturesPanel vehicle={selectedVehicle} />
       )}
 
-      {/* 5th Row: Top Strengths and Tradeoffs (Pros & Considerations) */}
+      {/* 5th Row: Top Strengths and Tradeoffs (Objective vehicle traits before scoring; personalized after) */}
       <StrengthsConsiderations
-        evaluation={activeEvaluation}
+        evaluation={canShowScore ? activeEvaluation : null}
         vehicle={selectedVehicle}
-        profile={isTwoWheeler ? bikeProfile : userProfile}
+        profile={canShowScore ? (isTwoWheeler ? bikeProfile : userProfile) : {}}
       />
     </div>
   );

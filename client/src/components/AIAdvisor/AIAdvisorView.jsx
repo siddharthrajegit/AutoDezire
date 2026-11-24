@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { sendAiAdvisorChat } from '../../services/api';
+import { formatBudgetLakh, isTwoWheelerVehicle } from '../../utils/profileUtils';
 
 const CAR_QUICK_PROMPTS = [
   'Why did Auto Dezire recommend this car for me?',
@@ -46,15 +47,18 @@ export default function AIAdvisorView() {
     setActiveTab,
     aiChatMessages,
     setAiChatMessages,
-    clearAiChatMessages
+    clearAiChatMessages,
+    currentUser,
+    setIsAuthModalOpen,
+    canShowCarScore,
+    canShowBikeScore
   } = useApp();
 
   const isTwoWheeler =
-    selectedVehicle?.category === 'Motorcycle' ||
-    selectedVehicle?.category === 'Scooter' ||
-    selectedVehicle?.category === 'Electric Scooter' ||
-    selectedVehicleType === '2-wheeler';
+    isTwoWheelerVehicle(selectedVehicle) ||
+    (!selectedVehicle && selectedVehicleType === '2-wheeler');
 
+  const canShowScore = isTwoWheeler ? canShowBikeScore : canShowCarScore;
   const activeProfile = isTwoWheeler ? bikeProfile : userProfile;
   const quickPrompts = isTwoWheeler ? BIKE_QUICK_PROMPTS : CAR_QUICK_PROMPTS;
 
@@ -65,9 +69,11 @@ export default function AIAdvisorView() {
   const initialWelcomeMessage = useMemo(() => ({
     id: 1,
     sender: 'ai',
-    text: `Hello **${activeProfile.name || 'Friend'}**! I am your personalized AutoDezire AI Advisor.\n\nI have received your profile (**₹${activeProfile.budget >= 100 ? `${activeProfile.budget}L (${(activeProfile.budget / 100).toFixed(2)} Cr)` : `${activeProfile.budget}L`} budget, ${isTwoWheeler ? `${activeProfile.riderHeight || 172} cm height, ${activeProfile.riderWeight || 68} kg` : `${activeProfile.height || 175} cm height, ${activeProfile.dailyKm || 35} km daily commute`}**) and AutoDezire's recommendation of **${vehicleName} (Score: ${evaluation?.overallScore || 'N/A'}/100)**.\n\nFeel free to ask why this automobile was chosen, how it compares with alternatives, or whether it suits your daily commute and body ergonomics!`,
+    text: canShowScore && evaluation
+      ? `Hello **${activeProfile.name || currentUser?.name || 'Friend'}**! I am your personalized AutoDezire AI Advisor.\n\nI have received your profile (**₹${formatBudgetLakh(activeProfile.budget)} budget, ${isTwoWheeler ? `${activeProfile.riderHeight} cm height, ${activeProfile.riderWeight} kg` : `${activeProfile.height} cm height, ${activeProfile.dailyKm} km daily commute`}**) and AutoDezire's evaluation of **${vehicleName} (Score: ${evaluation.overallScore}/100)**.\n\nFeel free to ask why this automobile fits your requirements, how it compares with alternatives, or whether it suits your daily commute and ergonomics!`
+      : `Hello **${currentUser?.name || 'Friend'}**! I am your AutoDezire AI Advisor.\n\nWe are looking at **${vehicleName}**. ${!currentUser ? 'Log in and complete your profile questionnaire to unlock personalized suitability scores — ' : 'Complete your profile questionnaire first to calculate your personalized suitability score — '}in the meantime, ask me anything about this vehicle's specs, features, reliability, or alternatives!`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  }), [activeProfile, vehicleName, evaluation, isTwoWheeler]);
+  }), [activeProfile, vehicleName, evaluation, isTwoWheeler, canShowScore, currentUser]);
 
   // Page Navigation Memory: initialize from sessionStorage / AppContext if user already chatted
   const [messages, setMessages] = useState(() => {
@@ -128,13 +134,13 @@ export default function AIAdvisorView() {
       .filter(v => (v.id || v._id) !== (selectedVehicle?.id || selectedVehicle?._id))
       .slice(0, 3);
 
-    // Call backend API
+    // Call backend API (only send personalized profile & score if form was completed)
     const response = await sendAiAdvisorChat({
       message: query,
       conversationHistory: messages,
-      userProfile: activeProfile,
+      userProfile: canShowScore ? activeProfile : null,
       selectedVehicle,
-      suitabilityResult: evaluation,
+      suitabilityResult: canShowScore ? evaluation : null,
       recommendedVehicles: relevantAlternatives
     });
 
@@ -224,9 +230,22 @@ export default function AIAdvisorView() {
                 Gemma 4 26B
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              Evaluating: <strong className="text-orange-500">{vehicleName}</strong> (Score: {evaluation?.overallScore || 0}/100) for <strong className="text-gray-700 dark:text-gray-200">{activeProfile.name || 'User'}</strong>
-            </p>
+            {canShowScore && evaluation ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                Evaluating: <strong className="text-orange-500">{vehicleName}</strong> (Score: {evaluation.overallScore}/100) for <strong className="text-gray-700 dark:text-gray-200">{activeProfile.name || currentUser?.name || 'User'}</strong>
+              </p>
+            ) : (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex flex-wrap items-center gap-1.5">
+                <span>Inspecting: <strong className="text-orange-500">{vehicleName}</strong></span>
+                <span>•</span>
+                <button
+                  onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                  className="font-semibold text-orange-500 hover:underline"
+                >
+                  {!currentUser ? 'Sign in for score' : 'Complete form for score'}
+                </button>
+              </p>
+            )}
           </div>
         </div>
 

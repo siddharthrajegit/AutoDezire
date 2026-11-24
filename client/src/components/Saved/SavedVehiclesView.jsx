@@ -11,6 +11,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
+import { isTwoWheelerVehicle } from '../../utils/profileUtils';
 import VehicleImage from '../Common/VehicleImage';
 
 export default function SavedVehiclesView() {
@@ -26,7 +27,11 @@ export default function SavedVehiclesView() {
     evaluateVehicle,
     toggleCompare,
     compareList,
-    setActiveTab
+    setActiveTab,
+    currentUser,
+    setIsAuthModalOpen,
+    canShowCarScore,
+    canShowBikeScore
   } = useApp();
 
   const allVehicles = useMemo(() => [...(vehicles || []), ...(bikes || [])], [vehicles, bikes]);
@@ -93,13 +98,13 @@ export default function SavedVehiclesView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {savedList.map(vehicle => {
-            const isTwoWheeler =
-              vehicle.category === 'Motorcycle' ||
-              vehicle.category === 'Scooter' ||
-              vehicle.category === 'Electric Scooter';
-            const evalResult = isTwoWheeler
-              ? evaluateBikeSuitability(vehicle, bikeProfile)
-              : evaluateSuitability(vehicle, userProfile);
+            const isTwoWheeler = isTwoWheelerVehicle(vehicle);
+            const canShowScore = isTwoWheeler ? canShowBikeScore : canShowCarScore;
+            const evalResult = canShowScore
+              ? (isTwoWheeler
+                  ? evaluateBikeSuitability(vehicle, bikeProfile)
+                  : evaluateSuitability(vehicle, userProfile))
+              : null;
             const isCompared = compareList.some(v => (v.id || v._id) === (vehicle.id || vehicle._id));
 
             return (
@@ -139,14 +144,23 @@ export default function SavedVehiclesView() {
                     />
                   </div>
 
-                  <div className="flex items-baseline justify-between pt-1">
+                  <div className="flex items-baseline justify-between pt-1 gap-2">
                     <span className="text-base font-bold text-emerald-500 dark:text-emerald-400">
                       {vehicle.priceDisplay}
                     </span>
-                    <div className="flex items-center space-x-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
-                      <Star className="w-3 h-3 fill-current" />
-                      <span>{evalResult?.overallScore || 0}/100</span>
-                    </div>
+                    {canShowScore && evalResult ? (
+                      <div className="flex items-center space-x-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                        <Star className="w-3 h-3 fill-current" />
+                        <span>{evalResult.overallScore}/100</span>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                        className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors text-right"
+                      >
+                        {!currentUser ? 'Log in to see score' : 'Complete form for score'}
+                      </button>
+                    )}
                   </div>
 
                   <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
@@ -171,7 +185,7 @@ export default function SavedVehiclesView() {
                     onClick={() => evaluateVehicle(vehicle)}
                     className="flex-1 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold flex items-center justify-center space-x-1.5 transition-all"
                   >
-                    <span>View Evaluation</span>
+                    <span>{canShowScore ? 'View Evaluation' : 'View Details'}</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

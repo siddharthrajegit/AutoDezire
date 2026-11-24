@@ -19,11 +19,14 @@ import {
   Car,
   Bike,
   Fuel,
-  Bot
+  Bot,
+  Lock,
+  LogIn
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
+import { formatBudgetLakh } from '../../utils/profileUtils';
 import VehicleImage from '../Common/VehicleImage';
 
 export default function RecommendationsView() {
@@ -40,39 +43,53 @@ export default function RecommendationsView() {
     toggleCompare,
     savedVehicles,
     toggleSaveVehicle,
-    setActiveTab
+    setActiveTab,
+    currentUser,
+    setIsAuthModalOpen,
+    canShowCarScore,
+    canShowBikeScore
   } = useApp();
 
   const [filterCategory, setFilterCategory] = useState('All');
   const [showIneligible, setShowIneligible] = useState(false);
 
   const isTwoWheeler = selectedVehicleType === '2-wheeler';
+  const canShowScore = isTwoWheeler ? canShowBikeScore : canShowCarScore;
   const activeDataset = isTwoWheeler ? bikes : vehicles.filter(v => v.category === 'Car');
   const activeProfile = isTwoWheeler ? bikeProfile : userProfile;
 
-  // Compute live suitability
-  const evaluatedVehicles = activeDataset
-    .map(v => {
-      const evaluation = isTwoWheeler
-        ? evaluateBikeSuitability(v, bikeProfile)
-        : evaluateSuitability(v, userProfile);
+  // Compute live suitability ONLY when logged in AND corresponding questionnaire is completed
+  const evaluatedVehicles = canShowScore
+    ? activeDataset
+        .map(v => {
+          const evaluation = isTwoWheeler
+            ? evaluateBikeSuitability(v, bikeProfile)
+            : evaluateSuitability(v, userProfile);
 
-      return {
+          return {
+            vehicle: v,
+            evaluation,
+            overallScore: evaluation.overallScore,
+            isEligible: evaluation.isEligible,
+          };
+        })
+        .sort((a, b) => b.overallScore - a.overallScore)
+    : activeDataset.map(v => ({
         vehicle: v,
-        evaluation,
-        overallScore: evaluation.overallScore,
-        isEligible: evaluation.isEligible,
-      };
-    })
-    .sort((a, b) => b.overallScore - a.overallScore);
+        evaluation: null,
+        overallScore: null,
+        isEligible: true,
+      }));
 
   const eligibleList = evaluatedVehicles.filter(
     item => item.isEligible && (filterCategory === 'All' || item.vehicle.category === filterCategory || item.vehicle.bodyType === filterCategory)
   );
 
-  const ineligibleList = evaluatedVehicles.filter(
-    item => !item.isEligible && (filterCategory === 'All' || item.vehicle.category === filterCategory || item.vehicle.bodyType === filterCategory)
-  );
+  const ineligibleList = canShowScore
+    ? evaluatedVehicles.filter(
+        item => !item.isEligible && (filterCategory === 'All' || item.vehicle.category === filterCategory || item.vehicle.bodyType === filterCategory)
+      )
+    : [];
 
   return (
     <div className="space-y-8 pb-16 max-w-[1400px] mx-auto animate-fadeIn">
@@ -111,40 +128,71 @@ export default function RecommendationsView() {
       </div>
 
       {/* Top Banner / Summary */}
-      <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
-            <Sparkles className="w-3.5 h-3.5 fill-current" />
-            <span>{isTwoWheeler ? '2-Wheeler (Bike & Scooter)' : '4-Wheeler (Car)'} Recommendations for {activeProfile.name}</span>
+      {canShowScore ? (
+        <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+              <Sparkles className="w-3.5 h-3.5 fill-current" />
+              <span>{isTwoWheeler ? '2-Wheeler (Bike & Scooter)' : '4-Wheeler (Car)'} Recommendations for {activeProfile.name || currentUser?.name || 'You'}</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+              Top Suited {isTwoWheeler ? 'Two-Wheelers' : 'Automobiles'}
+            </h1>
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>Height: <strong className="text-orange-500">{isTwoWheeler ? activeProfile.riderHeight : activeProfile.height} cm</strong></span>
+              {isTwoWheeler && (
+                <>
+                  <span>•</span>
+                  <span>Rider Weight: <strong className="text-rose-400">{activeProfile.riderWeight} kg</strong></span>
+                </>
+              )}
+              <span>•</span>
+              <span>Experience: <strong className="text-blue-500">{activeProfile.yearsExperience} yrs ({activeProfile.confidenceLevel})</strong></span>
+              <span>•</span>
+              <span>Budget: <strong className="text-emerald-500">₹{formatBudgetLakh(activeProfile.budget)}</strong></span>
+              <span>•</span>
+              <span>Charging: <strong className="text-purple-400">{activeProfile.hasHomeCharging ? 'Home Socket Available' : 'No Home Socket'}</strong></span>
+            </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-            Top Suited {isTwoWheeler ? 'Two-Wheelers' : 'Automobiles'}
-          </h1>
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-gray-500 dark:text-gray-400">
-            <span>Height: <strong className="text-orange-500">{isTwoWheeler ? activeProfile.riderHeight : activeProfile.height} cm</strong></span>
-            {isTwoWheeler && (
-              <>
-                <span>•</span>
-                <span>Rider Weight: <strong className="text-rose-400">{activeProfile.riderWeight || 68} kg</strong></span>
-              </>
-            )}
-            <span>•</span>
-            <span>Experience: <strong className="text-blue-500">{activeProfile.yearsExperience} yrs ({activeProfile.confidenceLevel || 'Confident'})</strong></span>
-            <span>•</span>
-            <span>Budget: <strong className="text-emerald-500">₹{activeProfile.budget >= 100 ? `${activeProfile.budget}L (${(activeProfile.budget / 100).toFixed(2)} Cr)` : `${activeProfile.budget}L`}</strong></span>
-            <span>•</span>
-            <span>Charging: <strong className="text-purple-400">{activeProfile.hasHomeCharging ? 'Home Socket Available' : 'No Home Socket'}</strong></span>
-          </div>
-        </div>
 
-        <button
-          onClick={() => setActiveTab('profile')}
-          className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-gray-200 hover:border-orange-500 transition-all self-start md:self-auto"
-        >
-          <SlidersHorizontal className="w-3.5 h-3.5 text-orange-500" />
-          <span>Adjust {isTwoWheeler ? 'Bike' : 'Car'} Profile</span>
-        </button>
-      </div>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-gray-200 hover:border-orange-500 transition-all self-start md:self-auto"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 text-orange-500" />
+            <span>Adjust {isTwoWheeler ? 'Bike' : 'Car'} Profile</span>
+          </button>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-[#111827] border border-orange-500/30 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-500 text-xs font-bold">
+              <Lock className="w-3.5 h-3.5" />
+              <span>{!currentUser ? 'Sign In Required for Suitability Scores' : 'Questionnaire Not Completed Yet'}</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+              Browse {isTwoWheeler ? 'Two-Wheelers' : 'Automobiles'}
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-2xl">
+              {!currentUser
+                ? 'Vehicles are shown below without suitability scores while browsing as a guest. Log in and complete the profile questionnaire to see your personalized 0–100 match rankings.'
+                : `We do not assume your height, experience, or budget. Complete your ${isTwoWheeler ? '2-Wheeler' : 'Car'} profile questionnaire first to calculate real suitability scores and top matches.`}
+            </p>
+          </div>
+
+          <button
+            onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+            className={`flex items-center space-x-2 px-5 py-3 rounded-xl text-white text-xs font-bold shadow-md transition-all self-start md:self-auto flex-shrink-0 ${
+              isTwoWheeler
+                ? 'bg-purple-600 hover:bg-purple-700'
+                : 'bg-orange-500 hover:bg-orange-600'
+            }`}
+          >
+            {!currentUser ? <LogIn className="w-4 h-4" /> : <SlidersHorizontal className="w-4 h-4" />}
+            <span>{!currentUser ? 'Sign In to Unlock Scores' : `Fill ${isTwoWheeler ? 'Bike' : 'Car'} Profile`}</span>
+          </button>
+        </div>
+      )}
 
       {/* Category Tabs */}
       <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-800/80 p-1.5 rounded-2xl w-fit">
@@ -177,10 +225,10 @@ export default function RecommendationsView() {
             ))}
       </div>
 
-      {/* Recommended Eligible Cards List */}
+      {/* Vehicle Cards List */}
       <div className="space-y-5">
         {eligibleList.map(({ vehicle, evaluation }, idx) => {
-          const isTopMatch = idx === 0 && filterCategory === 'All';
+          const isTopMatch = canShowScore && idx === 0 && filterCategory === 'All';
           const isSaved = savedVehicles.includes(vehicle.id || vehicle._id);
           const isCompared = compareList.some(v => (v.id || v._id) === (vehicle.id || vehicle._id));
 
@@ -228,7 +276,7 @@ export default function RecommendationsView() {
                   </div>
                 </div>
 
-                {/* Middle: Specs & Key Strengths */}
+                {/* Middle: Specs & Highlights */}
                 <div className="lg:col-span-6 space-y-3">
                   <div>
                     <h2 className="text-xl font-black text-gray-900 dark:text-white">
@@ -244,25 +292,27 @@ export default function RecommendationsView() {
                     <span className="text-lg font-black text-emerald-500 dark:text-emerald-400">
                       {vehicle.priceDisplay}
                     </span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                      evaluation.budgetStatus === 'Within Budget'
-                        ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                        : evaluation.budgetStatus === 'Slightly Above Budget'
-                        ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                        : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
-                    }`}>
-                      {evaluation.budgetStatus}
-                    </span>
+                    {canShowScore && evaluation && (
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        evaluation.budgetStatus === 'Within Budget'
+                          ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                          : evaluation.budgetStatus === 'Slightly Above Budget'
+                          ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                          : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                      }`}>
+                        {evaluation.budgetStatus}
+                      </span>
+                    )}
 
                     {/* Bike Specific highlight tags */}
-                    {isTwoWheeler && evaluation.requirementScores.ergonomicFlatFoot >= 9 && (
+                    {canShowScore && evaluation && isTwoWheeler && evaluation.requirementScores.ergonomicFlatFoot >= 9 && (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/15 text-teal-400 border border-teal-500/30 flex items-center space-x-1">
                         <PersonStanding className="w-3 h-3" />
                         <span>Easy Flat-Foot ({vehicle.seatHeight}mm)</span>
                       </span>
                     )}
 
-                    {isTwoWheeler && evaluation.requirementScores.riderWeightHandling >= 9 && (
+                    {canShowScore && evaluation && isTwoWheeler && evaluation.requirementScores.riderWeightHandling >= 9 && (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center space-x-1">
                         <Gauge className="w-3 h-3" />
                         <span>Optimal Weight Balance ({vehicle.kerbWeight}kg)</span>
@@ -276,7 +326,7 @@ export default function RecommendationsView() {
                     )}
 
                     {/* Car Specific highlight tags */}
-                    {!isTwoWheeler && evaluation.requirementScores.ergonomicFit >= 9 && (
+                    {canShowScore && evaluation && !isTwoWheeler && evaluation.requirementScores.ergonomicFit >= 9 && (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/15 text-teal-400 border border-teal-500/30 flex items-center space-x-1">
                         <PersonStanding className="w-3 h-3" />
                         <span>Ergonomic Match (Height {activeProfile.height}cm)</span>
@@ -284,7 +334,7 @@ export default function RecommendationsView() {
                     )}
 
                     {/* Recommended Fuel Powertrain Badge */}
-                    {!isTwoWheeler && evaluation.fuelRecommendation && (
+                    {canShowScore && evaluation && !isTwoWheeler && evaluation.fuelRecommendation && (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center space-x-1">
                         <Fuel className="w-3 h-3 text-amber-500" />
                         <span>
@@ -295,37 +345,63 @@ export default function RecommendationsView() {
                     )}
                   </div>
 
-                  {/* Key Match Highlights */}
-                  <div className="space-y-1.5 pt-1">
-                    {evaluation.topStrengths.slice(0, 2).map((str, sIdx) => (
-                      <div key={sIdx} className="flex items-start space-x-2 text-xs text-gray-700 dark:text-gray-300">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>{str}</span>
-                      </div>
-                    ))}
+                  {/* Key Highlights */}
+                  {canShowScore && evaluation ? (
+                    <div className="space-y-1.5 pt-1">
+                      {evaluation.topStrengths.slice(0, 2).map((str, sIdx) => (
+                        <div key={sIdx} className="flex items-start space-x-2 text-xs text-gray-700 dark:text-gray-300">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <span>{str}</span>
+                        </div>
+                      ))}
 
-                    {evaluation.considerations.length > 0 && (
-                      <div className="flex items-start space-x-2 text-xs text-amber-500 dark:text-amber-400">
-                        <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                        <span>{evaluation.considerations[0]}</span>
-                      </div>
-                    )}
-                  </div>
+                      {evaluation.considerations.length > 0 && (
+                        <div className="flex items-start space-x-2 text-xs text-amber-500 dark:text-amber-400">
+                          <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                          <span>{evaluation.considerations[0]}</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5 pt-1">
+                      {(vehicle.inherentStrengths || []).slice(0, 2).map((str, sIdx) => (
+                        <div key={sIdx} className="flex items-start space-x-2 text-xs text-gray-600 dark:text-gray-300">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" />
+                          <span>{str}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                {/* Right: Score Gauge & Action CTAs */}
+                {/* Right: Score Gauge (or CTA when hidden) & Action CTAs */}
                 <div className="lg:col-span-3 flex flex-col items-center lg:items-end justify-between space-y-4 border-t lg:border-t-0 lg:border-l border-gray-100 dark:border-gray-800/80 pt-4 lg:pt-0 lg:pl-6">
-                  <div className="text-center lg:text-right">
-                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                      Suitability Match
-                    </span>
-                    <div className="text-3xl font-black text-gray-900 dark:text-white mt-0.5">
-                      {evaluation.overallScore} <span className="text-sm font-semibold text-gray-400">/100</span>
+                  {canShowScore && evaluation ? (
+                    <div className="text-center lg:text-right">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        Suitability Match
+                      </span>
+                      <div className="text-3xl font-black text-gray-900 dark:text-white mt-0.5">
+                        {evaluation.overallScore} <span className="text-sm font-semibold text-gray-400">/100</span>
+                      </div>
+                      <span className="inline-block mt-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md">
+                        {evaluation.overallStatus}
+                      </span>
                     </div>
-                    <span className="inline-block mt-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md">
-                      {evaluation.overallStatus}
-                    </span>
-                  </div>
+                  ) : (
+                    <div className="text-center lg:text-right">
+                      <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 block">
+                        Suitability Score
+                      </span>
+                      <button
+                        onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                        className="mt-1 inline-flex items-center space-x-1.5 text-xs font-bold text-orange-500 hover:underline"
+                      >
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>{!currentUser ? 'Log in to view score' : 'Fill form to view score'}</span>
+                      </button>
+                    </div>
+                  )}
 
                   {/* Action Buttons */}
                   <div className="flex items-center space-x-2 w-full">

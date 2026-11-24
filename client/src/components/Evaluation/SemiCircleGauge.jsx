@@ -1,7 +1,7 @@
 import React from 'react';
 import { Info, Star } from 'lucide-react';
 
-export default function SemiCircleGauge({ score = 89, status = 'Highly Suitable' }) {
+export default function SemiCircleGauge({ score = 0, status = 'Pending' }) {
   // Semi-circle gauge math: 180 degrees arc
   const radius = 90;
   const strokeWidth = 18;

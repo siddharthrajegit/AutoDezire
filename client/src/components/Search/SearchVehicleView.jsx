@@ -24,7 +24,11 @@ export default function SearchVehicleView() {
     bikeProfile,
     selectedVehicleType,
     setSelectedVehicleType,
-    evaluateVehicle
+    evaluateVehicle,
+    currentUser,
+    setIsAuthModalOpen,
+    setActiveTab,
+    canShowActiveScore
   } = useApp();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -236,22 +240,35 @@ export default function SearchVehicleView() {
       </div>
 
       {/* Results Count & Match Indicator */}
-      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
         <span>
           Showing <strong>{results.length}</strong> {isTwoWheeler ? 'two-wheelers' : 'cars'}{' '}
           {brandFilter !== 'All' && `for ${brandFilter}`}
         </span>
-        <span>
-          Suitability evaluated against <strong>{activeProfile?.name || 'Your'}'s {isTwoWheeler ? 'Bike Profile' : 'Car Profile'}</strong>
-        </span>
+        {canShowActiveScore ? (
+          <span>
+            Suitability evaluated against <strong>{activeProfile?.name || currentUser?.name || 'Your'}'s {isTwoWheeler ? 'Bike Profile' : 'Car Profile'}</strong>
+          </span>
+        ) : (
+          <button
+            onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+            className="text-left sm:text-right font-semibold text-orange-500 hover:underline"
+          >
+            {!currentUser
+              ? 'Sign in & complete your profile to unlock suitability scores →'
+              : `Complete your ${isTwoWheeler ? '2-Wheeler' : 'Car'} questionnaire first to view scores →`}
+          </button>
+        )}
       </div>
 
       {/* Results Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {results.map((vehicle) => {
-          const evalResult = isTwoWheeler
-            ? evaluateBikeSuitability(vehicle, bikeProfile)
-            : evaluateSuitability(vehicle, userProfile);
+          const evalResult = canShowActiveScore
+            ? (isTwoWheeler
+                ? evaluateBikeSuitability(vehicle, bikeProfile)
+                : evaluateSuitability(vehicle, userProfile))
+            : null;
 
           return (
             <div
@@ -272,16 +289,18 @@ export default function SearchVehicleView() {
                     </h3>
                   </div>
 
-                  {/* Personalized Suitability Badge */}
-                  <div className="text-right">
-                    <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-extrabold text-sm">
-                      <Star className="w-3.5 h-3.5 fill-current" />
-                      <span>{evalResult.overallScore}/100</span>
+                  {/* Personalized Suitability Badge (Only after login & completed profile form) */}
+                  {canShowActiveScore && evalResult && (
+                    <div className="text-right">
+                      <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-extrabold text-sm">
+                        <Star className="w-3.5 h-3.5 fill-current" />
+                        <span>{evalResult.overallScore}/100</span>
+                      </div>
+                      <p className="text-[10px] text-gray-400 mt-0.5 font-medium">
+                        {evalResult.overallStatus}
+                      </p>
                     </div>
-                    <p className="text-[10px] text-gray-400 mt-0.5 font-medium">
-                      {evalResult.overallStatus}
-                    </p>
-                  </div>
+                  )}
                 </div>
 
                 {/* Vehicle Image */}
@@ -305,16 +324,24 @@ export default function SearchVehicleView() {
                   </div>
                 </div>
 
-                {/* Strengths Snippet */}
+                {/* Strengths / Specs Snippet */}
                 <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 text-[11px] text-gray-600 dark:text-gray-300">
-                  <p className="line-clamp-2">
-                    <strong className="text-emerald-500">Fit for you:</strong>{' '}
-                    {evalResult.topStrengths?.[0] || evalResult.inherentStrengths?.[0] || 'Well matched for your profile'}
-                  </p>
+                  {canShowActiveScore && evalResult ? (
+                    <p className="line-clamp-2">
+                      <strong className="text-emerald-500">Fit for you:</strong>{' '}
+                      {evalResult.topStrengths?.[0] || evalResult.inherentStrengths?.[0] || 'Well matched for your profile'}
+                    </p>
+                  ) : (
+                    <p className="line-clamp-1 text-gray-500 dark:text-gray-400">
+                      {vehicle.fuelType}
+                      {vehicle.transmission ? ` • ${vehicle.transmission}` : ''}
+                      {vehicle.safetyRating ? ` • ${vehicle.safetyRating}★ Safety` : ''}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {/* Evaluate Button */}
+              {/* Evaluate / Details Button */}
               <button
                 onClick={() => evaluateVehicle(vehicle)}
                 className={`w-full mt-5 flex items-center justify-center space-x-2 py-3 rounded-2xl text-white text-xs font-bold shadow-md transition-all ${
@@ -323,7 +350,7 @@ export default function SearchVehicleView() {
                     : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:opacity-95 shadow-orange-500/20'
                 }`}
               >
-                <span>Evaluate Suitability for ME</span>
+                <span>{canShowActiveScore ? 'Evaluate Suitability for ME' : 'View Vehicle Details'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>

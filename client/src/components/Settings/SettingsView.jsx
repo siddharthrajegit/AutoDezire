@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Settings,
   User,
@@ -15,6 +15,10 @@ export default function SettingsView() {
   const { theme, toggleTheme, userProfile, updateProfile, currentUser, setCurrentUser } = useApp();
   const [profileName, setProfileName] = useState(currentUser?.name || userProfile.name || 'Guest');
   const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    setProfileName(currentUser?.name || userProfile?.name || 'Guest');
+  }, [currentUser, userProfile]);
 
   const handleSave = (e) => {
     e.preventDefault();

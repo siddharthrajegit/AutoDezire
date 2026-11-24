@@ -22,6 +22,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability } from '../../services/clientSuitabilityEngine';
 import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
+import { formatBudgetLakh } from '../../utils/profileUtils';
 import VehicleImage from '../Common/VehicleImage';
 
 export default function HomeView() {
@@ -35,7 +36,10 @@ export default function HomeView() {
     selectedVehicleType,
     setSelectedVehicleType,
     setEntryVehicleType,
-    setShowScrollScrubbing
+    setShowScrollScrubbing,
+    currentUser,
+    setIsAuthModalOpen,
+    canShowActiveScore
   } = useApp();
 
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -232,9 +236,25 @@ export default function HomeView() {
                 Featured {isTwoWheeler ? 'Motorcycles & Scooters' : 'Cars & SUVs'}
               </h2>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Live suitability calculated for {isTwoWheeler ? bikeProfile.name : userProfile.name}'s profile (₹{isTwoWheeler ? bikeProfile.budget : (userProfile.budget >= 100 ? `${userProfile.budget}L (${(userProfile.budget / 100).toFixed(2)} Cr)` : `${userProfile.budget}L`)} budget)
-            </p>
+            {canShowActiveScore ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Live suitability calculated for {(isTwoWheeler ? bikeProfile.name : userProfile.name) || currentUser?.name || 'Your'}'s profile (₹{formatBudgetLakh(isTwoWheeler ? bikeProfile.budget : userProfile.budget)} budget)
+              </p>
+            ) : (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex flex-wrap items-center gap-1.5">
+                <span>
+                  {!currentUser
+                    ? 'Scores are hidden while browsing as guest.'
+                    : `Complete your ${isTwoWheeler ? '2-Wheeler' : 'Car'} questionnaire to unlock suitability scores.`}
+                </span>
+                <button
+                  onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                  className="text-orange-500 hover:underline font-bold"
+                >
+                  {!currentUser ? 'Sign In & Fill Profile →' : 'Fill Profile Form →'}
+                </button>
+              </p>
+            )}
           </div>
 
           {/* Category Filter Switch */}
@@ -302,9 +322,11 @@ export default function HomeView() {
         {/* Vehicles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredList.map(vehicle => {
-            const evalResult = isTwoWheeler
-              ? evaluateBikeSuitability(vehicle, bikeProfile)
-              : evaluateSuitability(vehicle, userProfile);
+            const evalResult = canShowActiveScore
+              ? (isTwoWheeler
+                  ? evaluateBikeSuitability(vehicle, bikeProfile)
+                  : evaluateSuitability(vehicle, userProfile))
+              : null;
 
             return (
               <div
@@ -322,15 +344,17 @@ export default function HomeView() {
                       </h3>
                     </div>
 
-                    <div className="text-right">
-                      <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-black text-sm">
-                        <Star className="w-3.5 h-3.5 fill-current" />
-                        <span>{evalResult.overallScore}/100</span>
+                    {canShowActiveScore && evalResult && (
+                      <div className="text-right">
+                        <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-black text-sm">
+                          <Star className="w-3.5 h-3.5 fill-current" />
+                          <span>{evalResult.overallScore}/100</span>
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-0.5 font-medium">
+                          {evalResult.overallStatus}
+                        </p>
                       </div>
-                      <p className="text-[10px] text-gray-400 mt-0.5 font-medium">
-                        {evalResult.overallStatus}
-                      </p>
-                    </div>
+                    )}
                   </div>
 
                   <div className="w-full h-36 my-3 rounded-xl overflow-hidden flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-800/40">
@@ -353,9 +377,16 @@ export default function HomeView() {
                   </div>
 
                   <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800/80">
-                    <p className="text-[11px] text-gray-600 dark:text-gray-300 line-clamp-2">
-                      <span className="text-emerald-500 font-bold">Key Match:</span> {evalResult.topStrengths[0] || 'Well matched for your profile'}
-                    </p>
+                    {canShowActiveScore && evalResult ? (
+                      <p className="text-[11px] text-gray-600 dark:text-gray-300 line-clamp-2">
+                        <span className="text-emerald-500 font-bold">Key Match:</span> {evalResult.topStrengths[0] || 'Well matched for your profile'}
+                      </p>
+                    ) : (
+                      <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1">
+                        {vehicle.engine} • {vehicle.fuelType}
+                        {vehicle.transmission ? ` • ${vehicle.transmission}` : ''}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -363,7 +394,7 @@ export default function HomeView() {
                   onClick={() => evaluateVehicle(vehicle)}
                   className="w-full mt-4 flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-orange-500 hover:text-white dark:hover:bg-orange-500 text-gray-800 dark:text-gray-200 text-xs font-bold transition-all"
                 >
-                  <span>View Suitability Evaluation</span>
+                  <span>{canShowActiveScore ? 'View Suitability Evaluation' : 'View Vehicle Details'}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>

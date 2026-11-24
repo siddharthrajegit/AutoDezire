@@ -11,20 +11,38 @@ import {
   ArrowRight,
   PersonStanding,
   Gauge,
-  Zap
+  Zap,
+  Lock
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { evaluateSuitability, REQUIREMENT_CONFIG } from '../../services/clientSuitabilityEngine';
+import { evaluateBikeSuitability } from '../../services/bikeSuitabilityEngine';
+import { isTwoWheelerVehicle, formatBudgetLakh } from '../../utils/profileUtils';
 import VehicleImage from '../Common/VehicleImage';
 
 export default function CompareView() {
-  const { compareList, setCompareList, toggleCompare, vehicles, userProfile, evaluateVehicle, setActiveTab } = useApp();
+  const {
+    compareList,
+    setCompareList,
+    toggleCompare,
+    vehicles,
+    bikes,
+    userProfile,
+    bikeProfile,
+    evaluateVehicle,
+    setActiveTab,
+    currentUser,
+    setIsAuthModalOpen,
+    canShowCarScore,
+    canShowBikeScore
+  } = useApp();
 
   const handleAddVehicle = (vehicle) => {
     toggleCompare(vehicle);
   };
 
-  const availableVehicles = vehicles.filter(
+  const allVehicles = [...(vehicles || []), ...(bikes || [])];
+  const availableVehicles = allVehicles.filter(
     v => !compareList.some(c => (c.id || c._id) === (v.id || v._id))
   );
 
@@ -34,11 +52,25 @@ export default function CompareView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-            Suitability Comparison
+            {canShowCarScore || canShowBikeScore ? 'Suitability Comparison' : 'Vehicle Comparison'}
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Compare how different automobiles fit YOUR profile ({userProfile.name}, Height: {userProfile.height}cm, {userProfile.yearsExperience} yrs exp, ₹{userProfile.budget >= 100 ? `${userProfile.budget}L (${(userProfile.budget / 100).toFixed(2)} Cr)` : `${userProfile.budget}L`} Budget).
-          </p>
+          {canShowCarScore ? (
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Compare how different automobiles fit YOUR profile ({userProfile.name || currentUser?.name}, Height: {userProfile.height}cm, {userProfile.yearsExperience} yrs exp, ₹{formatBudgetLakh(userProfile.budget)} Budget).
+            </p>
+          ) : (
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 flex flex-wrap items-center gap-1.5">
+              <span>Compare vehicle specs side-by-side.</span>
+              <button
+                onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                className="text-orange-500 font-bold hover:underline"
+              >
+                {!currentUser
+                  ? 'Sign in & complete profile to include suitability scores →'
+                  : 'Complete your questionnaire to unlock suitability scores →'}
+              </button>
+            </p>
+          )}
         </div>
 
         {compareList.length > 0 && (
@@ -74,7 +106,14 @@ export default function CompareView() {
           {/* Comparison Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {compareList.map(vehicle => {
-              const evalResult = evaluateSuitability(vehicle, userProfile);
+              const isBike = isTwoWheelerVehicle(vehicle);
+              const canShowScore = isBike ? canShowBikeScore : canShowCarScore;
+              const activeProfile = isBike ? bikeProfile : userProfile;
+              const evalResult = canShowScore
+                ? (isBike
+                    ? evaluateBikeSuitability(vehicle, bikeProfile)
+                    : evaluateSuitability(vehicle, userProfile))
+                : null;
 
               return (
                 <div
@@ -121,38 +160,57 @@ export default function CompareView() {
                       />
                     </div>
 
-                    {/* Overall Score Banner */}
-                    <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center my-3">
-                      <span className="text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400 tracking-wider">
-                        Personalized Suitability
-                      </span>
-                      <div className="text-3xl font-black text-emerald-500 dark:text-emerald-400 mt-0.5">
-                        {evalResult.overallScore} <span className="text-xs text-gray-400 font-normal">/100</span>
-                      </div>
-                      <span className="text-xs font-bold text-emerald-400">
-                        {evalResult.overallStatus}
-                      </span>
-                    </div>
+                    {/* Overall Score Banner (Shown only after login & form completion) */}
+                    {canShowScore && evalResult ? (
+                      <>
+                        <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center my-3">
+                          <span className="text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400 tracking-wider">
+                            Personalized Suitability
+                          </span>
+                          <div className="text-3xl font-black text-emerald-500 dark:text-emerald-400 mt-0.5">
+                            {evalResult.overallScore} <span className="text-xs text-gray-400 font-normal">/100</span>
+                          </div>
+                          <span className="text-xs font-bold text-emerald-400">
+                            {evalResult.overallStatus}
+                          </span>
+                        </div>
 
-                    {/* Budget Status */}
-                    <div className="flex items-center justify-between text-xs py-2 border-b border-gray-100 dark:border-gray-800">
-                      <span className="text-gray-500">Budget Compatibility</span>
-                      <span className={`font-bold ${
-                        evalResult.budgetStatus === 'Within Budget'
-                          ? 'text-emerald-500'
-                          : evalResult.budgetStatus === 'Slightly Above Budget'
-                          ? 'text-amber-500'
-                          : 'text-rose-500'
-                      }`}>
-                        {evalResult.budgetStatus}
-                      </span>
-                    </div>
+                        {/* Budget Status */}
+                        <div className="flex items-center justify-between text-xs py-2 border-b border-gray-100 dark:border-gray-800">
+                          <span className="text-gray-500">Budget Compatibility</span>
+                          <span className={`font-bold ${
+                            evalResult.budgetStatus === 'Within Budget'
+                              ? 'text-emerald-500'
+                              : evalResult.budgetStatus === 'Slightly Above Budget'
+                              ? 'text-amber-500'
+                              : 'text-rose-500'
+                          }`}>
+                            {evalResult.budgetStatus}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 text-center my-3 space-y-1">
+                        <div className="inline-flex items-center space-x-1 text-[11px] font-bold text-gray-500 dark:text-gray-400">
+                          <Lock className="w-3.5 h-3.5 text-orange-500" />
+                          <span>Suitability Score Hidden</span>
+                        </div>
+                        <div>
+                          <button
+                            onClick={() => (!currentUser ? setIsAuthModalOpen(true) : setActiveTab('profile'))}
+                            className="text-xs font-bold text-orange-500 hover:underline"
+                          >
+                            {!currentUser ? 'Log in to calculate score' : 'Complete questionnaire for score'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Key Specs */}
                     <div className="space-y-1.5 py-3 text-xs border-b border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-300">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Engine / Drive:</span>
-                        <span className="font-semibold">{vehicle.engine} • {vehicle.driveType}</span>
+                        <span className="font-semibold">{vehicle.engine} • {vehicle.driveType || vehicle.fuelType}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Headroom / Seat:</span>
@@ -161,8 +219,10 @@ export default function CompareView() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Turning / Parking:</span>
-                        <span className="font-semibold">{vehicle.turningRadius || 5.0}m • {vehicle.parkingDifficulty}</span>
+                        <span className="text-gray-500">Turning / Weight:</span>
+                        <span className="font-semibold">
+                          {vehicle.turningRadius ? `${vehicle.turningRadius}m • ${vehicle.parkingDifficulty}` : `${vehicle.kerbWeight || 150} kg`}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Mileage / Range:</span>
@@ -174,31 +234,33 @@ export default function CompareView() {
                       </div>
                     </div>
 
-                    {/* Requirement Scores list */}
-                    <div className="space-y-2 py-3">
-                      <h4 className="text-xs font-bold text-gray-900 dark:text-white">
-                        Scores for Your Top Priorities:
-                      </h4>
-                      {userProfile.topPriorities?.map(p => {
-                        const match = evalResult.requirementList.find(r => r.name === p || r.key.toLowerCase().includes(p.toLowerCase().slice(0, 4)));
-                        const score = match ? match.score : 7;
-                        return (
-                          <div key={p} className="flex items-center justify-between text-xs">
-                            <span className="text-gray-500 dark:text-gray-400 font-medium">{p}</span>
-                            <span className="font-bold text-gray-900 dark:text-white px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">
-                              {score}/10
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    {/* Requirement Scores list (Only shown when scores are unlocked) */}
+                    {canShowScore && evalResult && (
+                      <div className="space-y-2 py-3">
+                        <h4 className="text-xs font-bold text-gray-900 dark:text-white">
+                          Scores for Your Top Priorities:
+                        </h4>
+                        {activeProfile.topPriorities?.map(p => {
+                          const match = evalResult.requirementList.find(r => r.name === p || r.key.toLowerCase().includes(p.toLowerCase().slice(0, 4)));
+                          const score = match ? match.score : 7;
+                          return (
+                            <div key={p} className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500 dark:text-gray-400 font-medium">{p}</span>
+                              <span className="font-bold text-gray-900 dark:text-white px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">
+                                {score}/10
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   <button
                     onClick={() => evaluateVehicle(vehicle)}
                     className="w-full mt-4 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition-all"
                   >
-                    View Full Evaluation
+                    {canShowScore ? 'View Full Evaluation' : 'View Vehicle Details'}
                   </button>
                 </div>
               );
@@ -222,7 +284,7 @@ export default function CompareView() {
                 <div className="w-full max-w-xs space-y-2">
                   <select
                     onChange={(e) => {
-                      const found = vehicles.find(v => (v.id || v._id) === e.target.value);
+                      const found = allVehicles.find(v => (v.id || v._id) === e.target.value);
                       if (found) handleAddVehicle(found);
                     }}
                     defaultValue=""
