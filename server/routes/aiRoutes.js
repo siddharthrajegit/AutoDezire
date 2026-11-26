@@ -24,7 +24,10 @@ router.post('/chat', async (req, res) => {
       });
     }
 
-    let userProfile = null; // Never trust client-supplied profile directly
+    const clientExplicitlyOmittedProfile =
+      Object.prototype.hasOwnProperty.call(req.body, 'userProfile') && req.body.userProfile === null;
+
+    let userProfile = null; // Never trust client-supplied profile directly when auth token has one
     let selectedVehicle = req.body.selectedVehicle || req.body.vehicle || null;
     let suitabilityResult = req.body.suitabilityResult || req.body.evaluation || null;
     let recommendedVehicles = req.body.recommendedVehicles || req.body.alternatives || [];
@@ -32,8 +35,8 @@ router.post('/chat', async (req, res) => {
       ? req.body.conversationHistory
       : [];
 
-    // 1. Resolve User Profile: if auth token present, always load from server (ignore client body)
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    // 1. Resolve User Profile: if auth token present, always load from server unless client explicitly indicates form not filled
+    if (!clientExplicitlyOmittedProfile && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       try {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, JWT_SECRET);
@@ -47,31 +50,13 @@ router.post('/chat', async (req, res) => {
           }
         }
       } catch (authErr) {
-        // Token expired or invalid; continue with fallback profile
+        // Token expired or invalid; continue without token profile
       }
     }
 
-    // If no authenticated profile found (guest user), check client body before default
-    if (!userProfile && req.body.userProfile && typeof req.body.userProfile === 'object') {
+    // If no authenticated profile found, accept client profile object only when actually provided
+    if (!userProfile && !clientExplicitlyOmittedProfile && req.body.userProfile && typeof req.body.userProfile === 'object') {
       userProfile = req.body.userProfile;
-    }
-
-    if (!userProfile) {
-      userProfile = {
-        name: 'Guest',
-        height: 172,
-        age: 28,
-        budget: 14,
-        dailyKm: 35,
-        highwayPercent: 30,
-        cityPercent: 60,
-        ruralPercent: 10,
-        roadConditions: 'Mixed with Potholes',
-        regularPassengers: 2,
-        hasChildren: false,
-        hasElderly: false,
-        topPriorities: ['Safety', 'Ground Clearance', 'Comfort'],
-      };
     }
 
     // 2. Resolve Selected Vehicle: if string ID is passed, load full vehicle from store
@@ -83,7 +68,7 @@ router.post('/chat', async (req, res) => {
       if (v) selectedVehicle = v;
     }
 
-    // If still missing, pick first available car from store as recommendation
+    // If still missing, pick first available car from store as context
     if (!selectedVehicle) {
       const allVehs = await getAllVehicles();
       if (allVehs && allVehs.length > 0) {
@@ -91,12 +76,12 @@ router.post('/chat', async (req, res) => {
       }
     }
 
-    // 3. Resolve Suitability Result: if missing, calculate it using AutoDezire's suitability engine
-    if (!suitabilityResult && selectedVehicle) {
+    // 3. Resolve Suitability Result ONLY when a real user profile exists
+    if (!suitabilityResult && selectedVehicle && userProfile) {
       suitabilityResult = evaluateVehicleSuitability(selectedVehicle, userProfile);
     }
 
-    // 4. Resolve Recommended Alternatives: if missing, calculate top 3 from store
+    // 4. Resolve Alternatives from store if missing
     if (!recommendedVehicles || recommendedVehicles.length === 0) {
       const allVehs = await getAllVehicles();
       if (allVehs && allVehs.length > 0) {
@@ -106,7 +91,6 @@ router.post('/chat', async (req, res) => {
           .slice(0, 3)
           .map(v => ({
             vehicle: v,
-            overallScore: v.baseScores?.safety ? 85 : 82,
             priceDisplay: v.priceDisplay,
           }));
       }

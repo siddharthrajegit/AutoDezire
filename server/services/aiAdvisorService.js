@@ -10,6 +10,27 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const DEFAULT_MODEL = 'google/gemma-4-26b-a4b-it';
 
 /**
+ * Sanitizes an OpenRouter API key read from environment variables or .env files.
+ * Strips accidental whitespace, wrapping quotes ("..." / '...'), and "Bearer " prefix
+ * (common when pasting keys into hosting dashboards like Render).
+ */
+function sanitizeApiKey(rawKey) {
+  if (!rawKey || typeof rawKey !== 'string') return '';
+  let cleaned = rawKey.trim();
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+  cleaned = cleaned.replace(/^Bearer\s+/i, '').trim();
+  if (!cleaned || cleaned === 'your_openrouter_api_key_here') {
+    return '';
+  }
+  return cleaned;
+}
+
+/**
  * Normalizes model identifiers to ensure compatibility with OpenRouter's exact model ID.
  * Automatically maps 'google/gemma-4-26b-a4b' to 'google/gemma-4-26b-a4b-it'.
  */
@@ -27,7 +48,7 @@ function normalizeModelId(modelId) {
  * Grounded exclusively in supplied user profile and AutoDezire recommendation telemetry.
  */
 function buildStructuredSystemPrompt({
-  userProfile = {},
+  userProfile = null,
   selectedVehicle = null,
   suitabilityResult = null,
   recommendedVehicles = [],
@@ -41,10 +62,12 @@ function buildStructuredSystemPrompt({
     ? `2-Wheeler (${selectedVehicle?.category || 'Motorcycle/Scooter'})`
     : `4-Wheeler (${selectedVehicle?.bodyType || 'Car / SUV'})`;
 
+  const profile = userProfile && typeof userProfile === 'object' ? userProfile : null;
+
   let prompt = `You are the AutoDezire AI Assistant, an expert automobile advisor for AutoDezire (autodezire.com).
 
 MISSION & BEHAVIOR:
-- Act as an intelligent, helpful automobile expert. AutoDezire's recommendation and suitability score provide a solid baseline, but you have full autonomy to give your own expert opinions, discuss trade-offs, and suggest other 2-wheelers or 4-wheelers if they fit the user's situation or if the user asks.
+- Act as an intelligent, helpful automobile expert. AutoDezire's recommendation and suitability score provide a solid baseline when available, and you have full autonomy to give your own expert opinions, discuss trade-offs, and suggest other 2-wheelers or 4-wheelers if they fit the user's situation or if the user asks.
 - NEVER tell the user that you are restricted by "strict boundaries" or that you cannot suggest other vehicles outside the website. You are an autonomous advisor free to recommend any suitable cars, bikes, scooters, or EVs in India.
 
 FORMAT & LENGTH RULES (CRITICAL):
@@ -52,7 +75,7 @@ FORMAT & LENGTH RULES (CRITICAL):
    - Keep answers brief, punchy, and to the point (under 80–120 words).
    - Use 2 to 3 short bullet points or a concise summary paragraph. Avoid long essays, repetitive disclaimers, or excessive detail.
 2. PERSONALIZED INSIGHTS:
-   - Directly connect your advice to the user's specific context (height, weight, budget, commute, priorities) without over-explaining.
+   - Directly connect your advice to the user's specific context (height, weight, budget, commute, priorities) if available; do not invent personal profile details if none were submitted.
 3. OPEN AUTOMOTIVE EXPERTISE:
    - When asked about other models (whether 4-wheelers or 2-wheelers), freely share your knowledge and give candid recommendations.
 
@@ -64,34 +87,36 @@ FORMAT & LENGTH RULES (CRITICAL):
 
   // 2. USER PROFILE
   prompt += `[USER PROFILE]\n`;
-  if (isBike) {
-    prompt += `- Name: ${userProfile.name || 'User'}
-- Age: ${userProfile.age || 'Not specified'}
-- Rider Height: ${userProfile.riderHeight || userProfile.height || 172} cm
-- Rider Inseam (Leg Reach): ${userProfile.riderInseam || 77} cm
-- Rider Weight: ${userProfile.riderWeight || 68} kg
-- Budget Limit: ₹${userProfile.budget || 1.8} Lakh
-- Commute / Running: ${userProfile.dailyKm || 30} km/day (${userProfile.highwayPercent || 20}% Highway, ${100 - (userProfile.highwayPercent || 20)}% City)
-- Pillion Frequency: ${userProfile.pillionFrequency || 'Occasional'}
-- Riding Posture / Triangle: ${userProfile.riderTriangle || 'Upright Commuter'}
-- Home EV Charging Access: ${userProfile.hasHomeCharging ? 'Available' : 'Not Available'}
-- Top Priorities: ${(userProfile.topPriorities || ['Mileage / Running Cost', 'Ergonomic Flat-Foot Reach', 'City Traffic Agility']).join(', ')}
+  if (!profile) {
+    prompt += `- Status: User has not filled out their suitability profile form yet. Do not assume personal height, weight, budget, or suitability scores; focus on objective specs, pros/cons, and comparisons.\n`;
+  } else if (isBike) {
+    prompt += `- Name: ${profile.name || 'User'}
+- Age: ${profile.age || 'Not specified'}
+- Rider Height: ${profile.riderHeight || profile.height || 'Not specified'} cm
+- Rider Inseam (Leg Reach): ${profile.riderInseam || 'Not specified'} cm
+- Rider Weight: ${profile.riderWeight || 'Not specified'} kg
+- Budget Limit: ${profile.budget ? `₹${profile.budget} Lakh` : 'Not specified'}
+- Commute / Running: ${profile.dailyKm || 'Not specified'} km/day (${profile.highwayPercent ?? 20}% Highway)
+- Pillion Frequency: ${profile.pillionFrequency || 'Not specified'}
+- Riding Posture / Triangle: ${profile.riderTriangle || 'Not specified'}
+- Home EV Charging Access: ${profile.hasHomeCharging ? 'Available' : 'Not Available'}
+- Top Priorities: ${(profile.topPriorities || []).join(', ') || 'Not specified'}
 `;
   } else {
-    prompt += `- Name: ${userProfile.name || 'User'}
-- Age: ${userProfile.age || 'Not specified'}
-- Height: ${userProfile.height || 175} cm
-- Weight: ${userProfile.weight ? `${userProfile.weight} kg` : 'Not specified'}
-- Budget Limit: ₹${userProfile.budget || 14} Lakh
-- Daily Running: ${userProfile.dailyKm || 35} km/day (${userProfile.cityPercent || 60}% City, ${userProfile.highwayPercent || 30}% Highway, ${userProfile.ruralPercent || 10}% Rural)
-- Road Conditions: ${userProfile.roadConditions || 'Mixed with Potholes'}
-- Terrain: ${userProfile.primaryTerrain || 'Flat Plains'}
-- Parking Type: ${userProfile.parkingType || 'Open Driveway'}
-- Family & Passengers: ${userProfile.regularPassengers || 2} regular passengers (Children: ${userProfile.hasChildren ? 'Yes' : 'No'}, Elderly: ${userProfile.hasElderly ? 'Yes' : 'No'})
-- Fuel Preference: ${userProfile.fuelPreference || 'All'}
-- Transmission Preference: ${userProfile.transmissionPreference || 'Any'}
-- Home EV Charging Access: ${userProfile.hasHomeCharging ? 'Available' : 'Not Available'}
-- Top Priorities: ${(userProfile.topPriorities || ['Safety', 'Ground Clearance', 'Comfort']).join(', ')}
+    prompt += `- Name: ${profile.name || 'User'}
+- Age: ${profile.age || 'Not specified'}
+- Height: ${profile.height || 'Not specified'} cm
+- Weight: ${profile.weight ? `${profile.weight} kg` : 'Not specified'}
+- Budget Limit: ${profile.budget ? `₹${profile.budget} Lakh` : 'Not specified'}
+- Daily Running: ${profile.dailyKm || 'Not specified'} km/day (${profile.cityPercent ?? 60}% City, ${profile.highwayPercent ?? 30}% Highway, ${profile.ruralPercent ?? 10}% Rural)
+- Road Conditions: ${profile.roadConditions || 'Not specified'}
+- Terrain: ${profile.primaryTerrain || 'Not specified'}
+- Parking Type: ${profile.parkingType || 'Not specified'}
+- Family & Passengers: ${profile.regularPassengers || 'Not specified'} regular passengers (Children: ${profile.hasChildren ? 'Yes' : 'No'}, Elderly: ${profile.hasElderly ? 'Yes' : 'No'})
+- Fuel Preference: ${profile.fuelPreference || 'All'}
+- Transmission Preference: ${profile.transmissionPreference || 'Any'}
+- Home EV Charging Access: ${profile.hasHomeCharging ? 'Available' : 'Not Available'}
+- Top Priorities: ${(profile.topPriorities || []).join(', ') || 'Not specified'}
 `;
   }
   prompt += '\n';
@@ -147,11 +172,12 @@ FORMAT & LENGTH RULES (CRITICAL):
 
   // 4. ALTERNATIVES
   if (recommendedVehicles && recommendedVehicles.length > 0) {
-    prompt += `[TOP ALTERNATIVES (Calculated by AutoDezire)]\n`;
+    prompt += `[ALTERNATIVES IN CATALOG]\n`;
     recommendedVehicles.slice(0, 3).forEach((alt, idx) => {
       const v = alt.vehicle || alt;
-      const score = alt.overallScore || alt.evaluation?.overallScore || 'N/A';
-      prompt += `${idx + 1}. ${v.brand} ${v.model} (Score: ${score}/100, Price: ${v.priceDisplay || 'N/A'})\n`;
+      const score = alt.overallScore ?? alt.evaluation?.overallScore;
+      const scoreText = profile && typeof score === 'number' ? `Score: ${score}/100, ` : '';
+      prompt += `${idx + 1}. ${v.brand} ${v.model} (${scoreText}Price: ${v.priceDisplay || 'N/A'})\n`;
     });
     prompt += '\n';
   }
@@ -190,7 +216,7 @@ async function callOpenRouterAPI({
     model: model || DEFAULT_MODEL,
     messages,
     temperature: 0.4,
-    max_tokens: 350,
+    max_tokens: 1200,
   };
 
   let response;
@@ -233,11 +259,11 @@ async function callOpenRouterAPI({
     err.code = data?.error?.code || 'OPENROUTER_ERROR';
 
     if (response.status === 401 || response.status === 403) {
-      err.message = 'Invalid or unauthorized OpenRouter API key. Please check OPENROUTER_API_KEY in your backend .env file.';
+      err.message = `Invalid or unauthorized OpenRouter API key (${errorDetail}). Please update OPENROUTER_API_KEY in your backend .env or Render environment settings.`;
     } else if (response.status === 429) {
-      err.message = 'OpenRouter rate limit or quota exceeded. Please try again in a moment.';
+      err.message = `OpenRouter rate limit exceeded (${errorDetail}). Please try again in a moment.`;
     } else if (response.status === 402) {
-      err.message = 'OpenRouter account has insufficient credits. Please check your OpenRouter balance.';
+      err.message = `OpenRouter account has insufficient credits (${errorDetail}).`;
     }
     throw err;
   }
@@ -261,7 +287,7 @@ async function callOpenRouterAPI({
 async function generateAdvisorResponse({
   message,
   conversationHistory = [],
-  userProfile = {},
+  userProfile = null,
   selectedVehicle = null,
   suitabilityResult = null,
   recommendedVehicles = [],
@@ -272,10 +298,10 @@ async function generateAdvisorResponse({
     throw err;
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey || apiKey.trim() === '' || apiKey === 'your_openrouter_api_key_here') {
+  const apiKey = sanitizeApiKey(process.env.OPENROUTER_API_KEY);
+  if (!apiKey) {
     const err = new Error(
-      'OpenRouter API key is not configured. Please add your OPENROUTER_API_KEY to the backend .env file.'
+      'OpenRouter API key is not configured. Please add your OPENROUTER_API_KEY to your backend .env or hosting environment settings.'
     );
     err.status = 500;
     err.code = 'MISSING_API_KEY';
@@ -292,13 +318,45 @@ async function generateAdvisorResponse({
     recommendedVehicles,
   });
 
-  return await callOpenRouterAPI({
-    apiKey: apiKey.trim(),
-    model,
-    systemPrompt,
-    userMessage: message.trim(),
-    conversationHistory,
-  });
+  const fallbackModels = [];
+  if (model.endsWith(':free')) {
+    for (const candidate of ['google/gemma-4-31b-it:free', 'openrouter/free']) {
+      if (candidate !== model) fallbackModels.push(candidate);
+    }
+  } else {
+    fallbackModels.push(`${model}:free`, 'google/gemma-4-31b-it:free', 'openrouter/free');
+  }
+
+  const shouldFallback = (err, currentModel) => {
+    if (!err || err.status === 401 || err.status === 403) return false;
+    if (currentModel.endsWith(':free')) {
+      return err.status === 429 || err.status === 404 || err.status === 502 || err.status === 503;
+    }
+    return err.status === 402 || err.status === 404 || err.status === 502;
+  };
+
+  let lastError;
+  const candidates = [model, ...fallbackModels];
+  for (let i = 0; i < candidates.length; i++) {
+    const candidateModel = candidates[i];
+    try {
+      return await callOpenRouterAPI({
+        apiKey,
+        model: candidateModel,
+        systemPrompt,
+        userMessage: message.trim(),
+        conversationHistory,
+      });
+    } catch (err) {
+      lastError = err;
+      const hasNext = i < candidates.length - 1;
+      if (hasNext && shouldFallback(err, candidateModel)) {
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastError;
 }
 
 module.exports = {
@@ -306,6 +364,7 @@ module.exports = {
   buildStructuredSystemPrompt,
   callOpenRouterAPI,
   normalizeModelId,
+  sanitizeApiKey,
   OPENROUTER_API_URL,
   DEFAULT_MODEL,
 };

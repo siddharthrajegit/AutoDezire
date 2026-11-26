@@ -12,6 +12,7 @@ dotenv.config();
 
 const { connectDB } = require('./config/db');
 const { initializeData } = require('./services/store');
+const { sanitizeApiKey } = require('./services/aiAdvisorService');
 
 const app = express();
 
@@ -117,6 +118,7 @@ app.get('/api/health', (req, res) => {
     status: 'online',
     platform: 'AutoDezire API',
     tagline: 'Find the automobile that fits you',
+    aiConfigured: Boolean(sanitizeApiKey(process.env.OPENROUTER_API_KEY)),
     timestamp: new Date().toISOString()
   });
 });
