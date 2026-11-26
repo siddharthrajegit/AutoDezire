@@ -216,7 +216,7 @@ async function callOpenRouterAPI({
     model: model || DEFAULT_MODEL,
     messages,
     temperature: 0.4,
-    max_tokens: 1200,
+    max_tokens: 2500,
   };
 
   let response;

@@ -16,6 +16,9 @@ const { sanitizeApiKey } = require('./services/aiAdvisorService');
 
 const app = express();
 
+// Trust the first proxy hop (e.g., Render / reverse proxy X-Forwarded-For)
+app.set('trust proxy', 1);
+
 // ── Security Headers ────────────────────────────────────────────────────────
 app.use(
   helmet({

@@ -150,6 +150,7 @@ export default function AIAdvisorView() {
         id: Date.now() + 1,
         sender: 'ai',
         text: response.reply,
+        model: response.model,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, aiMsg]);
@@ -165,6 +166,13 @@ export default function AIAdvisorView() {
     }
 
     setIsLoading(false);
+  };
+
+  const formatModelLabel = (modelId) => {
+    if (!modelId) return 'Gemma 4 26B';
+    if (modelId.includes('gemma-4-26b')) return 'Gemma 4 26B';
+    if (modelId.includes('gemma-4-31b')) return 'Gemma 4 31B';
+    return modelId.split('/').pop().replace(':free', '');
   };
 
   const handleResetChat = () => {
@@ -227,7 +235,7 @@ export default function AIAdvisorView() {
                 Context Active
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                Gemma 4 26B
+                {formatModelLabel(activeModel)}
               </span>
             </div>
             {canShowScore && evaluation ? (
@@ -330,7 +338,7 @@ export default function AIAdvisorView() {
                     <span className="text-[10px]">{msg.timestamp}</span>
                     {isAI && (
                       <span className="text-[9px] uppercase tracking-wider text-purple-400 dark:text-purple-300 font-semibold">
-                        Gemma 4 26B
+                        {formatModelLabel(msg.model || activeModel)}
                       </span>
                     )}
                   </div>
