@@ -145,9 +145,15 @@ export function evaluateSuitability(vehicle, profile = {}) {
   }
 
   // 2.3: Space & Practicality adjustments
+  const isCarVehicle = !['Motorcycle', 'Scooter', 'Electric Scooter'].includes(vehicle.category);
   const passengers = profile.regularPassengers || 2;
-  if (passengers >= 5 && vehicle.seatingCapacity < 5) {
-    scores.spacePracticality = Math.max(2, scores.spacePracticality - 3);
+  const seatingCapacity = vehicle.seatingCapacity || 5;
+  if (isCarVehicle && passengers >= 5) {
+    if (seatingCapacity < 5) {
+      scores.spacePracticality = Math.max(2, scores.spacePracticality - 3);
+    } else if (seatingCapacity === 5) {
+      scores.spacePracticality = Math.max(2, scores.spacePracticality - 1);
+    }
   }
   if (profile.luggageRequirement === 'Heavy' && (vehicle.bootSpace || 300) > 420) {
     scores.spacePracticality = Math.min(10, scores.spacePracticality + 1);
@@ -157,7 +163,7 @@ export function evaluateSuitability(vehicle, profile = {}) {
 
   // 2.4: Mileage & Running Cost
   const dailyKm = profile.dailyKm || 35;
-  if (dailyKm >= 50) {
+  if (dailyKm > 19) {
     if (vehicle.fuelType === 'Electric' || (vehicle.mileageValue && vehicle.mileageValue >= 23)) {
       scores.mileageRunningCost = 10;
     } else if (vehicle.mileageValue && vehicle.mileageValue <= 13) {
@@ -365,8 +371,18 @@ export function evaluateSuitability(vehicle, profile = {}) {
     opposingReasons.push('Heavy 4x4 drivetrain and high ground clearance add dead weight and body roll on plain paved roads without providing any off-road benefit');
   }
 
-  // Deduct direct opposing penalties
-  rawOverallScore = Math.max(10, rawOverallScore - opposingDeductions);
+  // Small deduction for 5-seaters (and larger deduction for <5-seaters) when family size is 5 to 7+
+  let familySeatingPenalty = 0;
+  if (isCarVehicle && passengers >= 5) {
+    if (seatingCapacity < 5) {
+      familySeatingPenalty = 12;
+    } else if (seatingCapacity === 5) {
+      familySeatingPenalty = 4;
+    }
+  }
+
+  // Deduct direct opposing and seating penalties
+  rawOverallScore = Math.max(10, rawOverallScore - opposingDeductions - familySeatingPenalty);
 
   // Critical Requirement Check
   const criticalCompromises = [];
@@ -441,6 +457,13 @@ export function evaluateSuitability(vehicle, profile = {}) {
   }
   if (scores.safety >= 9 && (profile.hasChildren || profile.hasElderly)) {
     strengths.unshift('Class-leading 5-Star occupant protection gives high peace of mind for your family');
+  }
+  if (isCarVehicle && passengers >= 5) {
+    if (seatingCapacity < 5) {
+      considerations.unshift(`${seatingCapacity}-seater cabin cannot accommodate your ${passengers}-member family comfortably`);
+    } else if (seatingCapacity === 5) {
+      considerations.unshift(`5-seater layout may feel snug for a family of ${passengers >= 6 ? '6–7' : passengers} members compared to a 6/7-seater`);
+    }
   }
 
   if (criticalCompromises.length > 0) {

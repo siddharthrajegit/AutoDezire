@@ -114,9 +114,15 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
     else if (vehicle.groundClearance < 170) scores.groundClearance = Math.max(3, scores.groundClearance - 2);
   }
 
+  const isCarVehicle = !['Motorcycle', 'Scooter', 'Electric Scooter'].includes(vehicle.category);
   const passengers = profile.regularPassengers || 2;
-  if (passengers >= 5 && vehicle.seatingCapacity < 5) {
-    scores.spacePracticality = Math.max(2, scores.spacePracticality - 3);
+  const seatingCapacity = vehicle.seatingCapacity || 5;
+  if (isCarVehicle && passengers >= 5) {
+    if (seatingCapacity < 5) {
+      scores.spacePracticality = Math.max(2, scores.spacePracticality - 3);
+    } else if (seatingCapacity === 5) {
+      scores.spacePracticality = Math.max(2, scores.spacePracticality - 1);
+    }
   }
   if (profile.luggageRequirement === 'Heavy' && (vehicle.bootSpace || 300) > 420) {
     scores.spacePracticality = Math.min(10, scores.spacePracticality + 1);
@@ -125,7 +131,7 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
   }
 
   const dailyKm = profile.dailyKm || 35;
-  if (dailyKm >= 50) {
+  if (dailyKm > 19) {
     if (vehicle.fuelType === 'Electric' || (vehicle.mileageValue && vehicle.mileageValue >= 23)) {
       scores.mileageRunningCost = 10;
     } else if (vehicle.mileageValue && vehicle.mileageValue <= 13) {
@@ -279,8 +285,18 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
     opposingReasons.push('Heavy 4x4 drivetrain and high ground clearance add dead weight and body roll on plain paved roads without providing any off-road benefit');
   }
 
-  // Deduct direct opposing penalties
-  rawOverallScore = Math.max(10, rawOverallScore - opposingDeductions);
+  // Small deduction for 5-seaters (and larger deduction for <5-seaters) when family size is 5 to 7+
+  let familySeatingPenalty = 0;
+  if (isCarVehicle && passengers >= 5) {
+    if (seatingCapacity < 5) {
+      familySeatingPenalty = 12;
+    } else if (seatingCapacity === 5) {
+      familySeatingPenalty = 4;
+    }
+  }
+
+  // Deduct direct opposing and seating penalties
+  rawOverallScore = Math.max(10, rawOverallScore - opposingDeductions - familySeatingPenalty);
 
   const criticalCompromises = [];
   userPriorities.forEach(priorityName => {
@@ -344,6 +360,13 @@ function evaluateVehicleSuitability(vehicle, profile = {}) {
   }
   if (isBeginner && scores.handleability <= 5) {
     considerations.unshift('Heavy dimensions and high engine power demand seasoned driving experience in crowded traffic');
+  }
+  if (isCarVehicle && passengers >= 5) {
+    if (seatingCapacity < 5) {
+      considerations.unshift(`${seatingCapacity}-seater cabin cannot accommodate your ${passengers}-member family comfortably`);
+    } else if (seatingCapacity === 5) {
+      considerations.unshift(`5-seater layout may feel snug for a family of ${passengers >= 6 ? '6–7' : passengers} members compared to a 6/7-seater`);
+    }
   }
 
   if (criticalCompromises.length > 0) {
